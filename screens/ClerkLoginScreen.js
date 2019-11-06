@@ -14,22 +14,30 @@ import {
 
 import getEnvVars from "../environment";
 
-const { AIRTABLE_API_KEY, AIRTABLE_BASE_ID } = getEnvVars();
-const base = new Airtable({ apiKey: AIRTABLE_API_KEY }).base(AIRTABLE_BASE_ID);
+// const stores = [
+//   "A & S Grocery",
+//   "Bodega Market (Florida Avenue)",
+//   "Capitol Market",
+//   "DC Mini Mart"
+// ];
 
-const stores = [
-  "A & S Grocery",
-  "Bodega Market (Florida Avenue)",
-  "Capitol Market",
-  "DC Mini Mart"
-];
+const storesBase = BASE("Products").select({ view: "Grid view" });
+var myStores;
+
+storesBase.firstPage((err, records) => {
+  if (err) {
+    console.log(err);
+  }
+  // console.log("storename", record.fields["Store Name"]);
+  myStores = records.map(record => record.fields["Name"]);
+});
 
 export default class ClerkLogin extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      storeName: stores[0],
+      storeName: "frick",
       password: "",
       userDisplay: ""
     };
@@ -100,6 +108,8 @@ export default class ClerkLogin extends React.Component {
   }
 
   render() {
+    // const myStores = this.getStores();
+    // console.log("store:", myStores);
     return (
       <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
         <Picker
@@ -108,7 +118,7 @@ export default class ClerkLogin extends React.Component {
           mode="dropdown"
           onValueChange={store => this.setState({ storeName: store })}
         >
-          {stores.map((item, index) => {
+          {myStores.map((item, index) => {
             return <Picker.Item label={item} value={item} key={index} />;
           })}
         </Picker>
