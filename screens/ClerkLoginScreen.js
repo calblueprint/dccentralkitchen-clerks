@@ -1,6 +1,6 @@
 import React from "react";
-import Airtable from "airtable";
 import { BASE } from "../lib/common";
+// import console = require("console");
 
 import {
   AsyncStorage,
@@ -11,35 +11,21 @@ import {
   Text,
   Picker
 } from "react-native";
+// import console = require("console");
 
-import getEnvVars from "../environment";
-
-// const stores = [
-//   "A & S Grocery",
-//   "Bodega Market (Florida Avenue)",
-//   "Capitol Market",
-//   "DC Mini Mart"
-// ];
-
-const storesBase = BASE("Products").select({ view: "Grid view" });
-var myStores;
-
-storesBase.firstPage((err, records) => {
-  if (err) {
-    console.log(err);
-  }
-  // console.log("storename", record.fields["Store Name"]);
-  myStores = records.map(record => record.fields["Name"]);
-});
+const stores = [
+  "A & S Grocery",
+  "Bodega Market (Florida Avenue)",
+  "Capitol Market",
+  "DC Mini Mart"
+];
 
 export default class ClerkLogin extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
-      storeName: "frick",
-      password: "",
-      userDisplay: ""
+      storeName: stores[0],
+      password: ""
     };
   }
 
@@ -66,7 +52,7 @@ export default class ClerkLogin extends React.Component {
               );
             } else {
               records.forEach(function(record) {
-                resolve([record.get("First Name"), record.get("Last Name")]);
+                resolve(record.getId());
               });
             }
             fetchNextPage();
@@ -82,9 +68,9 @@ export default class ClerkLogin extends React.Component {
 
   // From SignUpScreen. Sign in function. It sets the user token in local storage
   // to be the fname + lname and then navigates to homescreen.
-  _asyncSignin = async (firstName, lastName) => {
-    await AsyncStorage.setItem("userToken", firstName + lastName);
-    this.props.navigation.navigate("ClerkLogin");
+  _asyncSignin = async recordId => {
+    await AsyncStorage.setItem("clerkId", recordId);
+    this.props.navigation.navigate("CustomerPhoneNumberScreen");
   };
 
   // This function will sign the user in if the clerk is found.
@@ -92,24 +78,21 @@ export default class ClerkLogin extends React.Component {
     await this.lookupClerk(this.state.storeName, this.state.password)
       .then(resp => {
         if (resp) {
-          const firstName = resp[0];
-          const lastName = resp[1];
-          this._asyncSignin(firstName, lastName);
+          const recordId = resp;
           this.setState({
-            userDisplay: resp,
             storeName: stores[0],
             password: ""
           });
+          this._asyncSignin(recordId);
         }
       })
       .catch(err => {
-        this.setState({ userDisplay: err, storeName: stores[0], password: "" });
+        console.log(err);
+        this.setState({ storeName: stores[0], password: "" });
       });
   }
 
   render() {
-    // const myStores = this.getStores();
-    // console.log("store:", myStores);
     return (
       <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
         <Picker
@@ -118,7 +101,7 @@ export default class ClerkLogin extends React.Component {
           mode="dropdown"
           onValueChange={store => this.setState({ storeName: store })}
         >
-          {myStores.map((item, index) => {
+          {stores.map((item, index) => {
             return <Picker.Item label={item} value={item} key={index} />;
           })}
         </Picker>
@@ -131,7 +114,7 @@ export default class ClerkLogin extends React.Component {
           value={this.state.password}
         />
         <Button title="Log In" onPress={() => this.handleSubmit()} />
-        <Text style={styles.text}>{this.state.userDisplay}</Text>
+        {/* <Text style={styles.text}>{this.state.userDisplay}</Text> */}
       </ScrollView>
     );
   }
