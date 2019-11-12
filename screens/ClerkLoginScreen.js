@@ -22,17 +22,26 @@ function createStoresData(record) {
   };
 }
 
-function loadStoreData() {
+async function loadStoreData() {
   const storesTable = BASE('Stores').select({ view: 'Grid view' });
-  storesTable.firstPage((err, records) => {
-    if (err) {
-      console.error(err);
-      return;
-    }
+  try {
+    let records = await storesTable.firstPage();
     var fullStores = records.map(record => createStoresData(record));
-    console.log(fullStores);
     return fullStores;
-  });
+  } catch (err) {
+      console.error(err);
+      return []; // TODO @tommypoa: silent fails
+  }
+  
+  // storesTable.firstPage((err, records) => {
+  //   if (err) {
+  //     console.error(err);
+  //     return;
+  //   }
+  //   var fullStores = records.map(record => createStoresData(record));
+  //   console.log(fullStores);
+  //   return fullStores;
+  // });
 }
 
 const stores = [
@@ -48,10 +57,17 @@ export default class ClerkLogin extends React.Component {
     this.state = {
       storeName: stores[0],
       password: "",
-      stores: loadStoreData()
+      stores: [] // TODO @tommypoa: isLoading
     };
     console.log(this.state.stores)
   }
+
+  async componentDidMount() {
+    this.setState ({
+      stores: await loadStoreData()
+    });
+  }
+
 
   // lookupCustomer searches for clerks based on their
   // store name and numeric password. If the user is found, we return the clerk's first
@@ -117,16 +133,17 @@ export default class ClerkLogin extends React.Component {
   }
 
   render() {
+    console.log(this.state.stores)
     return (
       <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
         <Picker
-          selectedValue={this.state.stores[0]}
+          selectedValue={this.state.storeName}
           style={{ flex: 1 }}
           mode="dropdown"
           onValueChange={store => this.setState({ storeName: store })}
         >
-          {this.state.fullProducts.map((item, index) => {
-            return <Picker.Item label={item} value={item} key={index} />;
+          {this.state.stores.map((item, index) => {
+            return <Picker.Item label={item["name"]} value={item} key={index} />;
           })}
         </Picker>
         <TextInput
