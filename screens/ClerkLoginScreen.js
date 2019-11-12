@@ -13,6 +13,28 @@ import {
 } from "react-native";
 // import console = require("console");
 
+
+
+function createStoresData(record) {
+  object = record.fields;
+  return {
+    name: object['Store Name'],
+  };
+}
+
+function loadStoreData() {
+  const storesTable = BASE('Stores').select({ view: 'Grid view' });
+  storesTable.firstPage((err, records) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    var fullStores = records.map(record => createStoresData(record));
+    console.log(fullStores);
+    return fullStores;
+  });
+}
+
 const stores = [
   "A & S Grocery",
   "Bodega Market (Florida Avenue)",
@@ -25,8 +47,10 @@ export default class ClerkLogin extends React.Component {
     super(props);
     this.state = {
       storeName: stores[0],
-      password: ""
+      password: "",
+      stores: loadStoreData()
     };
+    console.log(this.state.stores)
   }
 
   // lookupCustomer searches for clerks based on their
@@ -96,12 +120,12 @@ export default class ClerkLogin extends React.Component {
     return (
       <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
         <Picker
-          selectedValue={this.state.storeName}
+          selectedValue={this.state.stores[0]}
           style={{ flex: 1 }}
           mode="dropdown"
           onValueChange={store => this.setState({ storeName: store })}
         >
-          {stores.map((item, index) => {
+          {this.state.fullProducts.map((item, index) => {
             return <Picker.Item label={item} value={item} key={index} />;
           })}
         </Picker>
