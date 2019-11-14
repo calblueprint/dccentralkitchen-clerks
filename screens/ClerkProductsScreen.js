@@ -105,21 +105,18 @@ class ClerkProductsScreen extends React.Component {
     }
     return (
       <View style={{ flex: 1, flexDirection: "row" }}>
+        <ScrollView style={{ flex: 1 }} showsHorizontalScrollIndicator={false}>
+          {categories.map((category, index) => (
+            <Button
+              key={index}
+              onPress={() => this.handleCategoryPress(category)}
+            >
+              <ScrollCategory> {category} </ScrollCategory>
+            </Button>
+          ))}
+        </ScrollView>
         <View style={{ flex: 2 }}>
           <ScrollView showsVerticalScrollIndicator={false}>
-            <ScrollView
-              horizontal={true}
-              showsHorizontalScrollIndicator={false}
-            >
-              {categories.map((category, index) => (
-                <Button
-                  key={index}
-                  onPress={() => this.handleCategoryPress(category)}
-                >
-                  <ScrollCategory> {category} </ScrollCategory>
-                </Button>
-              ))}
-            </ScrollView>
             <FlatList
               // TODO @tommypoa refactor styles to use styled-components
               style={styles.container}
@@ -136,7 +133,7 @@ class ClerkProductsScreen extends React.Component {
             ></FlatList>
           </ScrollView>
         </View>
-        <ScrollView style={{ flex: 1 }}>
+        <ScrollView style={{ flex: 3 }}>
           {cart.map((product, index) => (
             <Button onPress={() => this.removeFromCart(product)}>
               <ProductCartCard product={product} />
