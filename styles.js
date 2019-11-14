@@ -67,6 +67,15 @@ import {
     border-radius: 5px;
     margin: 2% 0% 0% 42%;
   `;
+
+  export const ProductCardContainer = styled.View`
+    align-items: center;
+    background-color: #ffff;
+    border-radius: 5px;
+    padding: 20px;
+    margin: 5% 5%;
+    box-shadow: 0px 10px 20px #e3e1e1;
+  `
   
   // TODO @tommypoa re-work styles used in ProductDetailedScreen
   export const styles = StyleSheet.create({

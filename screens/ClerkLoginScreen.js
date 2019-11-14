@@ -59,7 +59,6 @@ export default class ClerkLogin extends React.Component {
       password: "",
       stores: [] // TODO @tommypoa: isLoading
     };
-    console.log(this.state.stores)
   }
 
   async componentDidMount() {
