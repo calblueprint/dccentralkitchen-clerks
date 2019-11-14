@@ -13,26 +13,24 @@ import {
 } from "react-native";
 // import console = require("console");
 
-
-
 function createStoresData(record) {
   object = record.fields;
   return {
-    name: object['Store Name'],
+    name: object["Store Name"]
   };
 }
 
 async function loadStoreData() {
-  const storesTable = BASE('Stores').select({ view: 'Grid view' });
+  const storesTable = BASE("Stores").select({ view: "Grid view" });
   try {
     let records = await storesTable.firstPage();
     var fullStores = records.map(record => createStoresData(record));
     return fullStores;
   } catch (err) {
-      console.error(err);
-      return []; // TODO @tommypoa: silent fails
+    console.error(err);
+    return []; // TODO @tommypoa: silent fails
   }
-  
+
   // storesTable.firstPage((err, records) => {
   //   if (err) {
   //     console.error(err);
@@ -62,11 +60,10 @@ export default class ClerkLogin extends React.Component {
   }
 
   async componentDidMount() {
-    this.setState ({
+    this.setState({
       stores: await loadStoreData()
     });
   }
-
 
   // lookupCustomer searches for clerks based on their
   // store name and numeric password. If the user is found, we return the clerk's first
@@ -110,6 +107,7 @@ export default class ClerkLogin extends React.Component {
   _asyncSignin = async recordId => {
     await AsyncStorage.setItem("clerkId", recordId);
     this.props.navigation.navigate("CustomerPhoneNumberScreen");
+    // this.props.navigation.navigate("ClerkLoginScreen");
   };
 
   // This function will sign the user in if the clerk is found.
@@ -132,7 +130,6 @@ export default class ClerkLogin extends React.Component {
   }
 
   render() {
-    console.log(this.state.stores)
     return (
       <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
         <Picker
@@ -142,7 +139,9 @@ export default class ClerkLogin extends React.Component {
           onValueChange={store => this.setState({ storeName: store })}
         >
           {this.state.stores.map((item, index) => {
-            return <Picker.Item label={item["name"]} value={item} key={index} />;
+            return (
+              <Picker.Item label={item["name"]} value={item} key={index} />
+            );
           })}
         </Picker>
         <TextInput
