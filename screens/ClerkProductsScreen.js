@@ -40,7 +40,8 @@ function createProductData(record) {
     id: record.id,
     category: object["Category"],
     points: object["Points"],
-    customerCost: object["Customer Cost"]
+    customerCost: object["Customer Cost"],
+    cartCount: 0
   };
 }
 
@@ -65,7 +66,26 @@ class ClerkProductsScreen extends React.Component {
     });
   }
 
-  addToCart() {}
+  addToCart(item) {
+    item.cartCount++;
+    var currentCart = this.state.cart;
+    var currentItem = currentCart.filter(product => product.id == item.id);
+    if (currentItem.length == 0) {
+      currentCart.push(item);
+    }
+    this.setState({
+      cart: currentCart
+    });
+  }
+
+  removeFromCart(item) {
+    item.cartCount--;
+    var currentCart = this.state.cart;
+    currentCart = currentCart.filter(item => item.cartCount > 0);
+    this.setState({
+      cart: currentCart
+    });
+  }
 
   handleCategoryPress = filter => {
     const toSet =
@@ -79,7 +99,10 @@ class ClerkProductsScreen extends React.Component {
 
   render() {
     const products = this.state.products;
-    console.log(products);
+    const cart = this.state.cart;
+    if (this.state.isLoading) {
+      return null; // TODO @tommypoa waiting (flavicon?)
+    }
     return (
       <View style={{ flex: 1, flexDirection: "row" }}>
         <View style={{ flex: 2 }}>
@@ -106,7 +129,7 @@ class ClerkProductsScreen extends React.Component {
               renderItem={({ item }) => (
                 // TODO @tommypoa: think it would be better to extract the `onPress` here,
                 // and possibly create the Button wrapping a Product using a function as with other components, but in-file
-                <Button onPress={() => this.addToCart()}>
+                <Button onPress={() => this.addToCart(item)}>
                   <Product product={item} />
                 </Button>
               )}
@@ -114,7 +137,11 @@ class ClerkProductsScreen extends React.Component {
           </ScrollView>
         </View>
         <ScrollView style={{ flex: 1 }}>
-          <ProductCartCard product={products[0]} />
+          {cart.map((product, index) => (
+            <Button onPress={() => this.removeFromCart(product)}>
+              <ProductCartCard product={product} />
+            </Button>
+          ))}
         </ScrollView>
       </View>
     );
