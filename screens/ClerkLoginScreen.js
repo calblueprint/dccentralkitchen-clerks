@@ -13,6 +13,35 @@ import {
 } from "react-native";
 // import console = require("console");
 
+function createStoresData(record) {
+  object = record.fields;
+  return {
+    name: object["Store Name"]
+  };
+}
+
+async function loadStoreData() {
+  const storesTable = BASE("Stores").select({ view: "Grid view" });
+  try {
+    let records = await storesTable.firstPage();
+    var fullStores = records.map(record => createStoresData(record));
+    return fullStores;
+  } catch (err) {
+    console.error(err);
+    return []; // TODO @tommypoa: silent fails
+  }
+
+  // storesTable.firstPage((err, records) => {
+  //   if (err) {
+  //     console.error(err);
+  //     return;
+  //   }
+  //   var fullStores = records.map(record => createStoresData(record));
+  //   console.log(fullStores);
+  //   return fullStores;
+  // });
+}
+
 const stores = [
   "A & S Grocery",
   "Bodega Market (Florida Avenue)",
@@ -25,8 +54,15 @@ export default class ClerkLogin extends React.Component {
     super(props);
     this.state = {
       storeName: stores[0],
-      password: ""
+      password: "",
+      stores: [] // TODO @tommypoa: isLoading
     };
+  }
+
+  async componentDidMount() {
+    this.setState({
+      stores: await loadStoreData()
+    });
   }
 
   // lookupCustomer searches for clerks based on their
@@ -71,6 +107,7 @@ export default class ClerkLogin extends React.Component {
   _asyncSignin = async recordId => {
     await AsyncStorage.setItem("clerkId", recordId);
     this.props.navigation.navigate("CustomerPhoneNumberScreen");
+    // this.props.navigation.navigate("ClerkLoginScreen");
   };
 
   // This function will sign the user in if the clerk is found.
@@ -101,8 +138,10 @@ export default class ClerkLogin extends React.Component {
           mode="dropdown"
           onValueChange={store => this.setState({ storeName: store })}
         >
-          {stores.map((item, index) => {
-            return <Picker.Item label={item} value={item} key={index} />;
+          {this.state.stores.map((item, index) => {
+            return (
+              <Picker.Item label={item["name"]} value={item} key={index} />
+            );
           })}
         </Picker>
         <TextInput

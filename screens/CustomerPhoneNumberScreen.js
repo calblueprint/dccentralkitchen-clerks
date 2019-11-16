@@ -51,7 +51,7 @@ export default class CustomerPhoneNumberScreen extends React.Component {
               reject("Incorrect customer phone number. Please try again.");
             } else {
               records.forEach(function(record) {
-                console.log(record["fields"]["First Name"]);
+                // console.log(record["fields"]["First Name"]);
                 resolve(record.getId());
               });
             }
@@ -68,7 +68,8 @@ export default class CustomerPhoneNumberScreen extends React.Component {
 
   _asyncCustomerSignIn = async customerId => {
     await AsyncStorage.setItem("customerId", customerId);
-    this.props.navigation.navigate("CheckoutScreen");
+    // this.props.navigation.navigate("CustomerPhoneNumberScreen");
+    this.props.navigation.navigate("ClerkProductsScreen");
   };
 
   async handleSubmit() {

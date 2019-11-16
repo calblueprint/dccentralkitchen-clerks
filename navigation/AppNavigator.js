@@ -4,6 +4,7 @@ import { createAppContainer, createSwitchNavigator } from "react-navigation";
 import MainTabNavigator from "./MainTabNavigator";
 import CustomerPhoneNumberScreen from "../screens/CustomerPhoneNumberScreen";
 import CheckoutScreen from "../screens/CheckoutScreen";
+import ClerkProductsScreen from "../screens/ClerkProductsScreen";
 
 export default createAppContainer(
   createSwitchNavigator({
@@ -11,6 +12,7 @@ export default createAppContainer(
     // Read more at https://reactnavigation.org/docs/en/auth-flow.html
     Main: MainTabNavigator,
     CustomerPhoneNumberScreen: CustomerPhoneNumberScreen,
-    CheckoutScreen: CheckoutScreen
+    CheckoutScreen: CheckoutScreen,
+    ClerkProductsScreen: ClerkProductsScreen
   })
 );
