@@ -9,7 +9,6 @@ import {
   Button,
   Text
 } from "react-native";
-// import console = require("console");
 
 export default class CustomerPhoneNumberScreen extends React.Component {
   constructor(props) {
@@ -24,7 +23,7 @@ export default class CustomerPhoneNumberScreen extends React.Component {
   async componentDidMount() {
     const clerkId = await AsyncStorage.getItem("clerkId");
 
-    this.getUser(clerkId).then(clerkRecord => {
+    this.getUser("Clerks", clerkId).then(clerkRecord => {
       if (clerkRecord) {
         let name =
           clerkRecord["fields"]["First Name"] +
@@ -35,8 +34,8 @@ export default class CustomerPhoneNumberScreen extends React.Component {
     });
   }
 
-  async getUser(id) {
-    return BASE("Clerks").find(id);
+  async getUser(table, id) {
+    return BASE(table).find(id);
   }
 
   async lookupCustomer(phoneNumber) {
@@ -69,7 +68,7 @@ export default class CustomerPhoneNumberScreen extends React.Component {
 
   _asyncCustomerSignIn = async customerId => {
     await AsyncStorage.setItem("customerId", customerId);
-    this.props.navigation.navigate("CustomerPhoneNumberScreen");
+    this.props.navigation.navigate("CheckoutScreen");
   };
 
   async handleSubmit() {
