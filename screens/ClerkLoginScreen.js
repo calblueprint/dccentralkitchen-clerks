@@ -16,7 +16,8 @@ import {
 function createStoresData(record) {
   object = record.fields;
   return {
-    name: object["Store Name"]
+    name: object["Store Name"],
+    id: record.id
   };
 }
 
@@ -42,12 +43,7 @@ async function loadStoreData() {
   // });
 }
 
-const stores = [
-  "A & S Grocery",
-  "Bodega Market (Florida Avenue)",
-  "Capitol Market",
-  "DC Mini Mart"
-];
+const stores = [{ name: "A & S Grocery", id: "recw49LpAOInqvX3e" }];
 
 export default class ClerkLogin extends React.Component {
   constructor(props) {
@@ -63,6 +59,7 @@ export default class ClerkLogin extends React.Component {
     this.setState({
       stores: await loadStoreData()
     });
+    console.log("Stores", this.state.stores);
   }
 
   // lookupCustomer searches for clerks based on their
@@ -106,13 +103,17 @@ export default class ClerkLogin extends React.Component {
   // to be the fname + lname and then navigates to homescreen.
   _asyncSignin = async recordId => {
     await AsyncStorage.setItem("clerkId", recordId);
+    await AsyncStorage.setItem("storeId", this.state.store.id);
+    console.log(this.state.store.id);
     this.props.navigation.navigate("CustomerPhoneNumberScreen");
     // this.props.navigation.navigate("ClerkLoginScreen");
   };
 
   // This function will sign the user in if the clerk is found.
   async handleSubmit() {
-    await this.lookupClerk(this.state.storeName, this.state.password)
+    console.log(this.state.store);
+    console.log(this.state.store);
+    await this.lookupClerk(this.state.store.name, this.state.password)
       .then(resp => {
         if (resp) {
           const recordId = resp;
@@ -133,10 +134,10 @@ export default class ClerkLogin extends React.Component {
     return (
       <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
         <Picker
-          selectedValue={this.state.storeName}
           style={{ flex: 1 }}
           mode="dropdown"
-          onValueChange={store => this.setState({ storeName: store })}
+          onValueChange={store => this.setState({ store: store })}
+          selectedValue={this.state.store}
         >
           {this.state.stores.map((item, index) => {
             return (
