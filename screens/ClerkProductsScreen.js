@@ -155,6 +155,7 @@ export class ClerkProductsScreen extends React.Component {
 
   async addTransaction() {
     var store = await AsyncStorage.getItem("storeId");
+    var clerkId = await AsyncStorage.getItem("clerkId");
     var transactionId = await new Promise((resolve, reject) => {
       BASE("Transactions").create(
         [
@@ -164,7 +165,8 @@ export class ClerkProductsScreen extends React.Component {
               Customer: [this.state.customer.id],
               Store: [store],
               "Products Purchased": [],
-              "Points Rewarded": this.state.totalPoints
+              "Points Rewarded": this.state.totalPoints,
+              Clerk: [clerkId]
             }
           }
         ],
@@ -247,6 +249,7 @@ export class ClerkProductsScreen extends React.Component {
     this.setState({ totalPoints: points });
     await this.addTransaction();
     await this.updateCustomerPoints();
+    // TODO @thumn reroute to confirmation page.
   }
 
   render() {
