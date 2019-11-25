@@ -127,7 +127,6 @@ export class ClerkProductsScreen extends React.Component {
       var [itemRecord] = await lineItemsTable.create([
         {
           fields: {
-            Transaction: [transactionId],
             Product: [this.state.cart[i].id],
             Quantity: this.state.cart[i].cartCount
           }
