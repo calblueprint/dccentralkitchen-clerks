@@ -5,12 +5,8 @@ import { ScrollView } from "react-native-gesture-handler";
 import Product from "../components/Product";
 import ProductCartCard from "../components/ProductCartCard";
 import { BASE } from "../lib/common";
-import {
-  Button,
-  ScrollCategory,
-  styles,
-  ProductCardContainer
-} from "../styles";
+import { Button, ScrollCategory, styles } from "../styles";
+import { makeDirectoryAsync } from "expo-file-system";
 
 const categories = [
   // Hard-coded for now -- should find a way to extract this information dynamically?
@@ -21,8 +17,7 @@ const categories = [
   "Frozen & Dried"
 ];
 
-var customer;
-
+// Loads products from Airtable.
 async function loadProductsData() {
   const productsTable = BASE("Products").select({ view: "Grid view" });
   try {
@@ -35,18 +30,7 @@ async function loadProductsData() {
   }
 }
 
-async function getUser(table, id) {
-  const customersTable = BASE("Customers");
-  try {
-    var record = await customersTable.find(id);
-    var customer = createCustomerData(record);
-    return customer;
-  } catch (err) {
-    console.error(err);
-    return "not a customer";
-  }
-}
-
+// Creates a dictionary object from each product.
 function createProductData(record) {
   object = record.fields;
   return {
@@ -59,6 +43,21 @@ function createProductData(record) {
   };
 }
 
+// Retrieves the user from AsyncStorage.
+async function getUser(table, id) {
+  const customersTable = BASE("Customers");
+  try {
+    var record = await customersTable.find(id);
+    var customer = createCustomerData(record);
+    return customer;
+  } catch (err) {
+    console.error(err);
+    return "not a customer";
+  }
+}
+
+// Creates a dictionary object from the user to make user
+// information more accessible.
 function createCustomerData(record) {
   object = record.fields;
   return {
@@ -87,10 +86,9 @@ export class ClerkProductsScreen extends React.Component {
 
   async componentDidMount() {
     const customerId = await AsyncStorage.getItem("customerId");
-
     const customer = await getUser("Customers", customerId);
-
     const productsData = await loadProductsData();
+
     this.setState({
       customer: customer,
       fullProducts: productsData,
@@ -99,6 +97,7 @@ export class ClerkProductsScreen extends React.Component {
     });
   }
 
+  // Updates customer with points received from this transaction.
   async updateCustomerPoints() {
     return new Promise((resolve, reject) => {
       BASE("Customers").update(
@@ -112,7 +111,7 @@ export class ClerkProductsScreen extends React.Component {
         ],
         function(err) {
           if (err) {
-            console.error("points", err);
+            console.error("Error updating customer points.", err);
             return;
           }
         }
@@ -120,69 +119,47 @@ export class ClerkProductsScreen extends React.Component {
     });
   }
 
+  // Calculates a line item for each product type purchased.
   async calculateProductsPurchased(transactionId) {
     var itemIds = [];
     const lineItemsTable = BASE("Line Items");
     for (var i = 0; i < this.state.cart.length; i++) {
-      var itemId = await new Promise((resolve, reject) => {
-        lineItemsTable.create(
-          [
-            {
-              fields: {
-                Transactions: [transactionId],
-                Product: [this.state.cart[i].id],
-                Quantity: this.state.cart[i].cartCount
-              }
-            }
-          ],
-          function(err, records) {
-            if (err) {
-              console.error("line item", err);
-              reject(err, "Couldn't create line item");
-            }
-            records.forEach(function(record) {
-              console.log(record.getId());
-              resolve(record.getId());
-            });
+      var [itemRecord] = await lineItemsTable.create([
+        {
+          fields: {
+            Transaction: [transactionId],
+            Product: [this.state.cart[i].id],
+            Quantity: this.state.cart[i].cartCount
           }
-        );
-      });
+        }
+      ]);
+      let itemId = itemRecord.getId();
       itemIds.push(itemId);
     }
-    console.log("item ids", itemIds);
     return itemIds;
   }
 
+  // Creates a transaction from the customer's cart at checkout.
   async addTransaction() {
     var store = await AsyncStorage.getItem("storeId");
     var clerkId = await AsyncStorage.getItem("clerkId");
-    var transactionId = await new Promise((resolve, reject) => {
-      BASE("Transactions").create(
-        [
-          {
-            fields: {
-              "Customer Lookup (Phone #)": this.state.customer.phoneNumber,
-              Customer: [this.state.customer.id],
-              Store: [store],
-              "Products Purchased": [],
-              "Points Rewarded": this.state.totalPoints,
-              Clerk: [clerkId]
-            }
-          }
-        ],
-        function(err, records) {
-          if (err) {
-            console.error("transaction", err);
-            reject(err, "Couldn't add transaction");
-          }
-          records.forEach(function(record) {
-            console.log(record.getId());
-            resolve(record.getId());
-          });
-        }
-      );
-    });
 
+    var [transactionRecord] = await BASE("Transactions").create([
+      {
+        fields: {
+          "Customer Lookup (Phone #)": this.state.customer.phoneNumber,
+          Customer: [this.state.customer.id],
+          Store: [store],
+          "Products Purchased": [],
+          "Points Rewarded": this.state.totalPoints,
+          Clerk: [clerkId]
+        }
+      }
+    ]);
+
+    let transactionId = transactionRecord.getId();
+
+    // A list of ids for line items from the transaction.
     var itemIds = await this.calculateProductsPurchased(transactionId);
 
     BASE("Transactions").update(
@@ -196,13 +173,14 @@ export class ClerkProductsScreen extends React.Component {
       ],
       function(err) {
         if (err) {
-          console.error("updating products", err);
+          console.error("Error updating transactions with line items.", err);
           return;
         }
       }
     );
   }
 
+  // Adds one item of product type to cart.
   addToCart(item) {
     item.cartCount++;
     var currentCart = this.state.cart;
@@ -218,6 +196,7 @@ export class ClerkProductsScreen extends React.Component {
     });
   }
 
+  // Subtracts one item of product type from cart.
   removeFromCart(item) {
     item.cartCount--;
     var currentCart = this.state.cart;
@@ -240,13 +219,18 @@ export class ClerkProductsScreen extends React.Component {
     this.setState({ products: toSet });
   };
 
-  async handleSubmit() {
+  // Sets total points earned from transaction in state.
+  setTotalPoints() {
     var points = 0;
     for (var i = 0; i < this.state.cart.length; i++) {
       const cartItem = this.state.cart[i];
       points = points + cartItem["points"] * cartItem["cartCount"];
     }
     this.setState({ totalPoints: points });
+  }
+
+  async handleSubmit() {
+    this.setTotalPoints();
     await this.addTransaction();
     await this.updateCustomerPoints();
     // TODO @thumn reroute to confirmation page.
