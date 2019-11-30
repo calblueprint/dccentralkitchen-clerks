@@ -1,5 +1,5 @@
 import React from "react";
-import { View, FlatList, AsyncStorage, Text } from "react-native";
+import { View, FlatList, AsyncStorage, Alert, Text } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 import Product from "../components/Product";
@@ -219,20 +219,66 @@ export class ClerkProductsScreen extends React.Component {
   };
 
   // Sets total points earned from transaction in state.
-  setTotalPoints() {
+  async setTotalPoints() {
     var points = 0;
-    for (var i = 0; i < this.state.cart.length; i++) {
-      const cartItem = this.state.cart[i];
-      points = points + cartItem["points"] * cartItem["cartCount"];
-    }
-    this.setState({ totalPoints: points });
+    return new Promise((resolve, reject) => {
+      for (var i = 0; i < this.state.cart.length; i++) {
+        const cartItem = this.state.cart[i];
+        points = points + cartItem["points"] * cartItem["cartCount"];
+      }
+      this.setState({ totalPoints: points });
+      if (points <= 0) {
+        reject(points);
+      }
+      resolve(points);
+    });
   }
 
-  async handleSubmit() {
-    this.setTotalPoints();
+  // Generates the confirmation message based on items in cart, points earned,
+  // and total spent.
+  generateConfirmationMessage(totalPoints) {
+    var msg = "Transaction Items:\n";
+    console.log(this.state.totalPoints);
+    for (var i = 0; i < this.state.cart.length; i++) {
+      // Adding all quantities of items in cart to message.
+      const cartItem = this.state.cart[i];
+      msg = msg.concat(`${cartItem["cartCount"]} x ${cartItem["name"]}\n`);
+    }
+    // Adding total price and total points earned to message. Must be called after setTotalPoints()
+    // in handleSubmit() for updated amount.
+    msg = msg.concat(`Total Price: ${this.state.totalPrice}\n`);
+    msg = msg.concat(`Total Points Earned: ${totalPoints}`);
+    console.log(msg);
+    return msg;
+  }
+
+  // Adds the transaction to the user's account and updates their points.
+  async confirmTransaction() {
     await this.addTransaction();
     await this.updateCustomerPoints();
-    // TODO @thumn reroute to confirmation page.
+  }
+
+  // Displays a confirmation alert to the clerk.
+  displayConfirmation(totalPoints) {
+    Alert.alert(
+      "Confirm Transaction",
+      this.generateConfirmationMessage(totalPoints),
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Canceled"),
+          style: "cancel"
+        },
+        { text: "Confirm", onPress: () => this.confirmTransaction() }
+      ]
+    );
+  }
+
+  // Handles submit when clerk selects "CHECKOUT".
+  async handleSubmit() {
+    await this.setTotalPoints().then(totalPoints =>
+      this.displayConfirmation(totalPoints)
+    );
   }
 
   render() {
