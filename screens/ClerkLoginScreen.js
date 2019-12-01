@@ -1,15 +1,8 @@
 import React from "react";
 import { BASE } from "../lib/common";
+import { TextInput, styles } from "../styles";
 
-import {
-  AsyncStorage,
-  StyleSheet,
-  ScrollView,
-  TextInput,
-  Button,
-  Text,
-  Picker
-} from "react-native";
+import { AsyncStorage, ScrollView, Button, Text, Picker } from "react-native";
 
 function createStoresData(record) {
   object = record.fields;
@@ -146,26 +139,3 @@ export default class ClerkLogin extends React.Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignContent: "center"
-  },
-  input: {
-    width: 350,
-    height: 55,
-    backgroundColor: "#42A5F5",
-    margin: 10,
-    padding: 8,
-    color: "white",
-    borderRadius: 14,
-    fontSize: 18,
-    fontWeight: "500"
-  },
-  text: {
-    fontSize: 14,
-    textAlign: "center"
-  }
-});

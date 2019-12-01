@@ -11,6 +11,13 @@ import {
 } from "react-native";
 import styled from "styled-components/native";
 
+export const Container = styled.View`
+  flex: 1;
+  display: flex;
+  align-content: center;
+  align-items: center;
+`;
+
 export const Title = styled.Text`
   font-size: 24px;
   font-weight: bold;
@@ -59,6 +66,15 @@ export const ButtonText = styled.Text`
   padding: 7.5px 7.5px;
 `;
 
+export const TextInput = styled.TextInput`
+  width: 350px;
+  height: 55px;
+  background-color: #42a5f5;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+`;
+
 export const StoreModalBar = styled.View`
     border: 1px solid black;
     background-color: black
@@ -81,6 +97,8 @@ export const ProductCardContainer = styled.View`
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
+    display: "flex",
+    marginTop: "15%",
     marginVertical: 20
   },
   imageContainer: {
