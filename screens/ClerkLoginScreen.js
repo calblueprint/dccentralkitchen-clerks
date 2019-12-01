@@ -87,7 +87,7 @@ export default class ClerkLogin extends React.Component {
                 "Incorrect store name and password combination. Please try again."
               );
             } else {
-              records.forEach(function(record) {
+              records.forEach(function (record) {
                 resolve(record.getId());
               });
             }
