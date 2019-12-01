@@ -77,6 +77,8 @@ export default class ClerkLogin extends React.Component {
             }
           }
         );
+    }).catch(err => {
+      console.error("Error looking up clerk", err);
     });
   }
 

@@ -45,24 +45,19 @@ export default class CustomerPhoneNumberScreen extends React.Component {
           maxRecords: 1,
           filterByFormula: `{Phone Number} = '${phoneNumber}'`
         })
-        .eachPage(
-          function page(records, fetchNextPage) {
-            if (records.length == 0) {
-              reject("Incorrect customer phone number. Please try again.");
-            } else {
-              records.forEach(function(record) {
-                // console.log(record["fields"]["First Name"]);
-                resolve(record.getId());
-              });
-            }
-            fetchNextPage();
-          },
-          function done(err) {
-            if (err) {
-              reject(err);
-            }
+        .eachPage(function page(records, fetchNextPage) {
+          if (records.length == 0) {
+            reject("Incorrect customer phone number. Please try again.");
+          } else {
+            records.forEach(function(record) {
+              // console.log(record["fields"]["First Name"]);
+              resolve(record.getId());
+            });
           }
-        );
+          fetchNextPage();
+        });
+    }).catch(err => {
+      console.error("Error looking up customer", err);
     });
   }
 

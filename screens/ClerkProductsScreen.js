@@ -101,25 +101,19 @@ export default class ClerkProductsScreen extends React.Component {
 
   // Updates customer with points received from this transaction.
   async updateCustomerPoints() {
-    return new Promise((resolve, reject) => {
-      BASE("Customers").update(
-        [
-          {
-            id: this.state.customer.id,
-            fields: {
-              Points: this.state.customer.points + this.state.totalPoints,
-              "Redeemed Rewards":
-                this.state.customer.redeemedRewards + this.state.rewardsApplied
-            }
-          }
-        ],
-        function(err) {
-          if (err) {
-            console.error("Error updating customer points.", err);
-            return;
+    return new Promise(() => {
+      BASE("Customers").update([
+        {
+          id: this.state.customer.id,
+          fields: {
+            Points: this.state.customer.points + this.state.totalPoints,
+            "Redeemed Rewards":
+              this.state.customer.redeemedRewards + this.state.rewardsApplied
           }
         }
-      );
+      ]);
+    }).catch(err => {
+      console.error("Error updating customer points.", err);
     });
   }
 
@@ -236,6 +230,8 @@ export default class ClerkProductsScreen extends React.Component {
       }
       resolve(points);
       this.setState({ totalPoints: points });
+    }).catch(err => {
+      console.error("Error setting total points", err);
     });
   }
 
