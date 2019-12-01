@@ -1,8 +1,8 @@
 import React from "react";
-import { BASE } from "../lib/common";
-import { TextInput, styles } from "../styles";
+import { AsyncStorage, Button, Picker, ScrollView, Text } from "react-native";
 
-import { AsyncStorage, ScrollView, Button, Text, Picker } from "react-native";
+import { BASE } from "../lib/common";
+import { styles, TextInput } from "../styles";
 
 function createStoresData(record) {
   object = record.fields;
@@ -58,7 +58,7 @@ export default class ClerkLogin extends React.Component {
                 "Incorrect store name and password combination. Please try again."
               );
             } else {
-              records.forEach(function(record) {
+              records.forEach(function (record) {
                 resolve(record.getId());
               });
             }
