@@ -1,15 +1,8 @@
 import React from "react";
 import { BASE } from "../lib/common";
+import { TextInput, styles } from "../styles";
 
-import {
-  AsyncStorage,
-  StyleSheet,
-  TextInput,
-  View,
-  Button,
-  Text
-} from "react-native";
-// import console = require("console");
+import { AsyncStorage, View, Button, Text } from "react-native";
 
 export default class CustomerPhoneNumberScreen extends React.Component {
   constructor(props) {
@@ -24,7 +17,7 @@ export default class CustomerPhoneNumberScreen extends React.Component {
   async componentDidMount() {
     const clerkId = await AsyncStorage.getItem("clerkId");
 
-    this.getUser(clerkId).then(clerkRecord => {
+    this.getUser("Clerks", clerkId).then(clerkRecord => {
       if (clerkRecord) {
         let name =
           clerkRecord["fields"]["First Name"] +
@@ -35,8 +28,8 @@ export default class CustomerPhoneNumberScreen extends React.Component {
     });
   }
 
-  async getUser(id) {
-    return BASE("Clerks").find(id);
+  async getUser(table, id) {
+    return BASE(table).find(id);
   }
 
   async lookupCustomer(phoneNumber) {
@@ -46,30 +39,24 @@ export default class CustomerPhoneNumberScreen extends React.Component {
           maxRecords: 1,
           filterByFormula: `{Phone Number} = '${phoneNumber}'`
         })
-        .eachPage(
-          function page(records, fetchNextPage) {
-            if (records.length == 0) {
-              reject("Incorrect customer phone number. Please try again.");
-            } else {
-              records.forEach(function(record) {
-                // console.log(record["fields"]["First Name"]);
-                resolve(record.getId());
-              });
-            }
-            fetchNextPage();
-          },
-          function done(err) {
-            if (err) {
-              reject(err);
-            }
+        .firstPage(function page(records, fetchNextPage) {
+          if (records.length == 0) {
+            reject("Incorrect customer phone number. Please try again.");
+          } else {
+            records.forEach(function(record) {
+              // console.log(record["fields"]["First Name"]);
+              resolve(record.getId());
+            });
           }
-        );
+          fetchNextPage();
+        });
+    }).catch(err => {
+      console.error("Error looking up customer", err);
     });
   }
 
   _asyncCustomerSignIn = async customerId => {
     await AsyncStorage.setItem("customerId", customerId);
-    // this.props.navigation.navigate("CustomerPhoneNumberScreen");
     this.props.navigation.navigate("ClerkProductsScreen");
   };
 
@@ -100,7 +87,7 @@ export default class CustomerPhoneNumberScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.text}>Welcome, {this.state.clerkName}!</Text>
+        <Text>Welcome, {this.state.clerkName}!</Text>
 
         <TextInput
           placeholder="Customer Phone Number (i.e. 1234567890)"
@@ -114,29 +101,3 @@ export default class CustomerPhoneNumberScreen extends React.Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignContent: "center",
-    marginTop: "50%",
-    display: "flex",
-    alignItems: "center"
-  },
-  input: {
-    width: 350,
-    height: 55,
-    backgroundColor: "#42A5F5",
-    margin: 10,
-    padding: 8,
-    color: "white",
-    borderRadius: 14,
-    fontSize: 18,
-    fontWeight: "500"
-  },
-  text: {
-    fontSize: 14,
-    textAlign: "center"
-  }
-});

@@ -1,22 +1,14 @@
 import React from "react";
-import { BASE } from "../lib/common";
-// import console = require("console");
+import { AsyncStorage, Button, Picker, ScrollView, Text } from "react-native";
 
-import {
-  AsyncStorage,
-  StyleSheet,
-  ScrollView,
-  TextInput,
-  Button,
-  Text,
-  Picker
-} from "react-native";
-// import console = require("console");
+import { BASE } from "../lib/common";
+import { styles, TextInput } from "../styles";
 
 function createStoresData(record) {
   object = record.fields;
   return {
-    name: object["Store Name"]
+    name: object["Store Name"],
+    id: record.id
   };
 }
 
@@ -30,30 +22,14 @@ async function loadStoreData() {
     console.error(err);
     return []; // TODO @tommypoa: silent fails
   }
-
-  // storesTable.firstPage((err, records) => {
-  //   if (err) {
-  //     console.error(err);
-  //     return;
-  //   }
-  //   var fullStores = records.map(record => createStoresData(record));
-  //   console.log(fullStores);
-  //   return fullStores;
-  // });
 }
-
-const stores = [
-  "A & S Grocery",
-  "Bodega Market (Florida Avenue)",
-  "Capitol Market",
-  "DC Mini Mart"
-];
 
 export default class ClerkLogin extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      storeName: stores[0],
+      storeName: "",
+      storeId: "",
       password: "",
       stores: [] // TODO @tommypoa: isLoading
     };
@@ -65,20 +41,15 @@ export default class ClerkLogin extends React.Component {
     });
   }
 
-  // lookupCustomer searches for clerks based on their
+  // lookupClerk searches for clerks based on their
   // store name and numeric password. If the user is found, we return the clerk's first
   // and last name. Otherwise, we will display an error on the login screen.
-  async lookupClerk(storeName, password) {
+  async lookupClerk(storeId, password) {
     return new Promise((resolve, reject) => {
       BASE("Clerks")
         .select({
           maxRecords: 1,
-          filterByFormula:
-            "AND({Store Name} = '" +
-            storeName +
-            "', {Password} = '" +
-            password +
-            "')"
+          filterByFormula: `AND({Store} = '${storeId}', {Password} = '${password}')`
         })
         .eachPage(
           function page(records, fetchNextPage) {
@@ -87,7 +58,7 @@ export default class ClerkLogin extends React.Component {
                 "Incorrect store name and password combination. Please try again."
               );
             } else {
-              records.forEach(function (record) {
+              records.forEach(function(record) {
                 resolve(record.getId());
               });
             }
@@ -99,33 +70,40 @@ export default class ClerkLogin extends React.Component {
             }
           }
         );
+    }).catch(err => {
+      console.error("Error looking up clerk", err);
     });
   }
 
-  // From SignUpScreen. Sign in function. It sets the user token in local storage
-  // to be the fname + lname and then navigates to homescreen.
-  _asyncSignin = async recordId => {
+  // Sets the clerk and store ids in AsyncStorage and navigates to the customer phone number screen.
+  _asyncLoginClerk = async recordId => {
     await AsyncStorage.setItem("clerkId", recordId);
+    await AsyncStorage.setItem("storeId", this.state.storeId);
     this.props.navigation.navigate("CustomerPhoneNumberScreen");
-    // this.props.navigation.navigate("ClerkLoginScreen");
   };
 
   // This function will sign the user in if the clerk is found.
   async handleSubmit() {
+    await BASE("Stores")
+      .find(this.state.storeId)
+      .then(storeRecord => {
+        if (storeRecord) {
+          let name = storeRecord["fields"]["Store Name"];
+          this.setState({ storeName: name });
+        }
+      })
+      .catch(err => {
+        console.error("Error retrieving store record from Airtable", err);
+      });
     await this.lookupClerk(this.state.storeName, this.state.password)
       .then(resp => {
         if (resp) {
           const recordId = resp;
-          this.setState({
-            storeName: stores[0],
-            password: ""
-          });
           this._asyncSignin(recordId);
         }
       })
       .catch(err => {
-        console.log(err);
-        this.setState({ storeName: stores[0], password: "" });
+        console.error("Error submitting form", err);
       });
   }
 
@@ -133,14 +111,18 @@ export default class ClerkLogin extends React.Component {
     return (
       <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
         <Picker
-          selectedValue={this.state.storeName}
           style={{ flex: 1 }}
           mode="dropdown"
-          onValueChange={store => this.setState({ storeName: store })}
+          onValueChange={store => this.setState({ storeId: store })}
+          selectedValue={this.state.storeId}
         >
           {this.state.stores.map((item, index) => {
             return (
-              <Picker.Item label={item["name"]} value={item} key={index} />
+              <Picker.Item
+                label={item["name"]}
+                value={item["id"]}
+                key={index}
+              />
             );
           })}
         </Picker>
@@ -153,31 +135,7 @@ export default class ClerkLogin extends React.Component {
           value={this.state.password}
         />
         <Button title="Log In" onPress={() => this.handleSubmit()} />
-        {/* <Text style={styles.text}>{this.state.userDisplay}</Text> */}
       </ScrollView>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignContent: "center"
-  },
-  input: {
-    width: 350,
-    height: 55,
-    backgroundColor: "#42A5F5",
-    margin: 10,
-    padding: 8,
-    color: "white",
-    borderRadius: 14,
-    fontSize: 18,
-    fontWeight: "500"
-  },
-  text: {
-    fontSize: 14,
-    textAlign: "center"
-  }
-});
