@@ -288,22 +288,18 @@ export default class ClerkProductsScreen extends React.Component {
     }
     const newRewardsApplied = this.state.rewardsApplied + 1;
     const newPrice = this.state.totalPrice - 5;
-    const newRewardCount = this.state.rewardsApplied + 1;
     this.setState({
       rewardsApplied: newRewardsApplied,
-      totalPrice: newPrice,
-      rewards: newRewardCount
+      totalPrice: newPrice
     });
   }
 
   removeReward() {
     const newRewardsApplied = this.state.rewardsApplied - 1;
     const newPrice = this.state.totalPrice + 5;
-    const newRewardCount = this.state.rewardsApplied - 1;
     this.setState({
       rewardsApplied: newRewardsApplied,
-      totalPrice: newPrice,
-      rewards: newRewardCount
+      totalPrice: newPrice
     });
   }
 

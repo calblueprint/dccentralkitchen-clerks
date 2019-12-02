@@ -57,7 +57,6 @@ export default class CustomerPhoneNumberScreen extends React.Component {
 
   _asyncCustomerSignIn = async customerId => {
     await AsyncStorage.setItem("customerId", customerId);
-    // this.props.navigation.navigate("CustomerPhoneNumberScreen");
     this.props.navigation.navigate("ClerkProductsScreen");
   };
 
