@@ -1,6 +1,6 @@
 import React from "react";
-import Airtable from "airtable";
 import { BASE } from "../lib/common";
+// import console = require("console");
 
 import {
   AsyncStorage,
@@ -11,11 +11,36 @@ import {
   Text,
   Picker
 } from "react-native";
+// import console = require("console");
 
-import getEnvVars from "../environment";
+function createStoresData(record) {
+  object = record.fields;
+  return {
+    name: object["Store Name"]
+  };
+}
 
-const { AIRTABLE_API_KEY, AIRTABLE_BASE_ID } = getEnvVars();
-const base = new Airtable({ apiKey: AIRTABLE_API_KEY }).base(AIRTABLE_BASE_ID);
+async function loadStoreData() {
+  const storesTable = BASE("Stores").select({ view: "Grid view" });
+  try {
+    let records = await storesTable.firstPage();
+    var fullStores = records.map(record => createStoresData(record));
+    return fullStores;
+  } catch (err) {
+    console.error(err);
+    return []; // TODO @tommypoa: silent fails
+  }
+
+  // storesTable.firstPage((err, records) => {
+  //   if (err) {
+  //     console.error(err);
+  //     return;
+  //   }
+  //   var fullStores = records.map(record => createStoresData(record));
+  //   console.log(fullStores);
+  //   return fullStores;
+  // });
+}
 
 const stores = [
   "A & S Grocery",
@@ -27,12 +52,17 @@ const stores = [
 export default class ClerkLogin extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
       storeName: stores[0],
       password: "",
-      userDisplay: ""
+      stores: [] // TODO @tommypoa: isLoading
     };
+  }
+
+  async componentDidMount() {
+    this.setState({
+      stores: await loadStoreData()
+    });
   }
 
   // lookupCustomer searches for clerks based on their
@@ -57,8 +87,8 @@ export default class ClerkLogin extends React.Component {
                 "Incorrect store name and password combination. Please try again."
               );
             } else {
-              records.forEach(function(record) {
-                resolve([record.get("First Name"), record.get("Last Name")]);
+              records.forEach(function (record) {
+                resolve(record.getId());
               });
             }
             fetchNextPage();
@@ -74,9 +104,10 @@ export default class ClerkLogin extends React.Component {
 
   // From SignUpScreen. Sign in function. It sets the user token in local storage
   // to be the fname + lname and then navigates to homescreen.
-  _asyncSignin = async (firstName, lastName) => {
-    await AsyncStorage.setItem("userToken", firstName + lastName);
-    this.props.navigation.navigate("ClerkLogin");
+  _asyncSignin = async recordId => {
+    await AsyncStorage.setItem("clerkId", recordId);
+    this.props.navigation.navigate("CustomerPhoneNumberScreen");
+    // this.props.navigation.navigate("ClerkLoginScreen");
   };
 
   // This function will sign the user in if the clerk is found.
@@ -84,18 +115,17 @@ export default class ClerkLogin extends React.Component {
     await this.lookupClerk(this.state.storeName, this.state.password)
       .then(resp => {
         if (resp) {
-          const firstName = resp[0];
-          const lastName = resp[1];
-          this._asyncSignin(firstName, lastName);
+          const recordId = resp;
           this.setState({
-            userDisplay: resp,
             storeName: stores[0],
             password: ""
           });
+          this._asyncSignin(recordId);
         }
       })
       .catch(err => {
-        this.setState({ userDisplay: err, storeName: stores[0], password: "" });
+        console.log(err);
+        this.setState({ storeName: stores[0], password: "" });
       });
   }
 
@@ -108,8 +138,10 @@ export default class ClerkLogin extends React.Component {
           mode="dropdown"
           onValueChange={store => this.setState({ storeName: store })}
         >
-          {stores.map((item, index) => {
-            return <Picker.Item label={item} value={item} key={index} />;
+          {this.state.stores.map((item, index) => {
+            return (
+              <Picker.Item label={item["name"]} value={item} key={index} />
+            );
           })}
         </Picker>
         <TextInput
@@ -121,7 +153,7 @@ export default class ClerkLogin extends React.Component {
           value={this.state.password}
         />
         <Button title="Log In" onPress={() => this.handleSubmit()} />
-        <Text style={styles.text}>{this.state.userDisplay}</Text>
+        {/* <Text style={styles.text}>{this.state.userDisplay}</Text> */}
       </ScrollView>
     );
   }

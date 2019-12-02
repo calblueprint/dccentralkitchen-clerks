@@ -10,6 +10,7 @@ import HomeScreen from "../screens/HomeScreen";
 import LinksScreen from "../screens/LinksScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import ClerkLoginScreen from "../screens/ClerkLoginScreen";
+import ClerkProductsScreen from "../screens/ClerkProductsScreen";
 
 const config = Platform.select({
   web: { headerMode: "screen" },
@@ -18,13 +19,13 @@ const config = Platform.select({
 
 const HomeStack = createStackNavigator(
   {
-    Home: ClerkLoginScreen
+    Home: ClerkProductsScreen
   },
   config
 );
 
 HomeStack.navigationOptions = {
-  tabBarLabel: "Home",
+  tabBarLabel: "Login",
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
