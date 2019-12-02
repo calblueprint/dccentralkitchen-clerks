@@ -58,7 +58,7 @@ export default class ClerkLogin extends React.Component {
                 "Incorrect store name and password combination. Please try again."
               );
             } else {
-              records.forEach(function (record) {
+              records.forEach(function(record) {
                 resolve(record.getId());
               });
             }
@@ -75,13 +75,11 @@ export default class ClerkLogin extends React.Component {
     });
   }
 
-  // From SignUpScreen. Sign in function. It sets the user token in local storage
-  // to be the fname + lname and then navigates to homescreen.
-  _asyncSignin = async recordId => {
+  // Sets the clerk and store ids in AsyncStorage and navigates to the customer phone number screen.
+  _asyncLoginClerk = async recordId => {
     await AsyncStorage.setItem("clerkId", recordId);
     await AsyncStorage.setItem("storeId", this.state.storeId);
     this.props.navigation.navigate("CustomerPhoneNumberScreen");
-    // this.props.navigation.navigate("ClerkLoginScreen");
   };
 
   // This function will sign the user in if the clerk is found.
@@ -93,6 +91,9 @@ export default class ClerkLogin extends React.Component {
           let name = storeRecord["fields"]["Store Name"];
           this.setState({ storeName: name });
         }
+      })
+      .catch(err => {
+        console.error("Error retrieving store record from Airtable", err);
       });
     await this.lookupClerk(this.state.storeName, this.state.password)
       .then(resp => {
@@ -102,8 +103,7 @@ export default class ClerkLogin extends React.Component {
         }
       })
       .catch(err => {
-        console.log(err);
-        this.setState({ storeName: this.state.stores[0], password: "" });
+        console.error("Error submitting form", err);
       });
   }
 
