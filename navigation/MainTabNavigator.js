@@ -1,12 +1,16 @@
 import React from "react";
 import { Platform } from "react-native";
-import { createBottomTabNavigator, createStackNavigator } from "react-navigation";
+import {
+  createBottomTabNavigator,
+  createStackNavigator
+} from "react-navigation";
 
 import TabBarIcon from "../components/TabBarIcon";
 import ClerkLoginScreen from "../screens/ClerkLoginScreen";
 import ClerkProductsScreen from "../screens/ClerkProductsScreen";
 import LinksScreen from "../screens/LinksScreen";
 import SettingsScreen from "../screens/SettingsScreen";
+import ClerkLogin from "../screens/ClerkLoginScreen";
 
 const config = Platform.select({
   web: { headerMode: "screen" },
@@ -15,7 +19,7 @@ const config = Platform.select({
 
 const HomeStack = createStackNavigator(
   {
-    Home: ClerkProductsScreen
+    Home: ClerkLogin
   },
   config
 );

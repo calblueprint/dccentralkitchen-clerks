@@ -99,7 +99,7 @@ export default class ClerkLogin extends React.Component {
       .then(resp => {
         if (resp) {
           const recordId = resp;
-          this._asyncSignin(recordId);
+          this._asyncLoginClerk(recordId);
         }
       })
       .catch(err => {

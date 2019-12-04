@@ -12,7 +12,6 @@ export default createAppContainer(
     // Read more at https://reactnavigation.org/docs/en/auth-flow.html
     Main: MainTabNavigator,
     CustomerPhoneNumberScreen: CustomerPhoneNumberScreen,
-    CheckoutScreen: CheckoutScreen,
     ClerkProductsScreen: ClerkProductsScreen
   })
 );

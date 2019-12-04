@@ -39,7 +39,7 @@ export default class CustomerPhoneNumberScreen extends React.Component {
           maxRecords: 1,
           filterByFormula: `{Phone Number} = '${phoneNumber}'`
         })
-        .firstPage(function page(records, fetchNextPage) {
+        .eachPage(function page(records, fetchNextPage) {
           if (records.length == 0) {
             reject("Incorrect customer phone number. Please try again.");
           } else {
