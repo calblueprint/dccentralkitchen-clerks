@@ -61,16 +61,12 @@ export const Button = styled.TouchableOpacity`
   flex: 1 1 0;
 `;
 
-export const ButtonClerkLogin = styled.TouchableOpacity`
-  flex: 1 1 0;
-`;
-
 export const ButtonText = styled.Text`
   color: white;
   padding: 7.5px 7.5px;
 `;
 
-export const TextInputClerkLogin = styled.TextInput`
+export const TextInput = styled.TextInput`
   background-color: #008550;
   height: 60px;
   width: 100%;
@@ -78,8 +74,6 @@ export const TextInputClerkLogin = styled.TextInput`
   font-size: 18px;
   font-weight: bold;
   text-align: center;
-  position: relative;
-  top: -50%;
 `;
 
 export const StoreModalBar = styled.View`
@@ -106,6 +100,9 @@ export const styles = StyleSheet.create({
     flex: 1,
     display: "flex",
     width: "100%"
+  },
+  input: {
+    color: "black"
   },
   imageContainer: {
     flexDirection: "row"

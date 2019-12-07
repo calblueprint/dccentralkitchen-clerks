@@ -9,7 +9,7 @@ import {
 } from "react-native";
 
 import { BASE } from "../lib/common";
-import { styles, TextInputClerkLogin, ButtonClerkLogin } from "../styles";
+import { styles, TextInput } from "../styles";
 
 function createStoresData(record) {
   object = record.fields;
@@ -44,7 +44,8 @@ export default class ClerkLogin extends React.Component {
       storeName: "",
       storeId: "",
       password: "",
-      stores: [] // TODO @tommypoa: isLoading
+      stores: [],
+      displayErrorMsg: "" // TODO @tommypoa: isLoading
     };
   }
 
@@ -140,7 +141,7 @@ export default class ClerkLogin extends React.Component {
               );
             })}
           </Picker>
-          <TextInputClerkLogin
+          <TextInput
             style={styles.input}
             placeholder="Password"
             keyboardType="number-pad"
@@ -151,6 +152,7 @@ export default class ClerkLogin extends React.Component {
           />
           <Button
             style={styles.button}
+            color="#008550"
             title="Log In"
             onPress={() => this.handleSubmit()}
           />

@@ -93,6 +93,7 @@ export default class CustomerPhoneNumberScreen extends React.Component {
           placeholder="Customer Phone Number (i.e. 1234567890)"
           style={styles.input}
           keyboardType="number-pad"
+          maxLength={10}
           onChangeText={number => this.setState({ phoneNumber: number })}
           value={this.state.phoneNumber}
         />
