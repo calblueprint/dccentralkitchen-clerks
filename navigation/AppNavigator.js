@@ -6,7 +6,6 @@ import CustomerPhoneNumberScreen from "../screens/CustomerPhoneNumberScreen";
 import MainTabNavigator from "./MainTabNavigator";
 
 export default createAppContainer(
-  // TODO: Figure out whether to change this to StackNavigator.
   createStackNavigator({
     // You could add another route here for authentication.
     // Read more at https://reactnavigation.org/docs/en/auth-flow.html
