@@ -1,8 +1,15 @@
 import React from "react";
-import { AsyncStorage, Button, Picker, ScrollView, Text } from "react-native";
+import {
+  AsyncStorage,
+  Button,
+  Picker,
+  View,
+  Keyboard,
+  TouchableWithoutFeedback
+} from "react-native";
 
 import { BASE } from "../lib/common";
-import { styles, TextInput } from "../styles";
+import { styles, TextInputClerkLogin, ButtonClerkLogin } from "../styles";
 
 function createStoresData(record) {
   object = record.fields;
@@ -23,6 +30,12 @@ async function loadStoreData() {
     return []; // TODO @tommypoa: silent fails
   }
 }
+
+const DismissKeyboard = ({ children }) => (
+  <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+    {children}
+  </TouchableWithoutFeedback>
+);
 
 export default class ClerkLogin extends React.Component {
   constructor(props) {
@@ -109,33 +122,40 @@ export default class ClerkLogin extends React.Component {
 
   render() {
     return (
-      <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
-        <Picker
-          style={{ flex: 1 }}
-          mode="dropdown"
-          onValueChange={store => this.setState({ storeId: store })}
-          selectedValue={this.state.storeId}
-        >
-          {this.state.stores.map((item, index) => {
-            return (
-              <Picker.Item
-                label={item["name"]}
-                value={item["id"]}
-                key={index}
-              />
-            );
-          })}
-        </Picker>
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          keyboardType="number-pad"
-          secureTextEntry={true}
-          onChangeText={text => this.setState({ password: text })}
-          value={this.state.password}
-        />
-        <Button title="Log In" onPress={() => this.handleSubmit()} />
-      </ScrollView>
+      <DismissKeyboard>
+        <View style={styles.container}>
+          <Picker
+            style={{ flex: 1 }}
+            mode="dropdown"
+            onValueChange={store => this.setState({ storeId: store })}
+            selectedValue={this.state.storeId}
+          >
+            {this.state.stores.map((item, index) => {
+              return (
+                <Picker.Item
+                  label={item["name"]}
+                  value={item["id"]}
+                  key={index}
+                />
+              );
+            })}
+          </Picker>
+          <TextInputClerkLogin
+            style={styles.input}
+            placeholder="Password"
+            keyboardType="number-pad"
+            maxLength={4}
+            secureTextEntry={true}
+            onChangeText={text => this.setState({ password: text })}
+            value={this.state.password}
+          />
+          <Button
+            style={styles.button}
+            title="Log In"
+            onPress={() => this.handleSubmit()}
+          />
+        </View>
+      </DismissKeyboard>
     );
   }
 }

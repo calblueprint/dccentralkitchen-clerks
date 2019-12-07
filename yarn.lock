@@ -4436,8 +4436,6 @@ mem@^1.1.0:
   dependencies:
     mimic-fn "^1.0.0"
 
-<<<<<<< HEAD
-=======
 mem@^4.0.0:
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/mem/-/mem-4.3.0.tgz#461af497bc4ae09608cdb2e60eefb69bff744178"
@@ -4447,7 +4445,6 @@ mem@^4.0.0:
     mimic-fn "^2.0.0"
     p-is-promise "^2.0.0"
 
->>>>>>> 2d252447db34d36d46824887dd661c4a3ffd165a
 memoize-one@^5.0.0:
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/memoize-one/-/memoize-one-5.1.1.tgz#047b6e3199b508eaec03504de71229b8eb1d75c0"
