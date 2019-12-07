@@ -82,7 +82,8 @@ export default class ClerkProductsScreen extends React.Component {
       isLoading: true,
       totalPrice: 0,
       totalPoints: 0,
-      rewardsApplied: 0
+      rewardsApplied: 0,
+      rewardsAvailable: 0
     };
   }
 
@@ -93,6 +94,7 @@ export default class ClerkProductsScreen extends React.Component {
 
     this.setState({
       customer: customer,
+      rewardsAvailable: customer.rewards,
       fullProducts: productsData,
       products: productsData,
       isLoading: false
@@ -106,12 +108,16 @@ export default class ClerkProductsScreen extends React.Component {
         {
           id: this.state.customer.id,
           fields: {
-            Points: this.state.customer.points + this.state.totalPoints,
+            Points:
+              this.state.customer.points +
+              this.state.totalPoints -
+              this.state.rewardsApplied * 500,
             "Redeemed Rewards":
               this.state.customer.redeemedRewards + this.state.rewardsApplied
           }
         }
       ]);
+      this.props.navigation.goBack();
     }).catch(err => {
       console.error("Error updating customer points.", err);
     });
@@ -255,8 +261,6 @@ export default class ClerkProductsScreen extends React.Component {
   async confirmTransaction() {
     await this.addTransaction();
     await this.updateCustomerPoints();
-    // TODO(thumn): Navigate back to customer phone number screen.
-    // this.props.navigation.navigate("CustomerPhoneNumberScreen");
   }
 
   // Displays a confirmation alert to the clerk.
@@ -287,18 +291,26 @@ export default class ClerkProductsScreen extends React.Component {
       return;
     }
     const newRewardsApplied = this.state.rewardsApplied + 1;
+    const newRewardsAvail = this.state.rewardsAvailable - 1;
+    const newCustomer = this.state.customer;
     const newPrice = this.state.totalPrice - 5;
     this.setState({
       rewardsApplied: newRewardsApplied,
+      rewardsAvailable: newRewardsAvail,
+      customer: newCustomer,
       totalPrice: newPrice
     });
   }
 
   removeReward() {
     const newRewardsApplied = this.state.rewardsApplied - 1;
+    const newRewardsAvail = this.state.rewardsAvailable + 1;
+    const newCustomer = this.state.customer;
     const newPrice = this.state.totalPrice + 5;
     this.setState({
       rewardsApplied: newRewardsApplied,
+      rewardsAvailable: newRewardsAvail,
+      customer: newCustomer,
       totalPrice: newPrice
     });
   }
@@ -306,7 +318,7 @@ export default class ClerkProductsScreen extends React.Component {
   // Generates rewards available as a list of buttons to display on checkout screen.
   generateRewardsAvailable() {
     var rewards = [];
-    for (var i = 0; i < this.state.customer.rewards; i++) {
+    for (var i = 0; i < this.state.rewardsAvailable; i++) {
       rewards.push(
         <Button onPress={() => this.applyReward()}>
           <Text>APPLY $5 REWARD</Text>
@@ -382,11 +394,11 @@ export default class ClerkProductsScreen extends React.Component {
             </ScrollView>
             <ScrollView style={{ alignSelf: "flex-end" }}>
               <Text>Rewards Applied:</Text>
-              {this.generateRewardsApplied(this.state.rewardsApplied)}
+              {this.generateRewardsApplied()}
             </ScrollView>
             <ScrollView style={{ alignSelf: "flex-end" }}>
               <Text>Rewards Available:</Text>
-              {this.generateRewardsAvailable(this.state.customer.rewards)}
+              {this.generateRewardsAvailable()}
             </ScrollView>
             <Text style={{ alignSelf: "flex-end" }}>
               Order Total ${this.state.totalPrice.toFixed(2)}
