@@ -117,6 +117,7 @@ export default class ClerkProductsScreen extends React.Component {
           }
         }
       ]);
+      this.props.navigation.goBack();
     }).catch(err => {
       console.error("Error updating customer points.", err);
     });
@@ -260,8 +261,6 @@ export default class ClerkProductsScreen extends React.Component {
   async confirmTransaction() {
     await this.addTransaction();
     await this.updateCustomerPoints();
-    // TODO(thumn): Navigate back to customer phone number screen.
-    // this.props.navigation.navigate("CustomerPhoneNumberScreen");
   }
 
   // Displays a confirmation alert to the clerk.
