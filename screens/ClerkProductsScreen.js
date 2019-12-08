@@ -265,6 +265,20 @@ export default class ClerkProductsScreen extends React.Component {
 
   // Displays a confirmation alert to the clerk.
   displayConfirmation(totalPoints) {
+    // Should not be able to check out if there isn't anything in the transaction.
+    if (totalPoints == 0) {
+      Alert.alert(
+        "Empty Transaction",
+        "This transaction is empty. Please add items to the cart.",
+        [
+          {
+            text: "OK",
+            style: "cancel"
+          }
+        ]
+      );
+      return;
+    }
     Alert.alert(
       "Confirm Transaction",
       this.generateConfirmationMessage(totalPoints),
@@ -416,7 +430,7 @@ export default class ClerkProductsScreen extends React.Component {
               Order Total ${this.state.totalPrice.toFixed(2)}
             </Text>
             <Button onPress={() => this.handleSubmit()}>
-              <TextHeader styles={{ color: "#008550" }}>COMPLETE</TextHeader>
+              <TextHeader style={{ color: "#008550" }}>Checkout</TextHeader>
             </Button>
           </View>
         </View>

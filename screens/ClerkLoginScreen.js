@@ -107,6 +107,7 @@ export default class ClerkLogin extends React.Component {
         }
       })
       .catch(err => {
+        // TODO(thu): Make a more helpful error message.
         console.error("Error retrieving store record from Airtable", err);
       });
     await this.lookupClerk(this.state.storeName, this.state.password)
