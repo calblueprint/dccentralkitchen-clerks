@@ -1,12 +1,12 @@
+import { makeDirectoryAsync } from "expo-file-system";
 import React from "react";
-import { View, FlatList, AsyncStorage, Alert, Text } from "react-native";
+import { Alert, AsyncStorage, FlatList, Text, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 import Product from "../components/Product";
 import ProductCartCard from "../components/ProductCartCard";
 import { BASE } from "../lib/common";
-import { Button, ScrollCategory, TextHeader, styles } from "../styles";
-import { makeDirectoryAsync } from "expo-file-system";
+import { Button, ScrollCategory, styles, TextHeader } from "../styles";
 
 const categories = [
   // Hard-coded for now -- should find a way to extract this information dynamically?
@@ -174,7 +174,7 @@ export default class ClerkProductsScreen extends React.Component {
           }
         }
       ],
-      function(err) {
+      function (err) {
         if (err) {
           console.error("Error updating transactions with line items.", err);
           return;
@@ -217,8 +217,8 @@ export default class ClerkProductsScreen extends React.Component {
       filter == "All"
         ? this.state.fullProducts
         : this.state.fullProducts.filter(product =>
-            product.category.includes(filter)
-          );
+          product.category.includes(filter)
+        );
     this.setState({ products: toSet });
   };
 
@@ -334,7 +334,7 @@ export default class ClerkProductsScreen extends React.Component {
     var rewards = [];
     for (var i = 0; i < this.state.rewardsAvailable; i++) {
       rewards.push(
-        <Button onPress={() => this.applyReward()}>
+        <Button key={i} onPress={() => this.applyReward()}>
           <Text>APPLY $5 REWARD</Text>
         </Button>
       );
@@ -347,7 +347,7 @@ export default class ClerkProductsScreen extends React.Component {
     var rewards = [];
     for (var i = 0; i < this.state.rewardsApplied; i++) {
       rewards.push(
-        <Button onPress={() => this.removeReward()}>
+        <Button key={i} onPress={() => this.removeReward()}>
           <Text>APPLY $5 REWARD</Text>
         </Button>
       );
@@ -402,8 +402,8 @@ export default class ClerkProductsScreen extends React.Component {
             <View style={{ height: "40%", paddingBottom: "5%" }}>
               <TextHeader>Cart</TextHeader>
               <ScrollView style={{ alignSelf: "flex-start" }}>
-                {cart.map((product, index) => (
-                  <Button onPress={() => this.removeFromCart(product)}>
+                {cart.map((product) => (
+                  <Button key={product.id} onPress={() => this.removeFromCart(product)}>
                     <ProductCartCard product={product} />
                   </Button>
                 ))}
