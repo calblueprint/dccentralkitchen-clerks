@@ -1,12 +1,12 @@
+import { makeDirectoryAsync } from "expo-file-system";
 import React from "react";
-import { View, FlatList, AsyncStorage, Alert, Text } from "react-native";
+import { Alert, AsyncStorage, FlatList, Text, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 import Product from "../components/Product";
 import ProductCartCard from "../components/ProductCartCard";
 import { BASE } from "../lib/common";
-import { Button, ScrollCategory, styles } from "../styles";
-import { makeDirectoryAsync } from "expo-file-system";
+import { Button, ScrollCategory, styles, TextHeader } from "../styles";
 
 const categories = [
   // Hard-coded for now -- should find a way to extract this information dynamically?
@@ -174,7 +174,7 @@ export default class ClerkProductsScreen extends React.Component {
           }
         }
       ],
-      function(err) {
+      function (err) {
         if (err) {
           console.error("Error updating transactions with line items.", err);
           return;
@@ -217,8 +217,8 @@ export default class ClerkProductsScreen extends React.Component {
       filter == "All"
         ? this.state.fullProducts
         : this.state.fullProducts.filter(product =>
-            product.category.includes(filter)
-          );
+          product.category.includes(filter)
+        );
     this.setState({ products: toSet });
   };
 
@@ -244,7 +244,7 @@ export default class ClerkProductsScreen extends React.Component {
   // Generates the confirmation message based on items in cart, points earned,
   // and total spent.
   generateConfirmationMessage(totalPoints) {
-    var msg = "Transaction Items:\n";
+    var msg = "Transaction Items:\n\n";
     for (var i = 0; i < this.state.cart.length; i++) {
       // Adding all quantities of items in cart to message.
       const cartItem = this.state.cart[i];
@@ -252,7 +252,7 @@ export default class ClerkProductsScreen extends React.Component {
     }
     // Adding total price and total points earned to message. Must be called after setTotalPoints()
     // in handleSubmit() for updated amount.
-    msg = msg.concat(`Total Price: $${this.state.totalPrice.toFixed(2)}\n`);
+    msg = msg.concat(`\nTotal Price: $${this.state.totalPrice.toFixed(2)}\n`);
     msg = msg.concat(`Total Points Earned: ${totalPoints}`);
     return msg;
   }
@@ -265,6 +265,20 @@ export default class ClerkProductsScreen extends React.Component {
 
   // Displays a confirmation alert to the clerk.
   displayConfirmation(totalPoints) {
+    // Should not be able to check out if there isn't anything in the transaction.
+    if (totalPoints == 0) {
+      Alert.alert(
+        "Empty Transaction",
+        "This transaction is empty. Please add items to the cart.",
+        [
+          {
+            text: "OK",
+            style: "cancel"
+          }
+        ]
+      );
+      return;
+    }
     Alert.alert(
       "Confirm Transaction",
       this.generateConfirmationMessage(totalPoints),
@@ -320,7 +334,7 @@ export default class ClerkProductsScreen extends React.Component {
     var rewards = [];
     for (var i = 0; i < this.state.rewardsAvailable; i++) {
       rewards.push(
-        <Button onPress={() => this.applyReward()}>
+        <Button key={i} onPress={() => this.applyReward()}>
           <Text>APPLY $5 REWARD</Text>
         </Button>
       );
@@ -333,7 +347,7 @@ export default class ClerkProductsScreen extends React.Component {
     var rewards = [];
     for (var i = 0; i < this.state.rewardsApplied; i++) {
       rewards.push(
-        <Button onPress={() => this.removeReward()}>
+        <Button key={i} onPress={() => this.removeReward()}>
           <Text>APPLY $5 REWARD</Text>
         </Button>
       );
@@ -348,10 +362,10 @@ export default class ClerkProductsScreen extends React.Component {
       return null; // TODO @tommypoa waiting (flavicon?)
     }
     return (
-      <View style={{ flex: 1, marginTop: "15%" }}>
-        <Text style={{ padding: "5%" }}>
+      <View style={{ flex: 1 }}>
+        <TextHeader style={{ padding: "5%" }}>
           Customer: {this.state.customer.name}
-        </Text>
+        </TextHeader>
         <View style={{ flexDirection: "row" }}>
           <ScrollView
             style={{ flex: 1 }}
@@ -385,29 +399,38 @@ export default class ClerkProductsScreen extends React.Component {
             </ScrollView>
           </View>
           <View style={{ flex: 2 }}>
-            <ScrollView style={{ alignSelf: "flex-start" }}>
-              {cart.map((product, index) => (
-                <Button onPress={() => this.removeFromCart(product)}>
-                  <ProductCartCard product={product} />
-                </Button>
-              ))}
-            </ScrollView>
-            <ScrollView style={{ alignSelf: "flex-end" }}>
-              <Text>Rewards Applied:</Text>
-              {this.generateRewardsApplied()}
-            </ScrollView>
-            <ScrollView style={{ alignSelf: "flex-end" }}>
-              <Text>Rewards Available:</Text>
-              {this.generateRewardsAvailable()}
-            </ScrollView>
-            <Text style={{ alignSelf: "flex-end" }}>
+            <View style={{ height: "40%", paddingBottom: "5%" }}>
+              <TextHeader>Cart</TextHeader>
+              <ScrollView style={{ alignSelf: "flex-start" }}>
+                {cart.map((product) => (
+                  <Button key={product.id} onPress={() => this.removeFromCart(product)}>
+                    <ProductCartCard product={product} />
+                  </Button>
+                ))}
+              </ScrollView>
+            </View>
+            <View style={{ height: "20%", paddingBottom: "5%" }}>
+              <TextHeader>Rewards Applied</TextHeader>
+              <ScrollView style={{ alignSelf: "flex-end" }}>
+                {this.generateRewardsApplied()}
+              </ScrollView>
+            </View>
+            <View style={{ height: "20%", paddingBottom: "5%" }}>
+              <TextHeader>Rewards Available</TextHeader>
+              <ScrollView style={{ alignSelf: "flex-end" }}>
+                {this.generateRewardsAvailable()}
+              </ScrollView>
+            </View>
+            <Text
+              style={{
+                fontWeight: "bold",
+                textAlign: "center"
+              }}
+            >
               Order Total ${this.state.totalPrice.toFixed(2)}
             </Text>
-            <Button
-              style={{ alignSelf: "flex-end", textAlign: "center" }}
-              onPress={() => this.handleSubmit()}
-            >
-              <Text>COMPLETE</Text>
+            <Button onPress={() => this.handleSubmit()}>
+              <TextHeader style={{ color: "#008550" }}>Checkout</TextHeader>
             </Button>
           </View>
         </View>
