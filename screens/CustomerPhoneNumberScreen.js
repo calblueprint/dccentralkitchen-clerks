@@ -1,8 +1,8 @@
 import React from "react";
 import { BASE } from "../lib/common";
-import { TextInput, styles } from "../styles";
+import { TextInput, TextHeader, styles } from "../styles";
 
-import { AsyncStorage, View, Button, Text } from "react-native";
+import { AsyncStorage, View, Button } from "react-native";
 
 export default class CustomerPhoneNumberScreen extends React.Component {
   constructor(props) {
@@ -87,7 +87,7 @@ export default class CustomerPhoneNumberScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text>Welcome, {this.state.clerkName}!</Text>
+        <TextHeader>Welcome, {this.state.clerkName}!</TextHeader>
 
         <TextInput
           placeholder="Customer Phone Number (i.e. 1234567890)"
@@ -97,7 +97,12 @@ export default class CustomerPhoneNumberScreen extends React.Component {
           onChangeText={number => this.setState({ phoneNumber: number })}
           value={this.state.phoneNumber}
         />
-        <Button title="Find Customer" onPress={() => this.handleSubmit()} />
+        <Button
+          style={styles.button}
+          color="#008550"
+          title="Find Customer"
+          onPress={() => this.handleSubmit()}
+        />
       </View>
     );
   }

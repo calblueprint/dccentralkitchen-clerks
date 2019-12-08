@@ -66,6 +66,12 @@ export const ButtonText = styled.Text`
   padding: 7.5px 7.5px;
 `;
 
+export const TextHeader = styled.Text`
+  font-weight: bold;
+  font-size: 18px;
+  text-align: center;
+`;
+
 export const TextInput = styled.TextInput`
   background-color: #008550;
   height: 60px;

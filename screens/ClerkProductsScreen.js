@@ -5,7 +5,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import Product from "../components/Product";
 import ProductCartCard from "../components/ProductCartCard";
 import { BASE } from "../lib/common";
-import { Button, ScrollCategory, styles } from "../styles";
+import { Button, ScrollCategory, TextHeader, styles } from "../styles";
 import { makeDirectoryAsync } from "expo-file-system";
 
 const categories = [
@@ -244,7 +244,7 @@ export default class ClerkProductsScreen extends React.Component {
   // Generates the confirmation message based on items in cart, points earned,
   // and total spent.
   generateConfirmationMessage(totalPoints) {
-    var msg = "Transaction Items:\n";
+    var msg = "Transaction Items:\n\n";
     for (var i = 0; i < this.state.cart.length; i++) {
       // Adding all quantities of items in cart to message.
       const cartItem = this.state.cart[i];
@@ -252,7 +252,7 @@ export default class ClerkProductsScreen extends React.Component {
     }
     // Adding total price and total points earned to message. Must be called after setTotalPoints()
     // in handleSubmit() for updated amount.
-    msg = msg.concat(`Total Price: $${this.state.totalPrice.toFixed(2)}\n`);
+    msg = msg.concat(`\nTotal Price: $${this.state.totalPrice.toFixed(2)}\n`);
     msg = msg.concat(`Total Points Earned: ${totalPoints}`);
     return msg;
   }
@@ -348,10 +348,10 @@ export default class ClerkProductsScreen extends React.Component {
       return null; // TODO @tommypoa waiting (flavicon?)
     }
     return (
-      <View style={{ flex: 1, marginTop: "15%" }}>
-        <Text style={{ padding: "5%" }}>
+      <View style={{ flex: 1 }}>
+        <TextHeader style={{ padding: "5%" }}>
           Customer: {this.state.customer.name}
-        </Text>
+        </TextHeader>
         <View style={{ flexDirection: "row" }}>
           <ScrollView
             style={{ flex: 1 }}
@@ -385,29 +385,38 @@ export default class ClerkProductsScreen extends React.Component {
             </ScrollView>
           </View>
           <View style={{ flex: 2 }}>
-            <ScrollView style={{ alignSelf: "flex-start" }}>
-              {cart.map((product, index) => (
-                <Button onPress={() => this.removeFromCart(product)}>
-                  <ProductCartCard product={product} />
-                </Button>
-              ))}
-            </ScrollView>
-            <ScrollView style={{ alignSelf: "flex-end" }}>
-              <Text>Rewards Applied:</Text>
-              {this.generateRewardsApplied()}
-            </ScrollView>
-            <ScrollView style={{ alignSelf: "flex-end" }}>
-              <Text>Rewards Available:</Text>
-              {this.generateRewardsAvailable()}
-            </ScrollView>
-            <Text style={{ alignSelf: "flex-end" }}>
+            <View style={{ height: "40%", paddingBottom: "5%" }}>
+              <TextHeader>Cart</TextHeader>
+              <ScrollView style={{ alignSelf: "flex-start" }}>
+                {cart.map((product, index) => (
+                  <Button onPress={() => this.removeFromCart(product)}>
+                    <ProductCartCard product={product} />
+                  </Button>
+                ))}
+              </ScrollView>
+            </View>
+            <View style={{ height: "20%", paddingBottom: "5%" }}>
+              <TextHeader>Rewards Applied</TextHeader>
+              <ScrollView style={{ alignSelf: "flex-end" }}>
+                {this.generateRewardsApplied()}
+              </ScrollView>
+            </View>
+            <View style={{ height: "20%", paddingBottom: "5%" }}>
+              <TextHeader>Rewards Available</TextHeader>
+              <ScrollView style={{ alignSelf: "flex-end" }}>
+                {this.generateRewardsAvailable()}
+              </ScrollView>
+            </View>
+            <Text
+              style={{
+                fontWeight: "bold",
+                textAlign: "center"
+              }}
+            >
               Order Total ${this.state.totalPrice.toFixed(2)}
             </Text>
-            <Button
-              style={{ alignSelf: "flex-end", textAlign: "center" }}
-              onPress={() => this.handleSubmit()}
-            >
-              <Text>COMPLETE</Text>
+            <Button onPress={() => this.handleSubmit()}>
+              <TextHeader styles={{ color: "#008550" }}>COMPLETE</TextHeader>
             </Button>
           </View>
         </View>
