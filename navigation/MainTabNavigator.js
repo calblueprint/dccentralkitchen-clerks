@@ -7,10 +7,8 @@ import {
 
 import TabBarIcon from "../components/TabBarIcon";
 import ClerkLoginScreen from "../screens/ClerkLoginScreen";
-import ClerkProductsScreen from "../screens/ClerkProductsScreen";
 import LinksScreen from "../screens/LinksScreen";
 import SettingsScreen from "../screens/SettingsScreen";
-import ClerkLogin from "../screens/ClerkLoginScreen";
 
 const config = Platform.select({
   web: { headerMode: "screen" },
