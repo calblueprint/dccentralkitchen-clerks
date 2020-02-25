@@ -14,7 +14,7 @@ function Product({ product }) {
       <Image
         source={{
           uri: product.image,
-          scale: 0.3 // NOTE: you can use the small airtable thumbnails or rescale the original png
+          scale: 0.1
         }}
         style={{ width: 50, height: 50, borderRadius: 80 / 2 }}
       />
