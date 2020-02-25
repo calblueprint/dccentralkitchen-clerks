@@ -13,7 +13,8 @@ function Product({ product }) {
     <View style={{ alignItems: "center" }}>
       <Image
         source={{
-          uri: product.image
+          uri: product.image,
+          scale: 0.3 // NOTE: you can use the small airtable thumbnails or rescale the original png
         }}
         style={{ width: 50, height: 50, borderRadius: 80 / 2 }}
       />

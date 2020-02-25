@@ -52,7 +52,7 @@ function createProductData(record) {
       customerCost: object["Customer Cost"],
       image: null,
       cartCount: 0
-    }
+    };
   }
 }
 
