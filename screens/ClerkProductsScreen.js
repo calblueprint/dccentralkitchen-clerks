@@ -33,14 +33,27 @@ async function loadProductsData() {
 // Creates a dictionary object from each product.
 function createProductData(record) {
   object = record.fields;
-  return {
-    name: object["Name"],
-    id: record.id,
-    category: object["Category"],
-    points: object["Points"],
-    customerCost: object["Customer Cost"],
-    cartCount: 0
-  };
+  if (object["Image"]) {
+    return {
+      name: object["Name"],
+      id: record.id,
+      category: object["Category"],
+      points: object["Points"],
+      customerCost: object["Customer Cost"],
+      image: object["Image"][0].url,
+      cartCount: 0
+    };
+  } else {
+    return {
+      name: object["Name"],
+      id: record.id,
+      category: object["Category"],
+      points: object["Points"],
+      customerCost: object["Customer Cost"],
+      image: null,
+      cartCount: 0
+    };
+  }
 }
 
 // Retrieves the user from AsyncStorage.
@@ -174,7 +187,7 @@ export default class ClerkProductsScreen extends React.Component {
           }
         }
       ],
-      function (err) {
+      function(err) {
         if (err) {
           console.error("Error updating transactions with line items.", err);
           return;
@@ -217,8 +230,8 @@ export default class ClerkProductsScreen extends React.Component {
       filter == "All"
         ? this.state.fullProducts
         : this.state.fullProducts.filter(product =>
-          product.category.includes(filter)
-        );
+            product.category.includes(filter)
+          );
     this.setState({ products: toSet });
   };
 
@@ -402,8 +415,11 @@ export default class ClerkProductsScreen extends React.Component {
             <View style={{ height: "40%", paddingBottom: "5%" }}>
               <TextHeader>Cart</TextHeader>
               <ScrollView style={{ alignSelf: "flex-start" }}>
-                {cart.map((product) => (
-                  <Button key={product.id} onPress={() => this.removeFromCart(product)}>
+                {cart.map(product => (
+                  <Button
+                    key={product.id}
+                    onPress={() => this.removeFromCart(product)}
+                  >
                     <ProductCartCard product={product} />
                   </Button>
                 ))}

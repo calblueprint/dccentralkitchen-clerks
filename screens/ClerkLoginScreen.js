@@ -62,7 +62,7 @@ export default class ClerkLogin extends React.Component {
       BASE('Clerks')
         .select({
           maxRecords: 1,
-          filterByFormula: `AND({Store} = '${storeId}', {Password} = '${password}')`
+          filterByFormula: `AND({Store Name} = '${storeId}', {Password} = '${password}')`
         })
         .eachPage(
           function page(records, fetchNextPage) {
