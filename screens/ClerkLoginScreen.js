@@ -1,26 +1,25 @@
-import React from "react";
+import React from 'react';
 import {
   AsyncStorage,
   Button,
-  Picker,
-  View,
   Keyboard,
-  TouchableWithoutFeedback
-} from "react-native";
-
-import { BASE } from "../lib/common";
-import { styles, TextInput } from "../styles";
+  Picker,
+  TouchableWithoutFeedback,
+  View
+} from 'react-native';
+import BASE from '../lib/common';
+import { styles, TextInput } from '../styles';
 
 function createStoresData(record) {
   object = record.fields;
   return {
-    name: object["Store Name"],
+    name: object['Store Name'],
     id: record.id
   };
 }
 
 async function loadStoreData() {
-  const storesTable = BASE("Stores").select({ view: "Grid view" });
+  const storesTable = BASE('Stores').select({ view: 'Grid view' });
   try {
     let records = await storesTable.firstPage();
     var fullStores = records.map(record => createStoresData(record));
@@ -41,11 +40,11 @@ export default class ClerkLogin extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      storeName: "",
-      storeId: "",
-      password: "",
+      storeName: '',
+      storeId: '',
+      password: '',
       stores: [],
-      displayErrorMsg: "" // TODO @tommypoa: isLoading
+      displayErrorMsg: '' // TODO @tommypoa: isLoading
     };
   }
 
@@ -60,7 +59,7 @@ export default class ClerkLogin extends React.Component {
   // and last name. Otherwise, we will display an error on the login screen.
   async lookupClerk(storeId, password) {
     return new Promise((resolve, reject) => {
-      BASE("Clerks")
+      BASE('Clerks')
         .select({
           maxRecords: 1,
           filterByFormula: `AND({Store} = '${storeId}', {Password} = '${password}')`
@@ -69,7 +68,7 @@ export default class ClerkLogin extends React.Component {
           function page(records, fetchNextPage) {
             if (records.length == 0) {
               reject(
-                "Incorrect store name and password combination. Please try again."
+                'Incorrect store name and password combination. Please try again.'
               );
             } else {
               records.forEach(function(record) {
@@ -85,30 +84,30 @@ export default class ClerkLogin extends React.Component {
           }
         );
     }).catch(err => {
-      console.error("Error looking up clerk", err);
+      console.error('Error looking up clerk', err);
     });
   }
 
   // Sets the clerk and store ids in AsyncStorage and navigates to the customer phone number screen.
   _asyncLoginClerk = async recordId => {
-    await AsyncStorage.setItem("clerkId", recordId);
-    await AsyncStorage.setItem("storeId", this.state.storeId);
-    this.props.navigation.navigate("CustomerPhoneNumberScreen");
+    await AsyncStorage.setItem('clerkId', recordId);
+    await AsyncStorage.setItem('storeId', this.state.storeId);
+    this.props.navigation.navigate('CustomerPhoneNumberScreen');
   };
 
   // This function will sign the user in if the clerk is found.
   async handleSubmit() {
-    await BASE("Stores")
+    await BASE('Stores')
       .find(this.state.storeId)
       .then(storeRecord => {
         if (storeRecord) {
-          let name = storeRecord["fields"]["Store Name"];
+          let name = storeRecord['fields']['Store Name'];
           this.setState({ storeName: name });
         }
       })
       .catch(err => {
         // TODO(thu): Make a more helpful error message.
-        console.error("Error retrieving store record from Airtable", err);
+        console.error('Error retrieving store record from Airtable', err);
       });
     await this.lookupClerk(this.state.storeName, this.state.password)
       .then(resp => {
@@ -118,7 +117,7 @@ export default class ClerkLogin extends React.Component {
         }
       })
       .catch(err => {
-        console.error("Error submitting form", err);
+        console.error('Error submitting form', err);
       });
   }
 
@@ -129,13 +128,12 @@ export default class ClerkLogin extends React.Component {
           <Picker
             mode="dropdown"
             onValueChange={store => this.setState({ storeId: store })}
-            selectedValue={this.state.storeId}
-          >
+            selectedValue={this.state.storeId}>
             {this.state.stores.map((item, index) => {
               return (
                 <Picker.Item
-                  label={item["name"]}
-                  value={item["id"]}
+                  label={item['name']}
+                  value={item['id']}
                   key={index}
                 />
               );

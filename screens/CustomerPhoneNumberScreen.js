@@ -1,28 +1,27 @@
-import React from "react";
-import { BASE } from "../lib/common";
-import { TextInput, TextHeader, styles } from "../styles";
-
-import { AsyncStorage, View, Button } from "react-native";
+import React from 'react';
+import { AsyncStorage, Button, View } from 'react-native';
+import BASE from '../lib/common';
+import { styles, TextHeader, TextInput } from '../styles';
 
 export default class CustomerPhoneNumberScreen extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      clerkName: "",
-      phoneNumber: ""
+      clerkName: '',
+      phoneNumber: ''
     };
   }
 
   async componentDidMount() {
-    const clerkId = await AsyncStorage.getItem("clerkId");
+    const clerkId = await AsyncStorage.getItem('clerkId');
 
-    this.getUser("Clerks", clerkId).then(clerkRecord => {
+    this.getUser('Clerks', clerkId).then(clerkRecord => {
       if (clerkRecord) {
         let name =
-          clerkRecord["fields"]["First Name"] +
-          " " +
-          clerkRecord["fields"]["Last Name"];
+          clerkRecord['fields']['First Name'] +
+          ' ' +
+          clerkRecord['fields']['Last Name'];
         this.setState({ clerkName: name });
       }
     });
@@ -34,14 +33,14 @@ export default class CustomerPhoneNumberScreen extends React.Component {
 
   async lookupCustomer(phoneNumber) {
     return new Promise((resolve, reject) => {
-      BASE("Customers")
+      BASE('Customers')
         .select({
           maxRecords: 1,
           filterByFormula: `{Phone Number} = '${phoneNumber}'`
         })
         .eachPage(function page(records, fetchNextPage) {
           if (records.length == 0) {
-            reject("Incorrect customer phone number. Please try again.");
+            reject('Incorrect customer phone number. Please try again.');
           } else {
             records.forEach(function(record) {
               // console.log(record["fields"]["First Name"]);
@@ -51,18 +50,18 @@ export default class CustomerPhoneNumberScreen extends React.Component {
           fetchNextPage();
         });
     }).catch(err => {
-      console.error("Error looking up customer", err);
+      console.error('Error looking up customer', err);
     });
   }
 
   _asyncCustomerSignIn = async customerId => {
-    await AsyncStorage.setItem("customerId", customerId);
-    this.props.navigation.navigate("ClerkProductsScreen");
+    await AsyncStorage.setItem('customerId', customerId);
+    this.props.navigation.navigate('ClerkProductsScreen');
   };
 
   async handleSubmit() {
     let formatted_phone_number = this.state.phoneNumber;
-    formatted_phone_number = formatted_phone_number.replace("[^0-9]", "");
+    formatted_phone_number = formatted_phone_number.replace('[^0-9]', '');
     formatted_phone_number = `(${formatted_phone_number.slice(
       0,
       3
@@ -75,12 +74,12 @@ export default class CustomerPhoneNumberScreen extends React.Component {
       .then(resp => {
         if (resp) {
           this._asyncCustomerSignIn(resp);
-          this.setState({ phoneNumber: "" });
+          this.setState({ phoneNumber: '' });
         }
       })
       .catch(err => {
         console.log(err);
-        this.setState({ phoneNumber: "" });
+        this.setState({ phoneNumber: '' });
       });
   }
 
