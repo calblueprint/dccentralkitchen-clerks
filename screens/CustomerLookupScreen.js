@@ -1,6 +1,6 @@
 import React from 'react';
 import { AsyncStorage, Button, View } from 'react-native';
-import BASE from '../lib/common';
+import { getUser, lookupCustomer } from '../lib/lookupUtils';
 import { styles, TextHeader, TextInput } from '../styles';
 
 export default class CustomerPhoneNumberScreen extends React.Component {
@@ -16,7 +16,7 @@ export default class CustomerPhoneNumberScreen extends React.Component {
   async componentDidMount() {
     const clerkId = await AsyncStorage.getItem('clerkId');
 
-    this.getUser('Clerks', clerkId).then(clerkRecord => {
+    getUser('Clerks', clerkId).then(clerkRecord => {
       if (clerkRecord) {
         let name =
           clerkRecord['fields']['First Name'] +
@@ -27,36 +27,9 @@ export default class CustomerPhoneNumberScreen extends React.Component {
     });
   }
 
-  async getUser(table, id) {
-    return BASE(table).find(id);
-  }
-
-  async lookupCustomer(phoneNumber) {
-    return new Promise((resolve, reject) => {
-      BASE('Customers')
-        .select({
-          maxRecords: 1,
-          filterByFormula: `{Phone Number} = '${phoneNumber}'`
-        })
-        .eachPage(function page(records, fetchNextPage) {
-          if (records.length == 0) {
-            reject('Incorrect customer phone number. Please try again.');
-          } else {
-            records.forEach(function(record) {
-              // console.log(record["fields"]["First Name"]);
-              resolve(record.getId());
-            });
-          }
-          fetchNextPage();
-        });
-    }).catch(err => {
-      console.error('Error looking up customer', err);
-    });
-  }
-
   _asyncCustomerSignIn = async customerId => {
     await AsyncStorage.setItem('customerId', customerId);
-    this.props.navigation.navigate('ClerkProductsScreen');
+    this.props.navigation.navigate('Checkout');
   };
 
   async handleSubmit() {
@@ -70,7 +43,7 @@ export default class CustomerPhoneNumberScreen extends React.Component {
       10
     )}`;
 
-    await this.lookupCustomer(formatted_phone_number)
+    await lookupCustomer(formatted_phone_number)
       .then(resp => {
         if (resp) {
           this._asyncCustomerSignIn(resp);

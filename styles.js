@@ -1,15 +1,5 @@
-import {
-  Dimensions,
-  FlatList,
-  Image,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View
-} from "react-native";
-import styled from "styled-components/native";
+import { Dimensions, StyleSheet } from 'react-native';
+import styled from 'styled-components/native';
 
 export const Container = styled.View`
   flex: 1;
@@ -104,29 +94,29 @@ export const ProductCardContainer = styled.View`
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    display: "flex",
-    width: "100%"
+    display: 'flex',
+    width: '100%'
   },
   input: {
-    color: "black"
+    color: 'black'
   },
   imageContainer: {
-    flexDirection: "row"
+    flexDirection: 'row'
   },
   item: {
-    backgroundColor: "#919191",
-    alignItems: "center",
-    justifyContent: "flex-end",
+    backgroundColor: '#919191',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
     flex: 1,
     margin: 1,
-    height: Dimensions.get("window").width / 4
+    height: Dimensions.get('window').width / 4
   },
   storesModal: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     opacity: 0.8
   },
   button: {
-    position: "absolute",
-    top: "-300px"
+    position: 'absolute',
+    top: '-300px'
   }
 });

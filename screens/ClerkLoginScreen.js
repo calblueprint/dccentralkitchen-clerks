@@ -7,29 +7,10 @@ import {
   TouchableWithoutFeedback,
   View
 } from 'react-native';
-import BASE from '../lib/common';
+import { loadStoreData, lookupClerk } from '../lib/loginUtils';
 import { styles, TextInput } from '../styles';
 
-function createStoresData(record) {
-  object = record.fields;
-  return {
-    name: object['Store Name'],
-    id: record.id
-  };
-}
-
-async function loadStoreData() {
-  const storesTable = BASE('Stores').select({ view: 'Grid view' });
-  try {
-    let records = await storesTable.firstPage();
-    var fullStores = records.map(record => createStoresData(record));
-    return fullStores;
-  } catch (err) {
-    console.error(err);
-    return []; // TODO @tommypoa: silent fails
-  }
-}
-
+//TODO rename this
 const DismissKeyboard = ({ children }) => (
   <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
     {children}
@@ -49,67 +30,42 @@ export default class ClerkLogin extends React.Component {
   }
 
   async componentDidMount() {
+    const stores = await loadStoreData();
+    // Set to first store as default, since the picker also defaults to the top (first in list)
     this.setState({
-      stores: await loadStoreData()
+      stores: stores,
+      storeName: stores[0].name,
+      storeId: stores[0].id
     });
   }
 
-  // lookupClerk searches for clerks based on their
-  // store name and numeric password. If the user is found, we return the clerk's first
-  // and last name. Otherwise, we will display an error on the login screen.
-  async lookupClerk(storeId, password) {
-    return new Promise((resolve, reject) => {
-      BASE('Clerks')
-        .select({
-          maxRecords: 1,
-          filterByFormula: `AND({Store Name} = '${storeId}', {Password} = '${password}')`
-        })
-        .eachPage(
-          function page(records, fetchNextPage) {
-            if (records.length == 0) {
-              reject(
-                'Incorrect store name and password combination. Please try again.'
-              );
-            } else {
-              records.forEach(function(record) {
-                resolve(record.getId());
-              });
-            }
-            fetchNextPage();
-          },
-          function done(err) {
-            if (err) {
-              reject(err);
-            }
-          }
-        );
-    }).catch(err => {
-      console.error('Error looking up clerk', err);
-    });
-  }
-
-  // Sets the clerk and store ids in AsyncStorage and navigates to the customer phone number screen.
+  // Set the clerkId and storeId in AsyncStorage
+  // Then navigate to the customer lookup screen
   _asyncLoginClerk = async recordId => {
     await AsyncStorage.setItem('clerkId', recordId);
     await AsyncStorage.setItem('storeId', this.state.storeId);
-    this.props.navigation.navigate('CustomerPhoneNumberScreen');
+    this.props.navigation.navigate('CustomerLookup');
   };
 
   // This function will sign the user in if the clerk is found.
   async handleSubmit() {
-    await BASE('Stores')
-      .find(this.state.storeId)
-      .then(storeRecord => {
-        if (storeRecord) {
-          let name = storeRecord['fields']['Store Name'];
-          this.setState({ storeName: name });
-        }
-      })
-      .catch(err => {
-        // TODO(thu): Make a more helpful error message.
-        console.error('Error retrieving store record from Airtable', err);
-      });
-    await this.lookupClerk(this.state.storeName, this.state.password)
+    // TODO get store record
+    // TODO set this by what's already in state instead of calling Airtable
+    // or just hack it by using a store ID? hmm
+
+    // await BASE('Stores')
+    //   .find(this.state.storeId)
+    //   .then(storeRecord => {
+    //     if (storeRecord) {
+    //       let name = storeRecord['fields']['Store Name'];
+    //       this.setState({ storeName: name });
+    //     }
+    //   })
+    //   .catch(err => {
+    //     // TODO(thu): Make a more helpful error message.
+    //     console.error('Error retrieving store record from Airtable', err);
+    //   });
+    await lookupClerk(this.state.storeId, this.state.password)
       .then(resp => {
         if (resp) {
           const recordId = resp;
@@ -123,6 +79,7 @@ export default class ClerkLogin extends React.Component {
 
   render() {
     return (
+      // TODO break out this onChange into a function
       <DismissKeyboard>
         <View style={styles.container}>
           <Picker
