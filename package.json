@@ -6,7 +6,20 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject",
-    "test": "jest --watchAll"
+    "test": "jest --watchAll",
+    "lint:js": "eslint . --ext  .jsx,.js ./screens ./components",
+    "lint:js:fix": "yarn run lint:js --fix",
+    "lint:js:quiet": "eslint . --ext .jsx,.js --quiet ./screens ./components",
+    "lint:js:quiet:fix": "yarn run lint:js:quiet --fix",
+    "pretty": "prettier --config prettier.config.js --write \"./{screens,components,styles}/**/*.js\" \"./{screens,components,styles}/*.js\"",
+    "generate-schema": "generate-airtable-schema"
+  },
+  "airtable-schema-generator": {
+    "input": "lib/airtable",
+    "output": "lib/airtable"
+  },
+  "eslintConfig": {
+    "extends": "universe/native"
   },
   "jest": {
     "preset": "jest-expo"
@@ -51,6 +64,7 @@
     "yarnhook": "^0.4.3"
   },
   "devDependencies": {
+    "airtable-schema-generator": "^1.2.7",
     "babel-eslint": "^10.1.0",
     "babel-preset-expo": "^7.0.0",
     "eslint": "^5.16.0",
