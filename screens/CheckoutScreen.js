@@ -1,8 +1,14 @@
 import React from 'react';
-import { Alert, AsyncStorage, FlatList, Text, View } from 'react-native';
+import {
+  Alert,
+  AsyncStorage,
+  Text,
+  TouchableOpacity,
+  View
+} from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import Product from '../components/Product';
 import ProductCartCard from '../components/ProductCartCard';
+import ProductDisplayCard from '../components/ProductDisplayCard';
 import {
   addTransaction,
   categories,
@@ -10,9 +16,10 @@ import {
   loadProductsData,
   updateCustomerPoints
 } from '../lib/checkoutUtils';
-import { Button, ScrollCategory, styles, TextHeader } from '../styles';
+import { FlatListContainer } from '../styled/checkout.js';
+import { ScrollCategory, TextHeader } from '../styled/shared';
 
-// TODO figure out how to break these into helper files?
+// TODO figure out how to break these state-modifying functions into helper files?
 // TODO note edge cases that fail with current workflow
 
 // TODO research styling for tablets to be both horizontal and vertical friendly
@@ -204,29 +211,29 @@ export default class ClerkProductsScreen extends React.Component {
     });
   }
 
-  // Generates rewards available as a list of buttons to display on checkout screen.
+  // Generates rewards available as a list of TouchableOpacitys to display on checkout screen.
   generateRewardsAvailable() {
     // TODO make this a .map call
     var rewards = [];
     for (var i = 0; i < this.state.rewardsAvailable; i++) {
       rewards.push(
-        <Button key={i} onPress={() => this.applyReward()}>
+        <TouchableOpacity key={i} onPress={() => this.applyReward()}>
           <Text>APPLY $5 REWARD</Text>
-        </Button>
+        </TouchableOpacity>
       );
     }
     return rewards;
   }
 
-  // Generates rewards applied as a list of buttons to display on checkout screen.
+  // Generates rewards applied as a list of TouchableOpacitys to display on checkout screen.
   generateRewardsApplied() {
     // TODO make this a .map call
     var rewards = [];
     for (var i = 0; i < this.state.rewardsApplied; i++) {
       rewards.push(
-        <Button key={i} onPress={() => this.removeReward()}>
+        <TouchableOpacity key={i} onPress={() => this.removeReward()}>
           <Text>APPLY $5 REWARD</Text>
-        </Button>
+        </TouchableOpacity>
       );
     }
     return rewards;
@@ -239,74 +246,76 @@ export default class ClerkProductsScreen extends React.Component {
       return null; // TODO @tommypoa waiting (flavicon?)
     }
     return (
-      <View style={{ flex: 1 }}>
-        <TextHeader style={{ padding: '5%' }}>
-          Customer: {this.state.customer.name}
-        </TextHeader>
-        <View style={{ flexDirection: 'row' }}>
-          <ScrollView
-            style={{ flex: 1 }}
-            showsHorizontalScrollIndicator={false}>
-            {categories.map((category, index) => (
-              <Button
-                key={index}
-                onPress={() => this.handleCategoryPress(category)}>
-                <ScrollCategory> {category} </ScrollCategory>
-              </Button>
-            ))}
-          </ScrollView>
-          <View style={{ flex: 2 }}>
-            <ScrollView showsVerticalScrollIndicator={false}>
-              <FlatList
-                style={styles.container}
-                keyExtractor={(item, _) => item.id}
-                numColumns={3}
-                data={products}
-                renderItem={({ item }) => (
-                  <Button onPress={() => this.addToCart(item)}>
-                    <Product product={item} />
-                  </Button>
-                )}></FlatList>
+      // Temp fix for the horizontal orientation not showing Checkout Button
+      <ScrollView>
+        <View style={{ flex: 1 }}>
+          <TextHeader style={{ padding: '5%' }}>
+            Customer: {this.state.customer.name}
+          </TextHeader>
+          <View style={{ flexDirection: 'row' }}>
+            <ScrollView
+              style={{ flex: 1 }}
+              showsHorizontalScrollIndicator={false}>
+              {categories.map((category, index) => (
+                <TouchableOpacity
+                  key={index}
+                  onPress={() => this.handleCategoryPress(category)}>
+                  <ScrollCategory> {category} </ScrollCategory>
+                </TouchableOpacity>
+              ))}
             </ScrollView>
-          </View>
-          <View style={{ flex: 2 }}>
-            <View style={{ height: '40%', paddingBottom: '5%' }}>
-              <TextHeader>Cart</TextHeader>
-              <ScrollView style={{ alignSelf: 'flex-start' }}>
-                {cart.map(product => (
-                  <Button
-                    key={product.id}
-                    onPress={() => this.removeFromCart(product)}>
-                    <ProductCartCard product={product} />
-                  </Button>
-                ))}
+            <View style={{ flex: 2 }}>
+              <ScrollView showsVerticalScrollIndicator={false}>
+                <FlatListContainer
+                  keyExtractor={(item, _) => item.id}
+                  numColumns={3}
+                  data={products}
+                  renderItem={({ item }) => (
+                    <TouchableOpacity onPress={() => this.addToCart(item)}>
+                      <ProductDisplayCard product={item} />
+                    </TouchableOpacity>
+                  )}></FlatListContainer>
               </ScrollView>
             </View>
-            <View style={{ height: '20%', paddingBottom: '5%' }}>
-              <TextHeader>Rewards Applied</TextHeader>
-              <ScrollView style={{ alignSelf: 'flex-end' }}>
-                {this.generateRewardsApplied()}
-              </ScrollView>
+            <View style={{ flex: 2 }}>
+              <View style={{ height: '40%', paddingBottom: '5%' }}>
+                <TextHeader>Cart</TextHeader>
+                <ScrollView style={{ alignSelf: 'flex-start' }}>
+                  {cart.map(product => (
+                    <TouchableOpacity
+                      key={product.id}
+                      onPress={() => this.removeFromCart(product)}>
+                      <ProductCartCard product={product} />
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+              </View>
+              <View style={{ height: '20%', paddingBottom: '5%' }}>
+                <TextHeader>Rewards Applied</TextHeader>
+                <ScrollView style={{ alignSelf: 'flex-end' }}>
+                  {this.generateRewardsApplied()}
+                </ScrollView>
+              </View>
+              <View style={{ height: '20%', paddingBottom: '5%' }}>
+                <TextHeader>Rewards Available</TextHeader>
+                <ScrollView style={{ alignSelf: 'flex-end' }}>
+                  {this.generateRewardsAvailable()}
+                </ScrollView>
+              </View>
+              <Text
+                style={{
+                  fontWeight: 'bold',
+                  textAlign: 'center'
+                }}>
+                Order Total ${this.state.totalPrice.toFixed(2)}
+              </Text>
+              <TouchableOpacity onPress={() => this.handleSubmit()}>
+                <TextHeader style={{ color: '#008550' }}>Checkout</TextHeader>
+              </TouchableOpacity>
             </View>
-            <View style={{ height: '20%', paddingBottom: '5%' }}>
-              <TextHeader>Rewards Available</TextHeader>
-              <ScrollView style={{ alignSelf: 'flex-end' }}>
-                {this.generateRewardsAvailable()}
-              </ScrollView>
-            </View>
-            <Text
-              style={{
-                fontWeight: 'bold',
-                textAlign: 'center'
-              }}>
-              Order Total ${this.state.totalPrice.toFixed(2)}
-            </Text>
-            <Button onPress={() => this.handleSubmit()}>
-              <TextHeader style={{ color: '#008550' }}>Checkout</TextHeader>
-            </Button>
           </View>
         </View>
-      </View>
+      </ScrollView>
     );
   }
 }

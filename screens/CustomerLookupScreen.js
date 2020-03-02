@@ -1,7 +1,12 @@
 import React from 'react';
-import { AsyncStorage, Button, View } from 'react-native';
+import { AsyncStorage } from 'react-native';
 import { getUser, lookupCustomer } from '../lib/lookupUtils';
-import { styles, TextHeader, TextInput } from '../styles';
+import {
+  Container,
+  SubmitButton,
+  TextHeader,
+  TextInput
+} from '../styled/shared.js';
 
 export default class CustomerPhoneNumberScreen extends React.Component {
   constructor(props) {
@@ -33,17 +38,17 @@ export default class CustomerPhoneNumberScreen extends React.Component {
   };
 
   async handleSubmit() {
-    let formatted_phone_number = this.state.phoneNumber;
-    formatted_phone_number = formatted_phone_number.replace('[^0-9]', '');
-    formatted_phone_number = `(${formatted_phone_number.slice(
+    let formattedPhoneNumber = this.state.phoneNumber;
+    formattedPhoneNumber = formattedPhoneNumber.replace('[^0-9]', '');
+    formattedPhoneNumber = `(${formattedPhoneNumber.slice(
       0,
       3
-    )}) ${formatted_phone_number.slice(3, 6)}-${formatted_phone_number.slice(
+    )}) ${formattedPhoneNumber.slice(3, 6)}-${formattedPhoneNumber.slice(
       6,
       10
     )}`;
 
-    await lookupCustomer(formatted_phone_number)
+    await lookupCustomer(formattedPhoneNumber)
       .then(resp => {
         if (resp) {
           this._asyncCustomerSignIn(resp);
@@ -58,24 +63,22 @@ export default class CustomerPhoneNumberScreen extends React.Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <Container>
         <TextHeader>Welcome, {this.state.clerkName}!</TextHeader>
 
         <TextInput
           placeholder="Customer Phone Number (i.e. 1234567890)"
-          style={styles.input}
           keyboardType="number-pad"
           maxLength={10}
           onChangeText={number => this.setState({ phoneNumber: number })}
           value={this.state.phoneNumber}
         />
-        <Button
-          style={styles.button}
+        <SubmitButton
           color="#008550"
           title="Find Customer"
           onPress={() => this.handleSubmit()}
         />
-      </View>
+      </Container>
     );
   }
 }

@@ -1,14 +1,12 @@
 import React from 'react';
 import {
   AsyncStorage,
-  Button,
   Keyboard,
   Picker,
-  TouchableWithoutFeedback,
-  View
+  TouchableWithoutFeedback
 } from 'react-native';
 import { loadStoreData, lookupClerk } from '../lib/loginUtils';
-import { styles, TextInput } from '../styles';
+import { Container, SubmitButton, TextInput } from '../styled/shared.js';
 
 //TODO rename this
 const DismissKeyboard = ({ children }) => (
@@ -81,7 +79,7 @@ export default class ClerkLogin extends React.Component {
     return (
       // TODO break out this onChange into a function
       <DismissKeyboard>
-        <View style={styles.container}>
+        <Container>
           <Picker
             mode="dropdown"
             onValueChange={store => this.setState({ storeId: store })}
@@ -97,7 +95,6 @@ export default class ClerkLogin extends React.Component {
             })}
           </Picker>
           <TextInput
-            style={styles.input}
             placeholder="Password"
             keyboardType="number-pad"
             maxLength={4}
@@ -105,13 +102,12 @@ export default class ClerkLogin extends React.Component {
             onChangeText={text => this.setState({ password: text })}
             value={this.state.password}
           />
-          <Button
-            style={styles.button}
+          <SubmitButton
             color="#008550"
             title="Log In"
             onPress={() => this.handleSubmit()}
           />
-        </View>
+        </Container>
       </DismissKeyboard>
     );
   }
