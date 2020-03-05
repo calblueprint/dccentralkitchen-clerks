@@ -11,6 +11,19 @@
   "jest": {
     "preset": "jest-expo"
   },
+  "lint-staged": {
+    "*.{js,jsx}": [
+      "prettier --config prettier.config.js --write"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "post-checkout": "yarnhook",
+      "post-merge": "yarnhook",
+      "post-rewrite": "yarnhook"
+    }
+  },
   "dependencies": {
     "@babel/core": "^7.0.0",
     "@expo/samples": "~3.0.3",
@@ -18,11 +31,14 @@
     "@react-navigation/core": "^3.0.0-alpha.13",
     "@react-navigation/web": "^1.0.0-alpha.9",
     "airtable": "^0.7.2",
+    "babel-plugin-inline-dotenv": "^1.5.0",
     "expo": "^35.0.0",
     "expo-asset": "^7.0.0",
     "expo-constants": "^7.0.0",
     "expo-font": "^7.0.0",
     "expo-web-browser": "^7.0.0",
+    "husky": "^4.2.3",
+    "lint-staged": "^10.0.8",
     "mem": "^4.0.0",
     "react": "16.8.3",
     "react-dom": "16.8.3",
@@ -31,11 +47,23 @@
     "react-native-screens": "^1.0.0-alpha.23",
     "react-native-web": "^0.11.7",
     "react-navigation": "^3.12.0",
-    "styled-components": "^4.4.1"
+    "styled-components": "^4.4.1",
+    "yarnhook": "^0.4.3"
   },
   "devDependencies": {
+    "babel-eslint": "^10.1.0",
     "babel-preset-expo": "^7.0.0",
-    "jest-expo": "^35.0.0"
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-prettier": "^3.1.2",
+    "eslint-plugin-react": "^7.14.3",
+    "eslint-plugin-react-hooks": "^1.7.0",
+    "eslint-plugin-react-native": "^3.8.1",
+    "jest-expo": "^35.0.0",
+    "prettier": "^1.19.1"
   },
   "private": true
 }
