@@ -141,9 +141,9 @@ export default class CheckoutScreen extends React.Component {
       await updateCustomerPoints(
         this.state.customer,
         this.state.totalPoints,
-        this.state.rewardsApplied,
-        this.props.navigation
+        this.state.rewardsApplied
       );
+      this.props.navigation.goBack();
     } catch (err) {
       console.log(err);
     }
