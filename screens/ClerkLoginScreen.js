@@ -7,10 +7,6 @@ import {
 } from 'react-native';
 import { loadStoreData, lookupClerk } from '../lib/loginUtils';
 import { Container, SubmitButton, TextInput } from '../styled/shared.js';
-import {
-  FilledButtonContainer,
-  ButtonLabel
-} from '../components/BaseComponents';
 
 //TODO rename this
 const DismissKeyboard = ({ children }) => (
@@ -96,9 +92,6 @@ export default class ClerkLoginScreen extends React.Component {
             title="Log In"
             onPress={() => this.handleSubmit()}
           />
-          <FilledButtonContainer>
-            <ButtonLabel>Complete Purchase</ButtonLabel>
-          </FilledButtonContainer>
         </Container>
       </DismissKeyboard>
     );
