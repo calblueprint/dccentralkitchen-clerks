@@ -1,16 +1,15 @@
-import React from "react";
-import { Image, View } from "react-native";
-
-import { ProductBody, ProductContainer } from "../styles.js";
+import React from 'react';
+import { Image, View } from 'react-native';
+import { ProductBody } from '../styled/checkout.js';
 
 /**
  * @prop
  **/
 
 // TODO @tommypoa to use styled-components
-function Product({ product }) {
+function ProductDisplayCard({ product }) {
   return (
-    <View style={{ alignItems: "center" }}>
+    <View style={{ alignItems: 'center' }}>
       <Image
         source={{
           uri: product.image,
@@ -23,4 +22,4 @@ function Product({ product }) {
   );
 }
 
-export default Product;
+export default ProductDisplayCard;
