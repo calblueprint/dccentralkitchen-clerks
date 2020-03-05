@@ -1,7 +1,6 @@
-import React from "react";
-import { Image, View, Text } from "react-native";
-
-import { ProductBody, ProductCardContainer } from "../styles.js";
+import React from 'react';
+import { Text } from 'react-native';
+import { ProductBody, ProductCardContainer } from '../styled/checkout.js';
 
 /**
  * @prop
