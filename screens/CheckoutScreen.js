@@ -23,7 +23,7 @@ import { ScrollCategory, TextHeader } from '../styled/shared';
 // TODO note edge cases that fail with current workflow
 
 // TODO research styling for tablets to be both horizontal and vertical friendly
-export default class ClerkProductsScreen extends React.Component {
+export default class CheckoutScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -131,18 +131,22 @@ export default class ClerkProductsScreen extends React.Component {
 
   // Adds the transaction to the user's account and updates their points.
   async confirmTransaction() {
-    await addTransaction(
-      this.state.customer,
-      this.state.cart,
-      this.state.totalPoints,
-      this.state.rewardsApplied
-    );
-    await updateCustomerPoints(
-      this.state.customer,
-      this.state.totalPoints,
-      this.state.rewardsApplied
-    );
-    this.props.navigation.goBack();
+    try {
+      await addTransaction(
+        this.state.customer,
+        this.state.cart,
+        this.state.totalPoints,
+        this.state.rewardsApplied
+      );
+      await updateCustomerPoints(
+        this.state.customer,
+        this.state.totalPoints,
+        this.state.rewardsApplied,
+        this.props.navigation
+      );
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   // Displays a confirmation alert to the clerk.

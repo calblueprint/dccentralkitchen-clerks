@@ -15,7 +15,7 @@ const DismissKeyboard = ({ children }) => (
   </TouchableWithoutFeedback>
 );
 
-export default class ClerkLogin extends React.Component {
+export default class ClerkLoginScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {

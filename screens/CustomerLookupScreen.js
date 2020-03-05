@@ -8,7 +8,7 @@ import {
   TextInput
 } from '../styled/shared.js';
 
-export default class CustomerPhoneNumberScreen extends React.Component {
+export default class CustomerLookupScreen extends React.Component {
   constructor(props) {
     super(props);
 
