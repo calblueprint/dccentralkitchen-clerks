@@ -15,7 +15,7 @@ const DismissKeyboard = ({ children }) => (
   </TouchableWithoutFeedback>
 );
 
-export default class ClerkLogin extends React.Component {
+export default class ClerkLoginScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -47,22 +47,7 @@ export default class ClerkLogin extends React.Component {
 
   // This function will sign the user in if the clerk is found.
   async handleSubmit() {
-    // TODO get store record
-    // TODO set this by what's already in state instead of calling Airtable
-    // or just hack it by using a store ID? hmm
-
-    // await BASE('Stores')
-    //   .find(this.state.storeId)
-    //   .then(storeRecord => {
-    //     if (storeRecord) {
-    //       let name = storeRecord['fields']['Store Name'];
-    //       this.setState({ storeName: name });
-    //     }
-    //   })
-    //   .catch(err => {
-    //     // TODO(thu): Make a more helpful error message.
-    //     console.error('Error retrieving store record from Airtable', err);
-    //   });
+    // Uses the `Store ID` lookup in AirTable
     await lookupClerk(this.state.storeId, this.state.password)
       .then(resp => {
         if (resp) {
