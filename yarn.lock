@@ -1397,10 +1397,10 @@ acorn@^6.0.7:
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-6.4.0.tgz#b659d2ffbafa24baf5db1cdbb2c94a983ecd2784"
   integrity sha512-gac8OEcQ2Li1dxIEWGZzsp2BitJxwkwcOm0zHAJLcPJaVvm58FRnk6RkuLRpU1EujipU2ZFODv2P9DLMfnV8mw==
 
-airtable-schema-generator@^1.2.7:
-  version "1.2.7"
-  resolved "https://registry.yarnpkg.com/airtable-schema-generator/-/airtable-schema-generator-1.2.7.tgz#44b581055c367fbe8c9a11d03cb4b2d6fc94a197"
-  integrity sha512-e0J/2kXw/DJKggY27QAT8HmqA7XbolGHmLXYMBSpn89ZU8Ce6YO026t78C2rQmViMsa3lz/lqfl7Oz6XudpNfQ==
+airtable-schema-generator@^1.2.9:
+  version "1.2.9"
+  resolved "https://registry.yarnpkg.com/airtable-schema-generator/-/airtable-schema-generator-1.2.9.tgz#f9dd327b86788aa92f9f01a5af070efa96efaa0d"
+  integrity sha512-UUO/MUZLcWVlMGNOUBsRNaaqXFumcMhk913HeHp1eUjoKWcARFKsKHwgm7JCj64pFmetjLsB54CReayULk+36Q==
   dependencies:
     dotenv-safe "^8.2.0"
     nightmare "^3.0.0"
