@@ -84,6 +84,7 @@ export default class ClerkLoginScreen extends React.Component {
 
   render() {
     return (
+      // TODO break out this onChange into a function
       <DismissKeyboard>
         <Container>
           <Picker
