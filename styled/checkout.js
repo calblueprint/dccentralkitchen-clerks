@@ -24,7 +24,5 @@ export const ProductCardContainer = styled.View`
 `;
 
 export const FlatListContainer = styled(FlatList)`
-  flex: 1;
-  display: flex;
   width: 100%;
 `;
