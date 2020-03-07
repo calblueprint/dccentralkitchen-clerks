@@ -257,7 +257,7 @@ export default class CheckoutScreen extends React.Component {
             Customer: {this.state.customer.name}
           </TextHeader>
           <View style={{ flexDirection: 'row' }}>
-            <ScrollView
+            {/* <ScrollView
               style={{ flex: 1 }}
               showsHorizontalScrollIndicator={false}>
               {categories.map((category, index) => (
@@ -267,7 +267,7 @@ export default class CheckoutScreen extends React.Component {
                   <ScrollCategory> {category} </ScrollCategory>
                 </TouchableOpacity>
               ))}
-            </ScrollView>
+            </ScrollView> */}
             <View style={{ flex: 2 }}>
               <ScrollView showsVerticalScrollIndicator={false}>
                 <FlatListContainer
