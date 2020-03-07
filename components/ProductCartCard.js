@@ -47,8 +47,9 @@ function ProductCartCard({ product }) {
           {product.points * product.cartCount} pts
         </LineItemPoints>
       </View>
+      {/* TODO: fix janky margin-top logic */}
       <LineItemQuantity
-        style={{ marginLeft: 24, marginBottom: 11, marginTop: 0 }}>
+        style={{ marginLeft: 24, marginBottom: 11, marginTop: -5 }}>
         Qty: {product.cartCount}
       </LineItemQuantity>
     </LineItem>

@@ -44,6 +44,7 @@ export const ProductCard = styled.View`
 `;
 
 export const ItemName = styled.Text`
+  font-family: 'poppins-regular';
   font-size: 14px;
   line-height: 20px;
   color: ${Colors.black};
@@ -52,6 +53,7 @@ export const ItemName = styled.Text`
 `;
 
 export const ItemDetail = styled.Text`
+  font-family: 'poppins-medium';
   font-size: 12px;
   line-height: 16px;
   color: ${Colors.secondaryText};
@@ -62,7 +64,7 @@ export const ItemDetail = styled.Text`
 
 export const LineItem = styled.View`
   width: 329px;
-  height: 90px;
+  height: 88px;
   background: ${Colors.lightest};
   border: 1px solid ${Colors.lighter};
   border-top-width: 1px;
@@ -72,6 +74,7 @@ export const LineItem = styled.View`
 `;
 
 export const LineItemName = styled.Text`
+  font-family: 'poppins-regular';
   font-size: 16px;
   line-height: 24px;
   color: ${Colors.black};
@@ -79,24 +82,28 @@ export const LineItemName = styled.Text`
 `;
 
 export const LineItemDetail = styled.Text`
+  font-family: 'poppins-regular';
   font-size: 14px;
   line-height: 20px;
   color: ${Colors.secondaryText};
 `;
 
 export const LineItemQuantity = styled.Text`
+  font-family: 'poppins-regular';
   font-size: 14px;
   line-height: 20px;
   color: ${Colors.secondaryText};
 `;
 
 export const LineItemPrice = styled.Text`
+  font-family: 'poppins-regular';
   font-size: 16px;
   line-height: 24px;
   color: ${Colors.black};
 `;
 
 export const LineItemPoints = styled.Text`
+  font-family: 'poppins-regular';
   font-size: 16px;
   line-height: 24px;
   color: ${Colors.secondaryText};
