@@ -6,7 +6,20 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject",
-    "test": "jest --watchAll"
+    "test": "jest --watchAll",
+    "lint:js": "eslint . --ext  .jsx,.js ./screens ./components",
+    "lint:js:fix": "yarn run lint:js --fix",
+    "lint:js:quiet": "eslint . --ext .jsx,.js --quiet ./screens ./components",
+    "lint:js:quiet:fix": "yarn run lint:js:quiet --fix",
+    "pretty": "prettier --config prettier.config.js --write \"./{screens,components,styles}/**/*.js\" \"./{screens,components,styles}/*.js\"",
+    "generate-schema": "generate-airtable-schema"
+  },
+  "airtable-schema-generator": {
+    "input": "lib/airtable",
+    "output": "lib/airtable"
+  },
+  "eslintConfig": {
+    "extends": "universe/native"
   },
   "jest": {
     "preset": "jest-expo"
@@ -31,6 +44,7 @@
     "@react-navigation/core": "^3.0.0-alpha.13",
     "@react-navigation/web": "^1.0.0-alpha.9",
     "airtable": "^0.7.2",
+    "airtable-schema-generator": "^1.2.9",
     "babel-plugin-inline-dotenv": "^1.5.0",
     "expo": "^35.0.0",
     "expo-asset": "^7.0.0",
@@ -40,6 +54,7 @@
     "husky": "^4.2.3",
     "lint-staged": "^10.0.8",
     "mem": "^4.0.0",
+    "prop-types": "^15.7.2",
     "react": "16.8.3",
     "react-dom": "16.8.3",
     "react-native": "https://github.com/expo/react-native/archive/sdk-35.0.0.tar.gz",

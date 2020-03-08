@@ -1,6 +1,6 @@
 import React from 'react';
 import { Image, View } from 'react-native';
-import { ProductBody } from '../styled/checkout.js';
+import { ProductBody } from '../styled/checkout';
 
 /**
  * @prop
@@ -12,7 +12,7 @@ function ProductDisplayCard({ product }) {
     <View style={{ alignItems: 'center' }}>
       <Image
         source={{
-          uri: product.image,
+          uri: product.imageUrl,
           scale: 0.1
         }}
         style={{ width: 50, height: 50, borderRadius: 80 / 2 }}

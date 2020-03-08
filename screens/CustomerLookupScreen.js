@@ -1,12 +1,9 @@
+import PropTypes from 'prop-types';
 import React from 'react';
-import { AsyncStorage } from 'react-native';
-import { getUser, lookupCustomer } from '../lib/lookupUtils';
-import {
-  Container,
-  SubmitButton,
-  TextHeader,
-  TextInput
-} from '../styled/shared.js';
+import { AsyncStorage, Text } from 'react-native';
+import { status } from '../lib/constants';
+import { lookupCustomer } from '../lib/lookupUtils';
+import { Container, SubmitButton, TextHeader, TextInput } from '../styled/shared';
 
 export default class CustomerLookupScreen extends React.Component {
   constructor(props) {
@@ -14,57 +11,60 @@ export default class CustomerLookupScreen extends React.Component {
 
     this.state = {
       clerkName: '',
-      phoneNumber: ''
+      phoneNumber: '',
+      errorMsg: ''
     };
   }
 
   async componentDidMount() {
-    const clerkId = await AsyncStorage.getItem('clerkId');
-
-    getUser('Clerks', clerkId).then(clerkRecord => {
-      if (clerkRecord) {
-        let name =
-          clerkRecord['fields']['First Name'] +
-          ' ' +
-          clerkRecord['fields']['Last Name'];
-        this.setState({ clerkName: name });
-      }
-    });
+    const { clerkName } = this.props.navigation.state.params;
+    this.setState({ clerkName });
   }
 
-  _asyncCustomerSignIn = async customerId => {
-    await AsyncStorage.setItem('customerId', customerId);
+  _asyncCustomerFound = async customerRecord => {
+    await AsyncStorage.setItem('customerId', customerRecord.id);
     this.props.navigation.navigate('Checkout');
   };
 
-  async handleSubmit() {
-    let formattedPhoneNumber = this.state.phoneNumber;
-    formattedPhoneNumber = formattedPhoneNumber.replace('[^0-9]', '');
-    formattedPhoneNumber = `(${formattedPhoneNumber.slice(
-      0,
-      3
-    )}) ${formattedPhoneNumber.slice(3, 6)}-${formattedPhoneNumber.slice(
-      6,
-      10
-    )}`;
+  _formatPhoneNumber = phoneNumber => {
+    const onlyNumeric = phoneNumber.replace('[^0-9]', '');
+    const formatted = `(${onlyNumeric.slice(0, 3)}) ${onlyNumeric.slice(3, 6)}-${onlyNumeric.slice(6, 10)}`;
+    return formatted;
+  };
 
-    await lookupCustomer(formattedPhoneNumber)
-      .then(resp => {
-        if (resp) {
-          this._asyncCustomerSignIn(resp);
-          this.setState({ phoneNumber: '' });
-        }
-      })
-      .catch(err => {
-        console.log(err);
-        this.setState({ phoneNumber: '' });
-      });
+  async handleSubmit() {
+    const formattedPhoneNumber = this._formatPhoneNumber(this.state.phoneNumber);
+
+    try {
+      const lookupResult = await lookupCustomer(formattedPhoneNumber);
+      let customerRecord = null;
+
+      switch (lookupResult.status) {
+        case status.FOUND:
+          customerRecord = lookupResult.record;
+          this._asyncCustomerFound(customerRecord);
+          break;
+        // TODO for production, we should have some sort of logging mechanism (i.e replacing console logs)
+        case status.NOT_FOUND:
+          console.log('No customer registered with this phone number');
+          break;
+        case status.DUPLICATE:
+          console.log('Database malformed! Two users found with this phone number');
+          break;
+        default:
+          return;
+      }
+      this.setState({ errorMsg: lookupResult.errorMsg, phoneNumber: '' });
+    } catch (err) {
+      console.error('Airtable: ', err);
+    }
   }
 
   render() {
+    const displayText = 'Welcome, '.concat(this.state.clerkName);
     return (
       <Container>
-        <TextHeader>Welcome, {this.state.clerkName}!</TextHeader>
+        <TextHeader>{displayText}</TextHeader>
 
         <TextInput
           placeholder="Customer Phone Number (i.e. 1234567890)"
@@ -73,12 +73,13 @@ export default class CustomerLookupScreen extends React.Component {
           onChangeText={number => this.setState({ phoneNumber: number })}
           value={this.state.phoneNumber}
         />
-        <SubmitButton
-          color="#008550"
-          title="Find Customer"
-          onPress={() => this.handleSubmit()}
-        />
+        <SubmitButton color="#008550" title="Find Customer" onPress={() => this.handleSubmit()} />
+        {this.state.errorMsg ? <Text>{this.state.errorMsg}</Text> : null}
       </Container>
     );
   }
 }
+
+CustomerLookupScreen.propTypes = {
+  navigation: PropTypes.object.isRequired
+};
