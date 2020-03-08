@@ -12,7 +12,7 @@ function ProductDisplayCard({ product }) {
     <ProductCard>
       <Image
         source={{
-          uri: product.image,
+          uri: product.imageUrl,
           scale: 0.1
         }}
         style={{

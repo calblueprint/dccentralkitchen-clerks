@@ -1,0 +1,12 @@
+{
+    "Customers": {
+        "lookupFields": [
+            "Phone Number"
+        ]
+    },
+    "Clerks": {
+        "lookupFields": [
+            "Store ID"
+        ]
+    }
+}
