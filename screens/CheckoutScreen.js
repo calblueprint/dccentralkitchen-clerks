@@ -47,7 +47,7 @@ export default class CheckoutScreen extends React.Component {
 
     this.setState({
       customer: customer,
-      rewardsAvailable: customer.rewardsAvailable,
+      rewardsAvailable: Math.floor(customer.rewardsAvailable),
       fullProducts: productsData,
       products: productsData,
       isLoading: false
@@ -236,7 +236,7 @@ export default class CheckoutScreen extends React.Component {
     for (var i = 0; i < this.state.rewardsApplied; i++) {
       rewards.push(
         <TouchableOpacity key={i} onPress={() => this.removeReward()}>
-          <Text>APPLY $5 REWARD</Text>
+          <Text>REMOVE $5 REWARD</Text>
         </TouchableOpacity>
       );
     }
