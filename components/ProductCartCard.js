@@ -1,13 +1,8 @@
 import React from 'react';
 import { View } from 'react-native';
-import {
-  LineItem,
-  LineItemDetail,
-  LineItemName,
-  LineItemPoints,
-  LineItemPrice,
-  LineItemQuantity
-} from '../styled/checkout.js';
+import { LineItem } from '../styled/checkout.js';
+import Colors from '../assets/Colors';
+import { Subhead, Body } from '../components/BaseComponents';
 
 /**
  * @prop
@@ -26,12 +21,10 @@ function ProductCartCard({ product }) {
           marginRight: 26,
           marginTop: 13
         }}>
-        <LineItemName style={{ justifyContent: 'flex-start' }}>
-          {product.name}
-        </LineItemName>
-        <LineItemPrice style={{ justifyContent: 'flex-end' }}>
+        <Subhead style={{ justifyContent: 'flex-start', textTransform: 'uppercase' }}>{product.name}</Subhead>
+        <Subhead style={{ justifyContent: 'flex-end' }}>
           ${(product.customerCost * product.cartCount).toFixed(2)}
-        </LineItemPrice>
+        </Subhead>
       </View>
       <View
         style={{
@@ -40,18 +33,17 @@ function ProductCartCard({ product }) {
           marginLeft: 24,
           marginRight: 26
         }}>
-        <LineItemDetail style={{ justifyContent: 'flex-start' }}>
+        <Body style={{ justifyContent: 'flex-start' }} color={Colors.secondaryText}>
           {product.detail}
-        </LineItemDetail>
-        <LineItemPoints style={{ justifyContent: 'flex-end' }}>
+        </Body>
+        <Subhead style={{ justifyContent: 'flex-end' }} color={Colors.secondaryText}>
           {product.points * product.cartCount} pts
-        </LineItemPoints>
+        </Subhead>
       </View>
       {/* TODO: fix janky margin-top logic */}
-      <LineItemQuantity
-        style={{ marginLeft: 24, marginBottom: 11, marginTop: -5 }}>
+      <Body style={{ marginLeft: 24, marginBottom: 11, marginTop: -5 }} color={Colors.secondaryText}>
         Qty: {product.cartCount}
-      </LineItemQuantity>
+      </Body>
     </LineItem>
     // </View>
   );

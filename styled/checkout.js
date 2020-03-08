@@ -41,23 +41,6 @@ export const ProductCard = styled.View`
   border-radius: 4px;
 `;
 
-export const ItemName = styled.Text`
-  font-family: 'poppins-regular';
-  font-size: 14px;
-  line-height: 20px;
-  color: ${Colors.black};
-  margin-top: 8px;
-  margin-left: 8px;
-`;
-
-export const ItemDetail = styled.Text`
-  font-family: 'poppins-medium';
-  font-size: 12px;
-  line-height: 16px;
-  color: ${Colors.secondaryText};
-  margin-left: 8px;
-`;
-
 // Transaction Line Items
 
 export const LineItem = styled.View`
@@ -69,40 +52,4 @@ export const LineItem = styled.View`
   border-bottom-width: 1px;
   border-left-width: 0px;
   border-right-width: 0px;
-`;
-
-export const LineItemName = styled.Text`
-  font-family: 'poppins-regular';
-  font-size: 16px;
-  line-height: 24px;
-  color: ${Colors.black};
-  text-transform: uppercase;
-`;
-
-export const LineItemDetail = styled.Text`
-  font-family: 'poppins-regular';
-  font-size: 14px;
-  line-height: 20px;
-  color: ${Colors.secondaryText};
-`;
-
-export const LineItemQuantity = styled.Text`
-  font-family: 'poppins-regular';
-  font-size: 14px;
-  line-height: 20px;
-  color: ${Colors.secondaryText};
-`;
-
-export const LineItemPrice = styled.Text`
-  font-family: 'poppins-regular';
-  font-size: 16px;
-  line-height: 24px;
-  color: ${Colors.black};
-`;
-
-export const LineItemPoints = styled.Text`
-  font-family: 'poppins-regular';
-  font-size: 16px;
-  line-height: 24px;
-  color: ${Colors.secondaryText};
 `;

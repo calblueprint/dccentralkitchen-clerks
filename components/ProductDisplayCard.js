@@ -1,6 +1,8 @@
 import React from 'react';
 import { Image } from 'react-native';
-import { ProductCard, ItemName, ItemDetail } from '../styled/checkout.js';
+import { ProductCard } from '../styled/checkout.js';
+import { Body, Caption } from '../components/BaseComponents';
+import Colors from '../assets/Colors';
 
 /**
  * @prop
@@ -24,8 +26,10 @@ function ProductDisplayCard({ product }) {
         }}
         borderRadius={4}
       />
-      <ItemName>{product.name}</ItemName>
-      <ItemDetail>{product.detail}</ItemDetail>
+      <Body style={{ marginTop: 8, marginLeft: 8 }}>{product.name}</Body>
+      <Caption style={{ marginLeft: 8 }} color={Colors.secondaryText}>
+        {product.detail}
+      </Caption>
     </ProductCard>
   );
 }
