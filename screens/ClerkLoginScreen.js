@@ -23,8 +23,6 @@ export default class ClerkLoginScreen extends React.Component {
 
   async componentDidMount() {
     try {
-      // Sanity-clearing, even though all items will be set throughout the flow
-      await AsyncStorage.clear();
       const stores = await loadStoreData();
       // Set to first store as default, since the picker also defaults to the top (first in list)
       this.setState({
@@ -40,6 +38,7 @@ export default class ClerkLoginScreen extends React.Component {
   // Configures to use Jeffry Poa & Robin Hood
   _devBypass = async () => {
     await AsyncStorage.setItem('clerkId', 'recgq59j7Cx9zsSYE');
+    await AsyncStorage.setItem('clerkName', 'Jeffry Poa');
     await AsyncStorage.setItem('storeId', 'recw49LpAOInqvX3e');
     await AsyncStorage.setItem('customerId', 'recqx32YmmACiRWMq');
     this.props.navigation.navigate('Checkout');
