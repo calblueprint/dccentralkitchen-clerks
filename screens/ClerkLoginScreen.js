@@ -44,6 +44,10 @@ export default class ClerkLoginScreen extends React.Component {
     this.props.navigation.navigate('Checkout');
   };
 
+  _devBypassConfirm = async () => {
+    this.props.navigation.navigate('Confirmation', { transactionId: 'recbDBXR1bvvpEnOK' });
+  };
+
   // Set the clerkId and storeId in AsyncStorage
   // Then navigate to the customer lookup screen
   _asyncLoginClerk = async clerkRecord => {
@@ -107,7 +111,8 @@ export default class ClerkLoginScreen extends React.Component {
           />
           <SubmitButton color="#008550" title="Log In" onPress={() => this.handleSubmit()} />
           {this.state.errorMsg ? <Text>{this.state.errorMsg}</Text> : null}
-          <Button title="Testing Bypass" onPress={() => this._devBypass()} />
+          <Button title="Checkout Bypass" onPress={() => this._devBypass()} />
+          <Button title="Confirmation Bypass" onPress={() => this._devBypassConfirm()} />
         </Container>
       </DismissKeyboard>
     );
