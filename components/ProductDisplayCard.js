@@ -19,7 +19,8 @@ function ProductDisplayCard({ product }) {
         }}
         style={{
           width: 113,
-          height: 87
+          height: 87,
+          marginBottom: 8
         }}
         borderRadius={4}
       />

@@ -6,6 +6,27 @@ export const FlatListContainer = styled(FlatList)`
   width: 100%;
 `;
 
+// Customer Name Top Bar
+
+export const TopBar = styled.View`
+  height: 55px;
+  width: 100%;
+  background: ${Colors.base};
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+`;
+
+// Products Section
+
+export const ProductsContainer = styled.View`
+  background: rgba(235, 235, 235, 0.5);
+`;
+
+export const SaleContainer = styled.View`
+  padding: 13px 14px 0px;
+`;
+
 // Product Cards
 
 export const ProductCard = styled.View`
@@ -26,14 +47,13 @@ export const ProductCard = styled.View`
 
 export const LineItem = styled.View`
   width: 329px;
-  height: 88px;
   background: ${Colors.lightest};
   border: 1px solid ${Colors.lighter};
   border-left-width: 0px;
   border-right-width: 0px;
   padding-left: 24px;
   padding-right: 26px;
-  padding: 13px 26px 11px 24px;
+  padding: 12px 24px 12px 24px;
 `;
 
 export const LineItemRow = styled.View`

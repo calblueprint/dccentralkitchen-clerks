@@ -6,8 +6,9 @@ import ProductCartCard from '../components/ProductCartCard';
 import ProductDisplayCard from '../components/ProductDisplayCard';
 import { getCustomersById } from '../lib/airtable/request';
 import { addTransaction, loadProductsData, updateCustomerPoints } from '../lib/checkoutUtils';
-import { FlatListContainer } from '../styled/checkout';
+import { FlatListContainer, TopBar, ProductsContainer, SaleContainer } from '../styled/checkout';
 import { TextHeader } from '../styled/shared';
+import { Title, Subhead } from '../components/BaseComponents';
 
 export default class CheckoutScreen extends React.Component {
   constructor(props) {
@@ -33,7 +34,6 @@ export default class CheckoutScreen extends React.Component {
     this.setState({
       customer: customer,
       rewardsAvailable: Math.floor(customer.rewardsAvailable),
-      fullProducts: productsData,
       products: productsData,
       isLoading: false
     });
@@ -203,10 +203,12 @@ export default class CheckoutScreen extends React.Component {
     return (
       // Temp fix for the horizontal orientation not showing Checkout Button
       <ScrollView>
-        <TextHeader style={{ padding: '5%' }}> {'Customer: '.concat(customer.name)} </TextHeader>
-        <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+        <TopBar>
+          <Title> {'Customer: '.concat(customer.name)} </Title>
+        </TopBar>
+        <View style={{ display: 'flex', flexDirection: 'row' }}>
           {/* Display products */}
-          <View>
+          <ProductsContainer>
             <FlatListContainer
               keyExtractor={product => product.id}
               numColumns={5}
@@ -217,10 +219,10 @@ export default class CheckoutScreen extends React.Component {
                 </TouchableOpacity>
               )}
             />
-          </View>
+          </ProductsContainer>
           {/* Right column */}
-          <View>
-            <TextHeader>Cart</TextHeader>
+          <SaleContainer>
+            <Subhead>Current Sale</Subhead>
             {/* Cart container */}
             <View style={{ height: '40%', paddingBottom: '5%' }}>
               <ScrollView>
@@ -249,7 +251,7 @@ export default class CheckoutScreen extends React.Component {
             <TouchableOpacity onPress={() => this.handleSubmit()}>
               <TextHeader style={{ color: '#008550' }}>Checkout</TextHeader>
             </TouchableOpacity>
-          </View>
+          </SaleContainer>
         </View>
       </ScrollView>
     );
