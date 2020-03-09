@@ -48,6 +48,7 @@ export default class ClerkLoginScreen extends React.Component {
   _asyncLoginClerk = async clerkRecord => {
     await AsyncStorage.setItem('clerkId', clerkRecord.id);
     await AsyncStorage.setItem('storeId', this.state.storeId);
+    this.setState({ errorMsg: null, password: '' });
     this.props.navigation.navigate('CustomerLookup', { clerkName: clerkRecord.clerkName });
   };
 
