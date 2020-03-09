@@ -52,11 +52,3 @@ export const ColumnContainer = styled.View`
 export const SpaceBetweenRowContainer = styled(RowContainer)`
   justify-content: space-between;
 `;
-
-export const SpaceAroundRowContainer = styled(RowContainer)`
-  justify-content: space-around;
-`;
-
-export const CenterRowContainer = styled(RowContainer)`
-  justify-content: center;
-`;

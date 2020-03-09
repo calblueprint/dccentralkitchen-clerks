@@ -8,7 +8,7 @@ import { getCustomersById } from '../lib/airtable/request';
 import { addTransaction, loadProductsData, updateCustomerPoints } from '../lib/checkoutUtils';
 import { FlatListContainer } from '../styled/checkout';
 import { TextHeader } from '../styled/shared';
-import RewardModal from './checkout/RewardModal';
+import RewardModal from './modals/RewardModal';
 
 export default class CheckoutScreen extends React.Component {
   constructor(props) {
