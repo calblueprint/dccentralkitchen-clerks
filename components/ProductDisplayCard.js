@@ -1,6 +1,8 @@
 import React from 'react';
-import { Image, View } from 'react-native';
-import { ProductBody } from '../styled/checkout';
+import { Image } from 'react-native';
+import { ProductCard } from '../styled/checkout.js';
+import { Body, Caption } from '../components/BaseComponents';
+import Colors from '../assets/Colors';
 
 /**
  * @prop
@@ -9,16 +11,22 @@ import { ProductBody } from '../styled/checkout';
 // TODO @tommypoa to use styled-components
 function ProductDisplayCard({ product }) {
   return (
-    <View style={{ alignItems: 'center' }}>
+    <ProductCard>
       <Image
         source={{
           uri: product.imageUrl,
           scale: 0.1
         }}
-        style={{ width: 50, height: 50, borderRadius: 80 / 2 }}
+        style={{
+          width: 113,
+          height: 87,
+          marginBottom: 8
+        }}
+        borderRadius={4}
       />
-      <ProductBody>{product.name}</ProductBody>
-    </View>
+      <Body>{product.name}</Body>
+      <Caption color={Colors.secondaryText}>{product.detail}</Caption>
+    </ProductCard>
   );
 }
 
