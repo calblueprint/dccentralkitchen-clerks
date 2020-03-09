@@ -15,12 +15,12 @@ function ProductCartCard({ product }) {
     // <View style={{ alignItems: 'center' }}>
     <LineItem>
       <LineItemRow>
-        <Subhead style={{ textTransform: 'uppercase' }}>{product.name}</Subhead>
+        <Subhead>{product.name}</Subhead>
         <Subhead>${calculateLineItemPrice(product)}</Subhead>
       </LineItemRow>
       <LineItemRow>
         <Body color={Colors.secondaryText}>{product.detail}</Body>
-        <Subhead color={Colors.secondaryText}>{product.points * product.cartCount} pts</Subhead>
+        <Body color={Colors.secondaryText}>{product.points * product.cartCount} pts</Body>
       </LineItemRow>
       <LineItemRow>
         <Body color={Colors.secondaryText}>Qty: {product.cartCount}</Body>
