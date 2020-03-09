@@ -1,5 +1,7 @@
 import { FlatList } from 'react-native';
 import styled from 'styled-components/native';
+import Colors from '../assets/Colors';
+import { FilledButtonContainer } from '../components/BaseComponents';
 
 export const ProductContainer = styled.View`
   background-color: #fff;
@@ -25,4 +27,20 @@ export const ProductCardContainer = styled.View`
 
 export const FlatListContainer = styled(FlatList)`
   width: 100%;
+`;
+
+export const RewardAvailableContainer = styled(FilledButtonContainer)`
+  width: 149px;
+  height: 44px;
+  background: ${Colors.lighter};
+  border: 1px solid ${Colors.light};
+  border-radius: 9px;
+`;
+
+export const RewardAppliedContainer = styled(FilledButtonContainer)`
+  width: 200px;
+  height: 44px;
+  background: ${Colors.lightest};
+  border: 1px solid ${Colors.light};
+  border-radius: 9px;
 `;

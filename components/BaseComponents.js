@@ -52,7 +52,7 @@ export const ButtonLabel = styled.Text`
   text-align: center;
   letter-spacing: 0.01px;
   text-transform: uppercase;
-  color: ${Colors.lightest};
+  color: ${props => (props.color ? props.color : Colors.lightest)};
 `;
 
 export const FilledButtonContainer = styled(ButtonContainer)`
