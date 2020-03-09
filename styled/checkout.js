@@ -1,28 +1,6 @@
 import { FlatList } from 'react-native';
-import Colors from '../assets/Colors';
 import styled from 'styled-components/native';
-
-export const ProductContainer = styled.View`
-  background-color: #fff;
-  border-radius: 10px;
-  padding: 20px;
-  margin: 5% 5%;
-  box-shadow: 0px 10px 20px #e3e1e1;
-`;
-
-export const ProductBody = styled.Text`
-  font-size: 12px;
-  font-weight: bold;
-`;
-
-export const ProductCardContainer = styled.View`
-  align-items: center;
-  background-color: #ffff;
-  border-radius: 5px;
-  padding: 20px;
-  margin: 1% 1%;
-  box-shadow: 0px 10px 20px #e3e1e1;
-`;
+import Colors from '../assets/Colors';
 
 export const FlatListContainer = styled(FlatList)`
   width: 100%;
@@ -37,8 +15,11 @@ export const ProductCard = styled.View`
   box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.2);
   box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.12);
   box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.14);
+  display: flex;
+  flex-direction: column;
   margin: 12px;
   border-radius: 4px;
+  padding: 8px 8px 10px;
 `;
 
 // Transaction Line Items
@@ -48,8 +29,16 @@ export const LineItem = styled.View`
   height: 88px;
   background: ${Colors.lightest};
   border: 1px solid ${Colors.lighter};
-  border-top-width: 1px;
-  border-bottom-width: 1px;
   border-left-width: 0px;
   border-right-width: 0px;
+  padding-left: 24px;
+  padding-right: 26px;
+  padding: 13px 26px 11px 24px;
+`;
+
+export const LineItemRow = styled.View`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
 `;

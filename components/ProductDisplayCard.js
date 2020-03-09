@@ -19,17 +19,12 @@ function ProductDisplayCard({ product }) {
         }}
         style={{
           width: 113,
-          height: 87,
-          marginLeft: 8,
-          marginRight: 8,
-          marginTop: 7
+          height: 87
         }}
         borderRadius={4}
       />
-      <Body style={{ marginTop: 8, marginLeft: 8 }}>{product.name}</Body>
-      <Caption style={{ marginLeft: 8 }} color={Colors.secondaryText}>
-        {product.detail}
-      </Caption>
+      <Body>{product.name}</Body>
+      <Caption color={Colors.secondaryText}>{product.detail}</Caption>
     </ProductCard>
   );
 }
