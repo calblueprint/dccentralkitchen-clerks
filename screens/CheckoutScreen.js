@@ -41,9 +41,8 @@ export default class CheckoutScreen extends React.Component {
   }
 
   applyRewardsCallback = (rewardsApplied, totalPrice) => {
-    console.log(rewardsApplied, totalPrice);
     // Update rewards in parent state
-    this.setState({ rewardsApplied });
+    this.setState({ rewardsApplied, totalPrice });
   };
 
   // Sets total points earned from transaction in state.

@@ -30,17 +30,19 @@ export const FlatListContainer = styled(FlatList)`
 `;
 
 export const RewardAvailableContainer = styled(FilledButtonContainer)`
-  width: 149px;
+  width: 159px;
   height: 44px;
   background: ${Colors.lighter};
   border: 1px solid ${Colors.light};
   border-radius: 9px;
+  margin: 8px 0px;
 `;
 
 export const RewardAppliedContainer = styled(FilledButtonContainer)`
-  width: 200px;
+  width: 159px;
   height: 44px;
   background: ${Colors.lightest};
   border: 1px solid ${Colors.light};
   border-radius: 9px;
+  margin: 8px 0px;
 `;
