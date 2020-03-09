@@ -34,7 +34,6 @@ export default class CheckoutScreen extends React.Component {
     this.setState({
       customer: customer,
       rewardsAvailable: Math.floor(customer.rewardsAvailable),
-      fullProducts: productsData,
       products: productsData,
       isLoading: false
     });
@@ -212,7 +211,7 @@ export default class CheckoutScreen extends React.Component {
           <ProductsContainer>
             <FlatListContainer
               keyExtractor={product => product.id}
-              numColumns={3}
+              numColumns={5}
               data={products}
               renderItem={({ item }) => (
                 <TouchableOpacity onPress={() => this.addToCart(item)}>
