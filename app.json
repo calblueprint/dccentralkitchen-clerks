@@ -1,13 +1,17 @@
 {
   "expo": {
-    "name": "dccentralkitchen-clerks",
+    "name": "Healthy Corners Clerk",
     "slug": "dccentralkitchen-clerks",
     "privacy": "public",
     "sdkVersion": "35.0.0",
     "platforms": ["ios", "android", "web"],
+    "android": {
+      "package": "org.calblueprint.HealthyCornersClerk",
+      "versionCode": 1
+    },
     "version": "1.0.0",
     "orientation": "landscape",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/ic_dcck.png",
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
