@@ -31,7 +31,7 @@ export default class CartQuantityModal extends React.Component {
   // Forces a re-render when new props are passed
   componentWillReceiveProps(nextProps) {
     const newQuantity = nextProps.lineItem.quantity;
-    if (this.state.product.quantity !== newQuantity) {
+    if (this.state.lineItem.quantity !== newQuantity) {
       console.log('CART: will receive props running');
       console.log(newQuantity);
       this.setState(prevState => ({ ...prevState, lineItem: nextProps.lineItem }));
@@ -124,7 +124,7 @@ export default class CartQuantityModal extends React.Component {
           </RowContainer>
         </Modal>
 
-        {lineItem.quantity === 0 && (
+        {lineItem.quantity > 0 && (
           <TouchableHighlight
             onPress={() => {
               this.setModalVisible(true);
