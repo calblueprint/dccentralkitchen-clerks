@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { AppLoading } from 'expo';
+import { ScreenOrientation } from 'expo';
 import { Asset } from 'expo-asset';
 import * as Font from 'expo-font';
 import React, { useState } from 'react';
@@ -11,6 +12,7 @@ export default function App(props) {
   const [isLoadingComplete, setLoadingComplete] = useState(false);
 
   if (!isLoadingComplete && !props.skipLoadingScreen) {
+    ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
     return (
       <AppLoading
         startAsync={loadResourcesAsync}
