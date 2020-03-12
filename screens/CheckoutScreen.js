@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import update from 'react-addons-update';
 import { Alert, AsyncStorage, Text, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Subhead, Title } from '../components/BaseComponents';
@@ -57,11 +58,13 @@ export default class CheckoutScreen extends React.Component {
   };
 
   updateQuantityCallback = (product, quantity, priceDifference) => {
+    console.log(priceDifference);
     this.setState(prevState => ({
-      cart: { ...prevState.cart, [prevState.cart[product.id].quantity]: quantity },
+      cart: update(prevState.cart, { [product.id]: { quantity: { $set: quantity } } }),
       totalPrice: prevState.totalPrice + priceDifference
     }));
-    // console.log(this.state.cart[product.id]);
+    console.log('Callback running');
+    console.log(this.state.cart[product.id].quantity);
   };
 
   // Sets total points earned from transaction in state.

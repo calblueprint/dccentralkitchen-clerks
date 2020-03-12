@@ -12,19 +12,18 @@ export default class CartQuantityModal extends React.Component {
     this.state = {
       modalVisible: false,
       lineItem: null,
-      // initialQuantity: 0,
-      // Might need to be string type because it's TextInput
-      currentQuantity: 0,
+      // Needs to be string type because it's TextInput
+      currentQuantity: '0',
       isLoading: true
     };
   }
 
   componentDidMount() {
     const { lineItem } = this.props;
+    const quantityInt = lineItem.quantity;
     this.setState({
       lineItem,
-      // initialQuantity: lineItem.quantity,
-      currentQuantity: lineItem.quantity,
+      currentQuantity: quantityInt.toString(),
       isLoading: false
     });
   }
@@ -38,25 +37,26 @@ export default class CartQuantityModal extends React.Component {
   // For Cart modal, redundant check (should only show in cart if quantity > 0)
   handleShowModal = () => {
     const initialQuantity = this.state.lineItem.quantity;
-    if (initialQuantity == 0) {
+    if (initialQuantity === 0) {
       return;
     }
     this.setModalVisible(!this.state.modalVisible);
   };
 
+  // Communicate to parent component
   handleUpdateCart = () => {
-    // Communicate to parent component
-    const priceDifference =
-      (this.state.currentQuantity - this.state.initialQuantity) * this.state.lineItem.customerCost;
-    this.props.callback(this.state.lineItem, this.state.currentQuantity, priceDifference);
+    const initialQuantity = this.state.lineItem.quantity;
+    const currentQuantityInt = parseInt(this.state.currentQuantity, 10);
+    const priceDifference = (currentQuantityInt - initialQuantity) * this.state.lineItem.customerCost;
+    this.props.callback(this.state.lineItem, currentQuantityInt, priceDifference);
     this.setModalVisible(!this.state.modalVisible);
   };
 
   handleClear = () => {
-    this.setState({ currentQuantity: 0 });
+    this.setState({ currentQuantity: '0' });
   };
 
-  // Update quantity
+  // Update quantity (string)
   updateQuantity = quantity => {
     this.setState({ currentQuantity: quantity });
   };

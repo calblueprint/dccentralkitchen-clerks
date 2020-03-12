@@ -28,10 +28,15 @@ export default class DisplayQuantityModal extends React.Component {
     });
   }
 
-  // TODO is this needed? YES it is because the  when new props are passed
-  // componentWillReceiveProps({ lineItem }) {
-  //   this.setState({lineItem});
-  // }
+  // TODO is this needed? YES it is because it shows when new props are passed
+  componentWillReceiveProps(nextProps) {
+    const newQuantity = nextProps.product.quantity;
+    if (this.state.product.quantity !== newQuantity) {
+      console.log('will receive props running');
+      console.log(product.quantity);
+      this.setState(prevState => ({ ...prevState, product: nextProps.product }));
+    }
+  }
 
   setModalVisible = visible => this.setState({ modalVisible: visible });
 
@@ -44,10 +49,12 @@ export default class DisplayQuantityModal extends React.Component {
     this.setModalVisible(!this.state.modalVisible);
   };
 
+  // Communicate to parent component
   handleUpdateCart = () => {
-    // Communicate to parent component
+    const initialQuantity = this.state.product.quantity;
+    console.log(this.state.product.quantity);
     const currentQuantityInt = parseInt(this.state.currentQuantity, 10);
-    const priceDifference = (currentQuantityInt - this.state.initialQuantity) * this.state.product.customerCost;
+    const priceDifference = (currentQuantityInt - initialQuantity) * this.state.product.customerCost;
     this.props.callback(this.state.product, currentQuantityInt, priceDifference);
     this.setModalVisible(!this.state.modalVisible);
   };
@@ -56,7 +63,7 @@ export default class DisplayQuantityModal extends React.Component {
     this.setState({ currentQuantity: '0' });
   };
 
-  // Update quantity
+  // Update quantity (string)
   updateQuantity = quantity => {
     this.setState({ currentQuantity: quantity });
   };
