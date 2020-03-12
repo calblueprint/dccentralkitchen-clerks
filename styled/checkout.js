@@ -1,11 +1,7 @@
-import { FlatList } from 'react-native';
 import styled from 'styled-components/native';
 import Colors from '../assets/Colors';
 import { FilledButtonContainer } from '../components/BaseComponents';
-
-export const FlatListContainer = styled(FlatList)`
-  width: 100%;
-`;
+import { RowContainer } from './shared';
 
 // Customer Name Top Bar
 
@@ -20,8 +16,10 @@ export const TopBar = styled.View`
 
 // Products Section
 
-export const ProductsContainer = styled.View`
+export const ProductsContainer = styled(RowContainer)`
   background: rgba(235, 235, 235, 0.5);
+  flex-wrap: wrap;
+  width: 75%;
 `;
 
 export const SaleContainer = styled.View`

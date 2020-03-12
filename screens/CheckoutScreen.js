@@ -5,7 +5,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { Subhead, Title } from '../components/BaseComponents';
 import { getCustomersById } from '../lib/airtable/request';
 import { addTransaction, loadProductsData, updateCustomerPoints } from '../lib/checkoutUtils';
-import { FlatListContainer, ProductsContainer, SaleContainer, TopBar } from '../styled/checkout';
+import { ProductsContainer, SaleContainer, TopBar } from '../styled/checkout';
 import { TextHeader } from '../styled/shared';
 import CartQuantityModal from './modals/CartQuantityModal';
 import DisplayQuantityModal from './modals/DisplayQuantityModal';
@@ -61,16 +61,16 @@ export default class CheckoutScreen extends React.Component {
       cart: { ...prevState.cart, [prevState.cart[product.id].quantity]: quantity },
       totalPrice: prevState.totalPrice + priceDifference
     }));
-    console.log(this.state.cart[product.id]);
+    // console.log(this.state.cart[product.id]);
   };
 
   // Sets total points earned from transaction in state.
   setTotalPoints = () => {
     let points = 0;
-    for (let i = 0; i < this.state.cart.length; i += 1) {
-      const cartItem = this.state.cart[i];
-      points += cartItem.points * cartItem.cartCount;
-    }
+    // Iterate over lineItems in cart
+    Object.values(this.state.cart).forEach(lineItem => {
+      points += lineItem.points * lineItem.quantity;
+    });
     points -= this.state.rewardsApplied * 500;
     if (points < 0) {
       console.error('Total points less than 0!');
@@ -89,11 +89,10 @@ export default class CheckoutScreen extends React.Component {
   // and total spent.
   generateConfirmationMessage = totalPoints => {
     let msg = 'Transaction Items:\n\n';
-    for (let i = 0; i < this.state.cart.length; i += 1) {
-      // Adding all quantities of items in cart to message.
-      const cartItem = this.state.cart[i];
-      msg = msg.concat(`${cartItem.cartCount} x ${cartItem.name}\n`);
-    }
+    // Iterate over lineItems in cart
+    Object.values(this.state.cart).forEach(lineItem => {
+      msg = msg.concat(`${lineItem.quantity} x ${lineItem.name}\n`);
+    });
     msg = msg.concat(`\nRewards Redeemed: ${this.state.rewardsApplied}\n`);
     // Adding total price and total points earned to message. Must be called after setTotalPoints()
     // in handleSubmit() for updated amount.
@@ -159,12 +158,9 @@ export default class CheckoutScreen extends React.Component {
         <View style={{ display: 'flex', flexDirection: 'row' }}>
           {/* Display products */}
           <ProductsContainer>
-            <FlatListContainer
-              keyExtractor={product => product.id}
-              numColumns={5}
-              data={products}
-              renderItem={({ item }) => <DisplayQuantityModal product={item} callback={this.updateQuantityCallback} />}
-            />
+            {products.map(product => (
+              <DisplayQuantityModal key={product.id} product={product} callback={this.updateQuantityCallback} />
+            ))}
           </ProductsContainer>
           {/* Right column */}
           <SaleContainer>
@@ -174,7 +170,7 @@ export default class CheckoutScreen extends React.Component {
               <ScrollView>
                 {Object.entries(cart).map(([id, product]) => {
                   return product.quantity > 0 ? (
-                    <CartQuantityModal id={id} lineItem={product} callback={this.updateQuantityCallback} />
+                    <CartQuantityModal key={id} lineItem={product} callback={this.updateQuantityCallback} />
                   ) : null;
                 })}
               </ScrollView>

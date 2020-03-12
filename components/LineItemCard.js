@@ -1,9 +1,8 @@
 import React from 'react';
-import { View } from 'react-native';
-import { LineItem, LineItemRow } from '../styled/checkout.js';
 import Colors from '../assets/Colors';
-import { Subhead, Body } from '../components/BaseComponents';
 import { calculateLineItemPrice } from '../lib/checkoutUtils';
+import { LineItem, LineItemRow } from '../styled/checkout';
+import { Body, Subhead } from './BaseComponents';
 
 /**
  * @prop
@@ -12,7 +11,6 @@ import { calculateLineItemPrice } from '../lib/checkoutUtils';
 // TODO @tommypoa to use styled-components
 function ProductCartCard({ product }) {
   return (
-    // <View style={{ alignItems: 'center' }}>
     <LineItem>
       <LineItemRow>
         <Subhead>{product.name}</Subhead>
@@ -20,13 +18,12 @@ function ProductCartCard({ product }) {
       </LineItemRow>
       <LineItemRow>
         <Body color={Colors.secondaryText}>{product.detail}</Body>
-        <Body color={Colors.secondaryText}>{product.points * product.cartCount} pts</Body>
+        <Body color={Colors.secondaryText}>{product.points * product.quantity} pts</Body>
       </LineItemRow>
       <LineItemRow>
-        <Body color={Colors.secondaryText}>Qty: {product.cartCount}</Body>
+        <Body color={Colors.secondaryText}>Qty: {product.quantity}</Body>
       </LineItemRow>
     </LineItem>
-    // </View>
   );
 }
 
