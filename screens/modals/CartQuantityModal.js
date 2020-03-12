@@ -28,8 +28,14 @@ export default class CartQuantityModal extends React.Component {
     });
   }
 
-  componentWillReceiveProps({ lineItem }) {
-    this.setState(prevState => ({ ...prevState, lineItem }));
+  // Forces a re-render when new props are passed
+  componentWillReceiveProps(nextProps) {
+    const newQuantity = nextProps.lineItem.quantity;
+    if (this.state.product.quantity !== newQuantity) {
+      console.log('CART: will receive props running');
+      console.log(newQuantity);
+      this.setState(prevState => ({ ...prevState, lineItem: nextProps.lineItem }));
+    }
   }
 
   setModalVisible = visible => this.setState({ modalVisible: visible });

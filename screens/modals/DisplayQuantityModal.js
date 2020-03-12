@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Modal, TextInput, TouchableHighlight, View } from 'react-native';
+import { Modal, TextInput, TouchableOpacity, View } from 'react-native';
 import Colors from '../../assets/Colors';
 import { ButtonLabel, Caption, Title } from '../../components/BaseComponents';
 import ProductDisplayCard from '../../components/ProductDisplayCard';
@@ -28,12 +28,12 @@ export default class DisplayQuantityModal extends React.Component {
     });
   }
 
-  // TODO is this needed? YES it is because it shows when new props are passed
+  // TODO is this needed? YES it is because it runs when new props are passed
   componentWillReceiveProps(nextProps) {
     const newQuantity = nextProps.product.quantity;
     if (this.state.product.quantity !== newQuantity) {
-      console.log('will receive props running');
-      console.log(product.quantity);
+      console.log('DISPLAY: will receive props running');
+      console.log(newQuantity);
       this.setState(prevState => ({ ...prevState, product: nextProps.product }));
     }
   }
@@ -74,7 +74,7 @@ export default class DisplayQuantityModal extends React.Component {
     }
     const { product } = this.props;
     return (
-      <View style={{ width: '100%' }}>
+      <View>
         <Modal
           animationType="none"
           supportedOrientations={['portrait', 'landscape']}
@@ -125,12 +125,12 @@ export default class DisplayQuantityModal extends React.Component {
           </RowContainer>
         </Modal>
 
-        <TouchableHighlight
+        <TouchableOpacity
           onPress={() => {
             this.handleShowModal();
           }}>
           <ProductDisplayCard product={product} />
-        </TouchableHighlight>
+        </TouchableOpacity>
       </View>
     );
   }

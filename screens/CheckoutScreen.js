@@ -18,7 +18,6 @@ export default class CheckoutScreen extends React.Component {
     this.state = {
       // Populated in componentDidMount
       customer: null,
-      products: [],
       cart: {},
       currentPoints: 0,
       rewardsAvailable: 0,
@@ -44,7 +43,6 @@ export default class CheckoutScreen extends React.Component {
 
     this.setState({
       customer,
-      products,
       cart: initialCart,
       currentPoints: customer.points,
       rewardsAvailable: Math.floor(customer.rewardsAvailable),
@@ -150,7 +148,7 @@ export default class CheckoutScreen extends React.Component {
       return null; // TODO @tommypoa waiting (flavicon?)
     }
 
-    const { cart, customer, products, totalPrice } = this.state;
+    const { cart, customer, totalPrice } = this.state;
 
     return (
       // Temp fix for the horizontal orientation not showing Checkout Button
@@ -161,8 +159,8 @@ export default class CheckoutScreen extends React.Component {
         <View style={{ display: 'flex', flexDirection: 'row' }}>
           {/* Display products */}
           <ProductsContainer>
-            {products.map(product => (
-              <DisplayQuantityModal key={product.id} product={product} callback={this.updateQuantityCallback} />
+            {Object.entries(cart).map(([id, product]) => (
+              <DisplayQuantityModal key={id} product={product} callback={this.updateQuantityCallback} />
             ))}
           </ProductsContainer>
           {/* Right column */}
