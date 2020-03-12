@@ -1,9 +1,11 @@
+import { FontAwesome5 } from '@expo/vector-icons';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Modal, TextInput, TouchableHighlight, View } from 'react-native';
+import { Modal, TouchableOpacity, View } from 'react-native';
 import Colors from '../../assets/Colors';
-import { ButtonLabel, Caption, Title } from '../../components/BaseComponents';
+import { Body, ButtonLabel, Title } from '../../components/BaseComponents';
 import LineItemCard from '../../components/LineItemCard';
+import { ModalCenteredOpacityLayer, QuantityInput } from '../../styled/checkout';
 import { ColumnContainer, RoundedButtonContainer, RowContainer } from '../../styled/shared';
 
 export default class CartQuantityModal extends React.Component {
@@ -32,8 +34,6 @@ export default class CartQuantityModal extends React.Component {
   componentWillReceiveProps(nextProps) {
     const newQuantity = nextProps.lineItem.quantity;
     if (this.state.lineItem.quantity !== newQuantity) {
-      console.log('CART: will receive props running');
-      console.log(newQuantity);
       this.setState(prevState => ({ ...prevState, lineItem: nextProps.lineItem }));
     }
   }
@@ -58,10 +58,6 @@ export default class CartQuantityModal extends React.Component {
     this.setModalVisible(!this.state.modalVisible);
   };
 
-  handleClear = () => {
-    this.setState({ currentQuantity: '0' });
-  };
-
   // Update quantity (string)
   updateQuantity = quantity => {
     this.setState({ currentQuantity: quantity });
@@ -83,14 +79,7 @@ export default class CartQuantityModal extends React.Component {
             this.setModalVisible(!this.state.modalVisible);
           }}>
           {/* Opacity layer */}
-          <RowContainer
-            style={{
-              height: '100%',
-              width: '100%',
-              backgroundColor: 'rgba(0, 0, 0, 0.3)',
-              justifyContent: 'center',
-              alignItems: 'center'
-            }}>
+          <ModalCenteredOpacityLayer>
             <ColumnContainer
               style={{
                 height: '40%',
@@ -100,37 +89,38 @@ export default class CartQuantityModal extends React.Component {
                 alignItems: 'center',
                 backgroundColor: 'white'
               }}>
+              <RowContainer style={{ justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+                <TouchableOpacity onPress={() => this.setModalVisible(false)}>
+                  <FontAwesome5 name="times" size={24} color={Colors.activeText} />
+                </TouchableOpacity>
+              </RowContainer>
               <Title>Quantity of {lineItem.fullName}</Title>
-              <Caption>Key in the quantity and tap ADD TO SALE</Caption>
-              <Caption>OR press CLEAR to exit.</Caption>
-              <TextInput
+              <ColumnContainer style={{ alignItems: 'flex-start' }}>
+                <Body>Key in the quantity and tap UPDATE QUANTITY</Body>
+                <Body>OR press the top left X to exit.</Body>
+              </ColumnContainer>
+              <QuantityInput
+                textAlign="start"
                 placeholder="Quantity"
                 keyboardType="numeric"
                 maxLength={3}
                 onChangeText={this.updateQuantity}
                 value={this.state.currentQuantity}
               />
-
-              {/* Container for buttons at bottom */}
-              <RowContainer style={{ alignItems: 'center', justifyContent: 'center' }}>
-                <RoundedButtonContainer color={Colors.activeText} onPress={() => this.handleClear()}>
-                  <ButtonLabel>Clear</ButtonLabel>
-                </RoundedButtonContainer>
-                <RoundedButtonContainer onPress={() => this.handleUpdateCart()}>
-                  <ButtonLabel>Add to Sale</ButtonLabel>
-                </RoundedButtonContainer>
-              </RowContainer>
+              <RoundedButtonContainer onPress={() => this.handleUpdateCart()}>
+                <ButtonLabel>Update Quantity</ButtonLabel>
+              </RoundedButtonContainer>
             </ColumnContainer>
-          </RowContainer>
+          </ModalCenteredOpacityLayer>
         </Modal>
 
         {lineItem.quantity > 0 && (
-          <TouchableHighlight
+          <TouchableOpacity
             onPress={() => {
               this.setModalVisible(true);
             }}>
             <LineItemCard product={lineItem} />
-          </TouchableHighlight>
+          </TouchableOpacity>
         )}
       </View>
     );

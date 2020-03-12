@@ -61,8 +61,6 @@ export default class CheckoutScreen extends React.Component {
       cart: update(prevState.cart, { [product.id]: { quantity: { $set: quantity } } }),
       totalPrice: prevState.totalPrice + priceDifference
     }));
-    console.log('Callback running');
-    console.log(this.state.cart[product.id].quantity);
   };
 
   // Sets total points earned from transaction in state.
@@ -92,7 +90,9 @@ export default class CheckoutScreen extends React.Component {
     let msg = 'Transaction Items:\n\n';
     // Iterate over lineItems in cart
     Object.values(this.state.cart).forEach(lineItem => {
-      msg = msg.concat(`${lineItem.quantity} x ${lineItem.name}\n`);
+      if (lineItem.quantity > 0) {
+        msg = msg.concat(`${lineItem.quantity} x ${lineItem.name}\n`);
+      }
     });
     msg = msg.concat(`\nRewards Redeemed: ${this.state.rewardsApplied}\n`);
     // Adding total price and total points earned to message. Must be called after setTotalPoints()
@@ -156,7 +156,7 @@ export default class CheckoutScreen extends React.Component {
         <TopBar>
           <Title> {'Customer: '.concat(customer.name)} </Title>
         </TopBar>
-        <View style={{ display: 'flex', flexDirection: 'row' }}>
+        <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}>
           {/* Display products */}
           <ProductsContainer>
             {Object.entries(cart).map(([id, product]) => (

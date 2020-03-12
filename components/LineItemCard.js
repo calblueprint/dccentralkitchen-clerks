@@ -8,8 +8,7 @@ import { Body, Subhead } from './BaseComponents';
  * @prop
  **/
 
-// TODO @tommypoa to use styled-components
-function ProductCartCard({ product }) {
+function LineItemCard({ product }) {
   return (
     <LineItem>
       <LineItemRow>
@@ -27,4 +26,4 @@ function ProductCartCard({ product }) {
   );
 }
 
-export default ProductCartCard;
+export default LineItemCard;

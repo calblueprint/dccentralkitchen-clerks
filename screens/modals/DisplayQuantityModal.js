@@ -1,10 +1,12 @@
+import { FontAwesome5 } from '@expo/vector-icons';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Modal, TextInput, TouchableOpacity, View } from 'react-native';
+import { Modal, TouchableOpacity, View } from 'react-native';
 import Colors from '../../assets/Colors';
-import { ButtonLabel, Caption, Title } from '../../components/BaseComponents';
+import { Body, ButtonLabel, Title } from '../../components/BaseComponents';
 import ProductDisplayCard from '../../components/ProductDisplayCard';
-import { ColumnContainer, RoundedButtonContainer, RowContainer } from '../../styled/shared';
+import { ModalCenteredOpacityLayer, QuantityInput } from '../../styled/checkout';
+import { ColumnContainer, RoundedButtonContainer } from '../../styled/shared';
 
 export default class DisplayQuantityModal extends React.Component {
   constructor(props) {
@@ -32,8 +34,6 @@ export default class DisplayQuantityModal extends React.Component {
   componentWillReceiveProps(nextProps) {
     const newQuantity = nextProps.product.quantity;
     if (this.state.product.quantity !== newQuantity) {
-      console.log('DISPLAY: will receive props running');
-      console.log(newQuantity);
       this.setState(prevState => ({ ...prevState, product: nextProps.product }));
     }
   }
@@ -52,15 +52,10 @@ export default class DisplayQuantityModal extends React.Component {
   // Communicate to parent component
   handleUpdateCart = () => {
     const initialQuantity = this.state.product.quantity;
-    console.log(this.state.product.quantity);
     const currentQuantityInt = parseInt(this.state.currentQuantity, 10);
     const priceDifference = (currentQuantityInt - initialQuantity) * this.state.product.customerCost;
     this.props.callback(this.state.product, currentQuantityInt, priceDifference);
     this.setModalVisible(!this.state.modalVisible);
-  };
-
-  handleClear = () => {
-    this.setState({ currentQuantity: '0' });
   };
 
   // Update quantity (string)
@@ -84,48 +79,43 @@ export default class DisplayQuantityModal extends React.Component {
             this.setModalVisible(!this.state.modalVisible);
           }}>
           {/* Opacity layer */}
-          <RowContainer
-            style={{
-              height: '100%',
-              width: '100%',
-              backgroundColor: 'rgba(0, 0, 0, 0.3)',
-              justifyContent: 'center',
-              alignItems: 'center'
-            }}>
+          <ModalCenteredOpacityLayer>
             <ColumnContainer
               style={{
                 height: '40%',
                 width: '60%',
                 margin: 'auto',
-                justifyContent: 'space-around',
                 alignItems: 'center',
+                justifyContent: 'space-around',
                 backgroundColor: 'white'
               }}>
+              <ColumnContainer style={{ justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+                <TouchableOpacity onPress={() => this.setModalVisible(false)}>
+                  <FontAwesome5 name="times" size={24} color={Colors.activeText} />
+                </TouchableOpacity>
+              </ColumnContainer>
               <Title>Quantity of {product.fullName}</Title>
-              <Caption>Key in the quantity and tap ADD TO SALE</Caption>
-              <Caption>OR press CLEAR to exit.</Caption>
-              <TextInput
+              <ColumnContainer style={{ alignItems: 'flex-start' }}>
+                <Body>Key in the quantity and tap UPDATE QUANTITY</Body>
+                <Body>OR press the top left X to exit.</Body>
+              </ColumnContainer>
+              <QuantityInput
+                textAlign="start"
                 placeholder="Quantity"
                 keyboardType="numeric"
                 maxLength={3}
                 onChangeText={this.updateQuantity}
                 value={this.state.currentQuantity}
               />
-
-              {/* Container for buttons at bottom */}
-              <RowContainer style={{ alignItems: 'center', justifyContent: 'center' }}>
-                <RoundedButtonContainer color={Colors.activeText} onPress={() => this.handleClear()}>
-                  <ButtonLabel>Clear</ButtonLabel>
-                </RoundedButtonContainer>
-                <RoundedButtonContainer onPress={() => this.handleUpdateCart()}>
-                  <ButtonLabel>Add to Sale</ButtonLabel>
-                </RoundedButtonContainer>
-              </RowContainer>
+              <RoundedButtonContainer onPress={() => this.handleUpdateCart()}>
+                <ButtonLabel>Update Quantity</ButtonLabel>
+              </RoundedButtonContainer>
             </ColumnContainer>
-          </RowContainer>
+          </ModalCenteredOpacityLayer>
         </Modal>
 
         <TouchableOpacity
+          disabled={this.state.product.quantity > 0}
           onPress={() => {
             this.handleShowModal();
           }}>

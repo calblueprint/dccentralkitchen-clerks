@@ -1,7 +1,7 @@
 import styled from 'styled-components/native';
 import Colors from '../assets/Colors';
 import { FilledButtonContainer } from '../components/BaseComponents';
-import { RowContainer } from './shared';
+import { ColumnContainer, RowContainer } from './shared';
 
 // Customer Name Top Bar
 
@@ -19,11 +19,14 @@ export const TopBar = styled.View`
 export const ProductsContainer = styled(RowContainer)`
   background: rgba(235, 235, 235, 0.5);
   flex-wrap: wrap;
-  width: 75%;
+  width: 65%;
+  justify-content: center;
 `;
 
-export const SaleContainer = styled.View`
+export const SaleContainer = styled(ColumnContainer)`
   padding: 13px 14px 0px;
+  align-items: center;
+  width: 35%;
 `;
 
 // Product Cards
@@ -55,9 +58,7 @@ export const LineItem = styled.View`
   padding: 12px 24px 12px 24px;
 `;
 
-export const LineItemRow = styled.View`
-  display: flex;
-  flex-direction: row;
+export const LineItemRow = styled(RowContainer)`
   justify-content: space-between;
   align-items: center;
 `;
@@ -78,4 +79,25 @@ export const RewardAppliedContainer = styled(FilledButtonContainer)`
   border: 1px solid ${Colors.light};
   border-radius: 9px;
   margin: 8px 0px;
+`;
+
+// Modals
+// Shared between Login and CustomerLookup
+export const QuantityInput = styled.TextInput`
+  border-width: 1px;
+  border-color: ${Colors.activeText};
+  height: 40px;
+  width: 200px;
+  color: ${Colors.activeText};
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+`;
+
+export const ModalCenteredOpacityLayer = styled(RowContainer)`
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+  justify-content: center;
+  align-items: center;
 `;

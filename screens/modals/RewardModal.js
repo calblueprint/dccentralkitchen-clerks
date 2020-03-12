@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Modal, TouchableHighlight, View } from 'react-native';
+import { Modal, View } from 'react-native';
 import Colors from '../../assets/Colors';
 import { ButtonLabel, Title } from '../../components/BaseComponents';
-import { RewardAppliedContainer, RewardAvailableContainer } from '../../styled/checkout';
+import { ModalCenteredOpacityLayer, RewardAppliedContainer, RewardAvailableContainer } from '../../styled/checkout';
 import { ColumnContainer, RoundedButtonContainer, RowContainer } from '../../styled/shared';
 
 export default class RewardModal extends React.Component {
@@ -112,8 +112,10 @@ export default class RewardModal extends React.Component {
       return null;
     }
     const { customer } = this.props;
+    const disabled =
+      (this.state.totalPrice < 5 && this.state.rewardsApplied === 0) || this.state.rewardsAvailable === 0;
     return (
-      <View style={{ width: '100%' }}>
+      <RowContainer style={{ width: '100%', justifyContent: 'center', alignItems: 'center' }}>
         <Modal
           animationType="none"
           supportedOrientations={['portrait', 'landscape']}
@@ -122,14 +124,7 @@ export default class RewardModal extends React.Component {
           onRequestClose={() => {
             this.setModalVisible(!this.state.modalVisible);
           }}>
-          <RowContainer
-            style={{
-              height: '100%',
-              width: '100%',
-              backgroundColor: 'rgba(0, 0, 0, 0.3)',
-              justifyContent: 'center',
-              alignItems: 'center'
-            }}>
+          <ModalCenteredOpacityLayer>
             <ColumnContainer
               style={{
                 height: '75%',
@@ -164,26 +159,18 @@ export default class RewardModal extends React.Component {
                 </RoundedButtonContainer>
               </RowContainer>
             </ColumnContainer>
-          </RowContainer>
+          </ModalCenteredOpacityLayer>
         </Modal>
 
-        <TouchableHighlight
-          onPress={() => {
-            this.setModalVisible(true);
-          }}>
-          <RoundedButtonContainer
-            width="179px"
-            height="40px"
-            color={
-              (this.state.totalPrice < 5 && this.state.rewardsApplied === 0) || this.state.rewardsAvailable === 0
-                ? Colors.lighter
-                : Colors.activeText
-            }
-            onPress={() => this.handleShowModal()}>
-            <ButtonLabel color={Colors.lightest}>Apply Rewards</ButtonLabel>
-          </RoundedButtonContainer>
-        </TouchableHighlight>
-      </View>
+        <RoundedButtonContainer
+          disabled={disabled}
+          width="179px"
+          height="40px"
+          color={disabled ? Colors.lighter : Colors.activeText}
+          onPress={() => this.handleShowModal()}>
+          <ButtonLabel color={Colors.lightest}>Apply Rewards</ButtonLabel>
+        </RoundedButtonContainer>
+      </RowContainer>
     );
   }
 }
