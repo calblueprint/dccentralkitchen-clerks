@@ -63,7 +63,7 @@ export default class ConfirmationScreen extends React.Component {
           {transaction.rewardsApplied > 0 && (
             <SpaceBetweenRowContainer>
               <Body>Total Discounts:</Body>
-              <Body>${transaction.rewardsApplied * 5}</Body>
+              <Body>${(transaction.rewardsApplied * 5).toFixed(2)}</Body>
             </SpaceBetweenRowContainer>
           )}
           <SpaceBetweenRowContainer>
