@@ -8,12 +8,7 @@ import Colors from '../assets/Colors';
 import { Title, FilledButtonContainer, ButtonLabel } from '../components/BaseComponents';
 import { CheckInContainer, CheckInContentContainer, TextField } from '../styled/checkin';
 
-// TODO rename this
-const DismissKeyboard = ({ children }) => (
-  <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>{children}</TouchableWithoutFeedback>
-);
-
-export default class ClerkLoginScreen extends React.Component {
+export default class StoreLookupScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -97,38 +92,45 @@ export default class ClerkLoginScreen extends React.Component {
   render() {
     return (
       // TODO break out this onChange into a function
-      <DismissKeyboard>
-        <CheckInContainer>
-          <CheckInContentContainer>
-            <Title style={{ marginBottom: 32 }} color="#fff">
-              Welcome to ____
-            </Title>
-            <Title color="#fff">Enter your employee PIN</Title>
-            <TextField
-              style={{ marginTop: 32 }}
-              placeholder="Password"
-              keyboardType="number-pad"
-              maxLength={4}
-              onChangeText={text => this.loginPermissionHandler(text)}
-              value={this.state.password}
-            />
-            <FilledButtonContainer
-              style={{ marginTop: 32 }}
-              color={this.state.loginPermission ? Colors.primaryGreen : Colors.lightestGreen}
-              width="253px"
-              height="40px"
-              onPress={() => this.handleSubmit(text)}
-              disabled={!this.state.signUpPermission}>
-              <ButtonLabel color="white">Next</ButtonLabel>
-            </FilledButtonContainer>
-          </CheckInContentContainer>
-          <Button title="Testing Bypass" onPress={() => this._devBypass()} />
-        </CheckInContainer>
-      </DismissKeyboard>
+      <CheckInContainer>
+        <CheckInContentContainer>
+          <Title color="#fff">Enter store name</Title>
+          <TextField
+            style={{ marginTop: 32 }}
+            placeholder="Password"
+            keyboardType="number-pad"
+            maxLength={4}
+            onChangeText={text => this.loginPermissionHandler(text)}
+            value={this.state.password}
+          />
+          <FilledButtonContainer
+            style={{ marginTop: 32 }}
+            color={this.state.loginPermission ? Colors.primaryGreen : Colors.lightestGreen}
+            width="253px"
+            height="40px"
+            onPress={() => this.handleSubmit(text)}
+            disabled={!this.state.signUpPermission}>
+            <ButtonLabel color="white">Next</ButtonLabel>
+          </FilledButtonContainer>
+        </CheckInContentContainer>
+
+        <Picker
+          mode="dropdown"
+          onValueChange={storeId => this.setState({ storeId })}
+          selectedValue={this.state.storeId}>
+          {this.state.stores.map(store => {
+            return <Picker.Item label={store.storeName} value={store.id} key={store.id} />;
+          })}
+        </Picker>
+
+        <SubmitButton color="#008550" title="Log In" onPress={() => this.handleSubmit()} />
+        {this.state.errorMsg ? <Text>{this.state.errorMsg}</Text> : null}
+        <Button title="Testing Bypass" onPress={() => this._devBypass()} />
+      </CheckInContainer>
     );
   }
 }
 
-ClerkLoginScreen.propTypes = {
+StoreLookupScreen.propTypes = {
   navigation: PropTypes.object.isRequired
 };
