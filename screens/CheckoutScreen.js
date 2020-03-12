@@ -2,26 +2,28 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Alert, AsyncStorage, Text, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import ProductCartCard from '../components/ProductCartCard';
-import ProductDisplayCard from '../components/ProductDisplayCard';
 import { getCustomersById } from '../lib/airtable/request';
 import { addTransaction, loadProductsData, updateCustomerPoints } from '../lib/checkoutUtils';
 import { FlatListContainer } from '../styled/checkout';
 import { TextHeader } from '../styled/shared';
+import CartQuantityModal from './modals/CartQuantityModal';
+import DisplayQuantityModal from './modals/DisplayQuantityModal';
 import RewardModal from './modals/RewardModal';
 
 export default class CheckoutScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      // Populated in componentDidMount
       customer: null,
-      currentPoints: 0,
       products: [],
-      cart: [],
-      totalPrice: 0,
-      totalPoints: 0,
-      rewardsApplied: 0,
+      cart: {},
+      currentPoints: 0,
       rewardsAvailable: 0,
+      // Other state
+      totalPoints: 0,
+      totalPrice: 0,
+      rewardsApplied: 0,
       isLoading: true
     };
   }
@@ -29,13 +31,21 @@ export default class CheckoutScreen extends React.Component {
   async componentDidMount() {
     const customerId = await AsyncStorage.getItem('customerId');
     const customer = await getCustomersById(customerId);
-    const productsData = await loadProductsData();
+    const products = await loadProductsData();
+    const initialCart = {};
+
+    // Initialize cart a'la Python dictionary, to make updating quantity cleaner
+    // Cart contains line items, which have all initial product attributes, and a quantity
+    products.forEach(product => {
+      initialCart[product.id] = product;
+    });
 
     this.setState({
       customer,
+      products,
+      cart: initialCart,
       currentPoints: customer.points,
       rewardsAvailable: customer.rewardsAvailable,
-      products: productsData,
       isLoading: false
     });
   }
@@ -43,6 +53,14 @@ export default class CheckoutScreen extends React.Component {
   applyRewardsCallback = (rewardsApplied, totalPrice) => {
     // Update rewards in parent state
     this.setState({ rewardsApplied, totalPrice });
+  };
+
+  updateQuantityCallback = (product, quantity, priceDifference) => {
+    this.setState(prevState => ({
+      cart: { ...prevState.cart, [prevState.cart[product.id].quantity]: quantity },
+      totalPrice: prevState.totalPrice + priceDifference
+    }));
+    console.log(this.state.cart[product.id]);
   };
 
   // Sets total points earned from transaction in state.
@@ -64,35 +82,6 @@ export default class CheckoutScreen extends React.Component {
   handleSubmit = () => {
     const totalPoints = this.setTotalPoints();
     this.displayConfirmation(totalPoints);
-  };
-
-  // Adds one item of product type to cart.
-  addToCart = item => {
-    item.cartCount += 1;
-    const currentCart = this.state.cart;
-    let { totalPrice } = this.state;
-    totalPrice += item.customerCost;
-    const currentItem = currentCart.filter(product => product.id === item.id);
-    if (currentItem.length === 0) {
-      currentCart.push(item);
-    }
-    this.setState({
-      cart: currentCart,
-      totalPrice
-    });
-  };
-
-  // Subtracts one item of product type from cart.
-  removeFromCart = item => {
-    item.cartCount -= 1;
-    let currentCart = this.state.cart;
-    currentCart = currentCart.filter(cartItem => cartItem.cartCount > 0);
-    let { totalPrice } = this.state;
-    totalPrice -= item.customerCost;
-    this.setState({
-      cart: currentCart,
-      totalPrice
-    });
   };
 
   // Generates the confirmation message based on items in cart, points earned,
@@ -171,11 +160,7 @@ export default class CheckoutScreen extends React.Component {
               keyExtractor={product => product.id}
               numColumns={5}
               data={products}
-              renderItem={({ item }) => (
-                <TouchableOpacity onPress={() => this.addToCart(item)}>
-                  <ProductDisplayCard product={item} />
-                </TouchableOpacity>
-              )}
+              renderItem={({ item }) => <DisplayQuantityModal product={item} callback={this.updateQuantityCallback} />}
             />
           </View>
           {/* Right column */}
@@ -184,11 +169,11 @@ export default class CheckoutScreen extends React.Component {
             {/* Cart container */}
             <View style={{ height: '40%', paddingBottom: '5%' }}>
               <ScrollView>
-                {cart.map(product => (
-                  <TouchableOpacity key={product.id} onPress={() => this.removeFromCart(product)}>
-                    <ProductCartCard product={product} />
-                  </TouchableOpacity>
-                ))}
+                {Object.entries(cart).map(([id, product]) => {
+                  return product.quantity > 0 ? (
+                    <CartQuantityModal id={id} lineItem={product} callback={this.updateQuantityCallback} />
+                  ) : null;
+                })}
               </ScrollView>
             </View>
             {/* Should be greyed out if totalPrice < 5 */}
