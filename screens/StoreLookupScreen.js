@@ -13,10 +13,10 @@ export default class StoreLookupScreen extends React.Component {
     super(props);
     this.state = {
       stores: [],
-      storeId: '',
+      store: null,
       password: '',
       errorMsg: null,
-      loginPermission: false
+      storePermission: true
     };
   }
 
@@ -26,7 +26,7 @@ export default class StoreLookupScreen extends React.Component {
       // Set to first store as default, since the picker also defaults to the top (first in list)
       this.setState({
         stores,
-        storeId: stores[0].id
+        store: stores[0]
       });
     } catch (err) {
       console.error(err);
@@ -42,51 +42,16 @@ export default class StoreLookupScreen extends React.Component {
     this.props.navigation.navigate('Checkout');
   };
 
-  // Set the clerkId and storeId in AsyncStorage
-  // Then navigate to the customer lookup screen
-  _asyncLoginClerk = async clerkRecord => {
-    await AsyncStorage.setItem('clerkId', clerkRecord.id);
-    await AsyncStorage.setItem('storeId', this.state.storeId);
-    this.props.navigation.navigate('CustomerLookup', { clerkName: clerkRecord.clerkName });
+  storePermissionHandler = store => {
+    // let storePermission = false;
+    // if (password.length == 4) {
+    //   storePermission = true;
+    // }
+    this.setState({ store });
   };
 
-  // This function will sign the user in if the clerk is found.
-  async handleSubmit() {
-    try {
-      // Uses the `Store ID` lookup in AirTable
-      const lookupResult = await lookupClerk(this.state.storeId, this.state.password);
-
-      let clerkRecord = null;
-      switch (lookupResult.status) {
-        case status.MATCH:
-          clerkRecord = lookupResult.record;
-          this._asyncLoginClerk(clerkRecord);
-          break;
-        // TODO for production, we should have some sort of logging mechanism (i.e replacing console logs)
-        case status.FOUND:
-          console.log('Incorrect password');
-          break;
-        case status.NOT_FOUND:
-          console.log('No clerk found at this store');
-          break;
-        case status.DUPLICATE:
-          console.log('Database malformed! Two users found');
-          break;
-        default:
-          return;
-      }
-      this.setState({ errorMsg: lookupResult.errorMsg, password: '' });
-    } catch (err) {
-      console.error('Airtable: ', err);
-    }
-  }
-
-  loginPermissionHandler = password => {
-    let loginPermission = false;
-    if (password.length == 4) {
-      loginPermission = true;
-    }
-    this.setState({ password, loginPermission });
+  handleNavigate = () => {
+    this.props.navigation.navigate('ClerkLogin', { store: this.state.store, storeName: this.state.store.storeName });
   };
 
   render() {
@@ -97,27 +62,22 @@ export default class StoreLookupScreen extends React.Component {
           <Title color="#fff">Enter store name</Title>
           <TextField
             style={{ marginTop: 32 }}
-            placeholder="Password"
-            keyboardType="number-pad"
-            maxLength={4}
-            onChangeText={text => this.loginPermissionHandler(text)}
-            value={this.state.password}
+            placeholder="ex: Healthy Corner Store"
+            onChangeText={text => this.storePermissionHandler(text)}
+            value={this.state.store}
           />
           <FilledButtonContainer
             style={{ marginTop: 32 }}
-            color={this.state.loginPermission ? Colors.primaryGreen : Colors.lightestGreen}
+            color={this.state.storePermission ? Colors.primaryGreen : Colors.lightestGreen}
             width="253px"
             height="40px"
-            onPress={() => this.handleSubmit(text)}
-            disabled={!this.state.signUpPermission}>
+            onPress={() => this.handleNavigate()}
+            disabled={!this.state.storePermission}>
             <ButtonLabel color="white">Next</ButtonLabel>
           </FilledButtonContainer>
         </CheckInContentContainer>
 
-        <Picker
-          mode="dropdown"
-          onValueChange={storeId => this.setState({ storeId })}
-          selectedValue={this.state.storeId}>
+        <Picker mode="dropdown" onValueChange={store => this.setState({ store })} selectedValue={this.state.store}>
           {this.state.stores.map(store => {
             return <Picker.Item label={store.storeName} value={store.id} key={store.id} />;
           })}

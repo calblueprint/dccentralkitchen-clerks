@@ -16,25 +16,11 @@ export default class ClerkLoginScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      stores: [],
-      storeId: '',
+      store: null,
       password: '',
       errorMsg: null,
       loginPermission: false
     };
-  }
-
-  async componentDidMount() {
-    try {
-      const stores = await loadStoreData();
-      // Set to first store as default, since the picker also defaults to the top (first in list)
-      this.setState({
-        stores,
-        storeId: stores[0].id
-      });
-    } catch (err) {
-      console.error(err);
-    }
   }
 
   // Purely to bypass the flow for development -- go straight to Checkout.
@@ -50,15 +36,23 @@ export default class ClerkLoginScreen extends React.Component {
   // Then navigate to the customer lookup screen
   _asyncLoginClerk = async clerkRecord => {
     await AsyncStorage.setItem('clerkId', clerkRecord.id);
-    await AsyncStorage.setItem('storeId', this.state.storeId);
+    await AsyncStorage.setItem('storeId', this.state.store.id);
     this.props.navigation.navigate('CustomerLookup', { clerkName: clerkRecord.clerkName });
   };
 
+  loginPermissionHandler = password => {
+    let loginPermission = false;
+    if (password.length == 4) {
+      loginPermission = true;
+    }
+    this.setState({ password, loginPermission });
+  };
+
   // This function will sign the user in if the clerk is found.
-  async handleSubmit() {
+  handleSubmit = async () => {
     try {
       // Uses the `Store ID` lookup in AirTable
-      const lookupResult = await lookupClerk(this.state.storeId, this.state.password);
+      const lookupResult = await lookupClerk(this.state.store.id, this.state.password);
 
       let clerkRecord = null;
       switch (lookupResult.status) {
@@ -83,17 +77,10 @@ export default class ClerkLoginScreen extends React.Component {
     } catch (err) {
       console.error('Airtable: ', err);
     }
-  }
-
-  loginPermissionHandler = password => {
-    let loginPermission = false;
-    if (password.length == 4) {
-      loginPermission = true;
-    }
-    this.setState({ password, loginPermission });
   };
 
   render() {
+    const { store } = this.props.navigation.state.params;
     return (
       // TODO break out this onChange into a function
       <DismissKeyboard>

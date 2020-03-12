@@ -35,7 +35,15 @@ export default class CustomerLookupScreen extends React.Component {
     return formatted;
   };
 
-  async handleSubmit() {
+  customerPermissionHandler = number => {
+    let customerPermission = false;
+    if (number.length == 10) {
+      customerPermission = true;
+    }
+    this.setState({ number, customerPermission });
+  };
+
+  handleSubmit = async () => {
     const formattedPhoneNumber = this._formatPhoneNumber(this.state.phoneNumber);
 
     try {
@@ -61,14 +69,6 @@ export default class CustomerLookupScreen extends React.Component {
     } catch (err) {
       console.error('Airtable: ', err);
     }
-  }
-
-  customerPermissionHandler = number => {
-    let customerPermission = false;
-    if (number.length == 10) {
-      customerPermission = true;
-    }
-    this.setState({ number, customerPermission });
   };
 
   render() {

@@ -12,8 +12,8 @@ const config = Platform.select({
 
 const HomeStack = createStackNavigator(
   {
-    Home: ClerkLoginScreen,
-    StoreLookup: StoreLookupScreen
+    StoreLookup: StoreLookupScreen,
+    ClerkLogin: ClerkLoginScreen
   },
   config
 );
