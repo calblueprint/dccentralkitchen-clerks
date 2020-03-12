@@ -59,12 +59,23 @@ export default class ConfirmationScreen extends React.Component {
             <Body>Rewards Redeemed:</Body>
             <Body>{transaction.rewardsApplied}</Body>
           </SpaceBetweenRowContainer>
+
+          {transaction.rewardsApplied > 0 && (
+            <SpaceBetweenRowContainer>
+              <Body>Total Discounts:</Body>
+              <Body>${transaction.rewardsApplied * 5}</Body>
+            </SpaceBetweenRowContainer>
+          )}
           <SpaceBetweenRowContainer>
             <Body>Total:</Body>
             <Body>${transaction.totalPrice}</Body>
           </SpaceBetweenRowContainer>
         </ColumnContainer>
-        <FilledButtonContainer onPress={() => this.handleSubmit()} width="236" height="46" style={{ borderRadius: 20 }}>
+        <FilledButtonContainer
+          onPress={() => this.handleSubmit()}
+          width="33%"
+          height="40px"
+          style={{ borderRadius: 20 }}>
           <ButtonLabel>Next Customer</ButtonLabel>
         </FilledButtonContainer>
       </ColumnContainer>
