@@ -44,8 +44,8 @@ export default class RewardModal extends React.Component {
   setModalVisible = visible => this.setState({ modalVisible: visible });
 
   handleShowModal = () => {
-    const { totalPrice } = this.props;
-    if (totalPrice < 5) {
+    const { totalPrice, rewardsAvailable, rewardsApplied } = this.props;
+    if ((totalPrice < 5 && rewardsApplied === 0) || rewardsAvailable === 0) {
       return;
     }
     this.setModalVisible(!this.state.modalVisible);
@@ -174,7 +174,11 @@ export default class RewardModal extends React.Component {
           <RoundedButtonContainer
             width="179px"
             height="40px"
-            color={this.state.totalPrice < 5 && this.state.rewardsApplied === 0 ? Colors.lighter : Colors.activeText}
+            color={
+              (this.state.totalPrice < 5 && this.state.rewardsApplied === 0) || this.state.rewardsAvailable === 0
+                ? Colors.lighter
+                : Colors.activeText
+            }
             onPress={() => this.handleShowModal()}>
             <ButtonLabel color={Colors.lightest}>Apply Rewards</ButtonLabel>
           </RoundedButtonContainer>
