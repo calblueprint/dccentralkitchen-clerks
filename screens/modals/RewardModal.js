@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Alert, Modal, TouchableHighlight, View } from 'react-native';
+import { Modal, TouchableHighlight, View } from 'react-native';
 import Colors from '../../assets/Colors';
-import { ButtonLabel, FilledButtonContainer, Title } from '../../components/BaseComponents';
+import { ButtonLabel, Title } from '../../components/BaseComponents';
 import { RewardAppliedContainer, RewardAvailableContainer } from '../../styled/checkout';
-import { ColumnContainer, RowContainer } from '../../styled/shared';
+import { ColumnContainer, RoundedButtonContainer, RowContainer } from '../../styled/shared';
 
 export default class RewardModal extends React.Component {
   constructor(props) {
@@ -57,9 +57,9 @@ export default class RewardModal extends React.Component {
     this.setModalVisible(!this.state.modalVisible);
   };
 
-  handleClear = async () => {
+  handleClear = () => {
     const clearedStatus = this.state.rewardStatus.map(_ => false);
-    await this.setState({
+    this.setState({
       rewardsApplied: 0,
       rewardStatus: clearedStatus,
       totalPrice: this.state.totalPrice + 5 * this.state.rewardsApplied
@@ -120,7 +120,7 @@ export default class RewardModal extends React.Component {
           transparent
           visible={this.state.modalVisible}
           onRequestClose={() => {
-            Alert.alert('Modal has been closed.');
+            this.setModalVisible(!this.state.modalVisible);
           }}>
           <RowContainer
             style={{
@@ -156,21 +156,12 @@ export default class RewardModal extends React.Component {
 
               {/* Container for buttons at bottom */}
               <RowContainer style={{ alignItems: 'center', justifyContent: 'center' }}>
-                <FilledButtonContainer
-                  style={{ borderRadius: '20px', margin: 12 }}
-                  width="160px"
-                  height="39px"
-                  color={Colors.activeText}
-                  onPress={() => this.handleClear()}>
+                <RoundedButtonContainer color={Colors.activeText} onPress={() => this.handleClear()}>
                   <ButtonLabel>Clear All</ButtonLabel>
-                </FilledButtonContainer>
-                <FilledButtonContainer
-                  style={{ borderRadius: '20px', margin: 12 }}
-                  width="160px"
-                  height="39px"
-                  onPress={() => this.handleApplyRewards()}>
+                </RoundedButtonContainer>
+                <RoundedButtonContainer onPress={() => this.handleApplyRewards()}>
                   <ButtonLabel>Apply Rewards</ButtonLabel>
-                </FilledButtonContainer>
+                </RoundedButtonContainer>
               </RowContainer>
             </ColumnContainer>
           </RowContainer>
@@ -180,14 +171,13 @@ export default class RewardModal extends React.Component {
           onPress={() => {
             this.setModalVisible(true);
           }}>
-          <FilledButtonContainer
-            style={{ borderRadius: '20px', margin: 12 }}
+          <RoundedButtonContainer
             width="179px"
             height="40px"
             color={this.state.totalPrice < 5 && this.state.rewardsApplied === 0 ? Colors.lighter : Colors.activeText}
             onPress={() => this.handleShowModal()}>
             <ButtonLabel color={Colors.lightest}>Apply Rewards</ButtonLabel>
-          </FilledButtonContainer>
+          </RoundedButtonContainer>
         </TouchableHighlight>
       </View>
     );
