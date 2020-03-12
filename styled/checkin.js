@@ -2,7 +2,7 @@ import styled from 'styled-components/native';
 import Colors from '../assets/Colors';
 
 export const CheckInContainer = styled.View`
-  background-color: ${Colors.activeText};
+  background-color: ${props => props.color || Colors.activeText};
   height: 100%;
   width: 100%;
 `;

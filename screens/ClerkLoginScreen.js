@@ -3,7 +3,6 @@ import React from 'react';
 import { AsyncStorage, Button, Keyboard, Picker, Text, TouchableWithoutFeedback } from 'react-native';
 import { status } from '../lib/constants';
 import { loadStoreData, lookupClerk } from '../lib/loginUtils';
-import { Container, SubmitButton, TextInput } from '../styled/shared';
 import Colors from '../assets/Colors';
 import { Title, FilledButtonContainer, ButtonLabel } from '../components/BaseComponents';
 import { CheckInContainer, CheckInContentContainer, TextField } from '../styled/checkin';
@@ -44,7 +43,7 @@ export default class ClerkLoginScreen extends React.Component {
     await AsyncStorage.setItem('clerkId', 'recgq59j7Cx9zsSYE');
     await AsyncStorage.setItem('storeId', 'recw49LpAOInqvX3e');
     await AsyncStorage.setItem('customerId', 'recqx32YmmACiRWMq');
-    this.props.navigation.navigate('Checkout');
+    this.props.navigation.navigate('CustomerLookup');
   };
 
   // Set the clerkId and storeId in AsyncStorage
@@ -117,8 +116,8 @@ export default class ClerkLoginScreen extends React.Component {
               color={this.state.loginPermission ? Colors.primaryGreen : Colors.lightestGreen}
               width="253px"
               height="40px"
-              onPress={() => this.handleSubmit(text)}
-              disabled={!this.state.signUpPermission}>
+              onPress={() => this.handleSubmit()}
+              disabled={!this.state.loginPermission}>
               <ButtonLabel color="white">Next</ButtonLabel>
             </FilledButtonContainer>
           </CheckInContentContainer>

@@ -3,7 +3,9 @@ import React from 'react';
 import { AsyncStorage, Text } from 'react-native';
 import { status } from '../lib/constants';
 import { lookupCustomer } from '../lib/lookupUtils';
-import { Container, SubmitButton, TextHeader, TextInput } from '../styled/shared';
+import Colors from '../assets/Colors';
+import { Title, FilledButtonContainer, ButtonLabel } from '../components/BaseComponents';
+import { CheckInContainer, CheckInContentContainer, TextField } from '../styled/checkin';
 
 export default class CustomerLookupScreen extends React.Component {
   constructor(props) {
@@ -12,7 +14,8 @@ export default class CustomerLookupScreen extends React.Component {
     this.state = {
       clerkName: '',
       phoneNumber: '',
-      errorMsg: ''
+      errorMsg: '',
+      customerPermission: false
     };
   }
 
@@ -60,22 +63,41 @@ export default class CustomerLookupScreen extends React.Component {
     }
   }
 
-  render() {
-    const displayText = 'Welcome, '.concat(this.state.clerkName);
-    return (
-      <Container>
-        <TextHeader>{displayText}</TextHeader>
+  customerPermissionHandler = number => {
+    let customerPermission = false;
+    if (number.length == 10) {
+      customerPermission = true;
+    }
+    this.setState({ number, customerPermission });
+  };
 
-        <TextInput
-          placeholder="Customer Phone Number (i.e. 1234567890)"
-          keyboardType="number-pad"
-          maxLength={10}
-          onChangeText={number => this.setState({ phoneNumber: number })}
-          value={this.state.phoneNumber}
-        />
-        <SubmitButton color="#008550" title="Find Customer" onPress={() => this.handleSubmit()} />
-        {this.state.errorMsg ? <Text>{this.state.errorMsg}</Text> : null}
-      </Container>
+  render() {
+    return (
+      <CheckInContainer color="#fff">
+        <CheckInContentContainer>
+          <Title style={{ marginBottom: 32 }} color="#fff">
+            Welcome to ____
+          </Title>
+          <Title>Enter customer phone number</Title>
+          <TextField
+            style={{ marginTop: 32 }}
+            placeholder="(123) 456-7890"
+            keyboardType="number-pad"
+            maxLength={10}
+            onChangeText={text => this.customerPermissionHandler(text)}
+            value={this.state.password}
+          />
+          <FilledButtonContainer
+            style={{ marginTop: 32 }}
+            color={this.state.customerPermission ? Colors.primaryGreen : Colors.lightestGreen}
+            width="253px"
+            height="40px"
+            onPress={() => this.handleSubmit()}
+            disabled={!this.state.customerPermission}>
+            <ButtonLabel color="white">Next</ButtonLabel>
+          </FilledButtonContainer>
+        </CheckInContentContainer>
+      </CheckInContainer>
     );
   }
 }
