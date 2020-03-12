@@ -42,12 +42,6 @@ export default class ConfirmationScreen extends React.Component {
       <ColumnContainer style={{ width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
         <ColumnContainer style={{ width: '33%', paddingBottom: 48 }}>
           <Title>Purchase Recorded! </Title>
-          <Body>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua. Nec sagittis aliquam malesuada bibendum arcu vitae. Enim praesent elementum facilisis
-            leo. Vulputate mi sit amet mauris commodo quis imperdiet massa. Venenatis a condimentum vitae sapien
-            pellentesque. Id consectetur purus ut faucibus pulvinar elementum.
-          </Body>
         </ColumnContainer>
         <ColumnContainer style={{ width: '33%', justifyContent: 'space-around', margin: 12, paddingBottom: 48 }}>
           <Title>Purchase Total</Title>
@@ -68,7 +62,7 @@ export default class ConfirmationScreen extends React.Component {
           )}
           <SpaceBetweenRowContainer>
             <Body>Total:</Body>
-            <Body>${transaction.totalPrice}</Body>
+            <Body>${transaction.totalPrice.toFixed(2)}</Body>
           </SpaceBetweenRowContainer>
         </ColumnContainer>
         <FilledButtonContainer
