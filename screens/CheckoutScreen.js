@@ -2,9 +2,10 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Alert, AsyncStorage, Text, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
+import { Subhead, Title } from '../components/BaseComponents';
 import { getCustomersById } from '../lib/airtable/request';
 import { addTransaction, loadProductsData, updateCustomerPoints } from '../lib/checkoutUtils';
-import { FlatListContainer } from '../styled/checkout';
+import { FlatListContainer, ProductsContainer, SaleContainer, TopBar } from '../styled/checkout';
 import { TextHeader } from '../styled/shared';
 import CartQuantityModal from './modals/CartQuantityModal';
 import DisplayQuantityModal from './modals/DisplayQuantityModal';
@@ -45,7 +46,7 @@ export default class CheckoutScreen extends React.Component {
       products,
       cart: initialCart,
       currentPoints: customer.points,
-      rewardsAvailable: customer.rewardsAvailable,
+      rewardsAvailable: Math.floor(customer.rewardsAvailable),
       isLoading: false
     });
   }
@@ -152,20 +153,22 @@ export default class CheckoutScreen extends React.Component {
     return (
       // Temp fix for the horizontal orientation not showing Checkout Button
       <ScrollView>
-        <TextHeader style={{ padding: '5%' }}> {'Customer: '.concat(customer.name)} </TextHeader>
-        <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+        <TopBar>
+          <Title> {'Customer: '.concat(customer.name)} </Title>
+        </TopBar>
+        <View style={{ display: 'flex', flexDirection: 'row' }}>
           {/* Display products */}
-          <View>
+          <ProductsContainer>
             <FlatListContainer
               keyExtractor={product => product.id}
               numColumns={5}
               data={products}
               renderItem={({ item }) => <DisplayQuantityModal product={item} callback={this.updateQuantityCallback} />}
             />
-          </View>
+          </ProductsContainer>
           {/* Right column */}
-          <View>
-            <TextHeader>Cart</TextHeader>
+          <SaleContainer>
+            <Subhead>Current Sale</Subhead>
             {/* Cart container */}
             <View style={{ height: '40%', paddingBottom: '5%' }}>
               <ScrollView>
@@ -194,7 +197,7 @@ export default class CheckoutScreen extends React.Component {
             <TouchableOpacity onPress={() => this.handleSubmit()}>
               <TextHeader style={{ color: '#008550' }}>Checkout</TextHeader>
             </TouchableOpacity>
-          </View>
+          </SaleContainer>
         </View>
       </ScrollView>
     );
