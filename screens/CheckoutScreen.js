@@ -8,8 +8,7 @@ import { getCustomersById } from '../lib/airtable/request';
 import { addTransaction, loadProductsData, updateCustomerPoints } from '../lib/checkoutUtils';
 import { ProductsContainer, SaleContainer, TopBar } from '../styled/checkout';
 import { TextHeader } from '../styled/shared';
-import CartQuantityModal from './modals/CartQuantityModal';
-import DisplayQuantityModal from './modals/DisplayQuantityModal';
+import QuantityModal from './modals/QuantityModal';
 import RewardModal from './modals/RewardModal';
 
 export default class CheckoutScreen extends React.Component {
@@ -160,7 +159,7 @@ export default class CheckoutScreen extends React.Component {
           {/* Display products */}
           <ProductsContainer>
             {Object.entries(cart).map(([id, product]) => (
-              <DisplayQuantityModal key={id} product={product} callback={this.updateQuantityCallback} />
+              <QuantityModal key={id} product={product} isLineItem={false} callback={this.updateQuantityCallback} />
             ))}
           </ProductsContainer>
           {/* Right column */}
@@ -170,9 +169,11 @@ export default class CheckoutScreen extends React.Component {
             <View style={{ height: '40%', paddingBottom: '5%' }}>
               <ScrollView>
                 {Object.entries(cart).map(([id, product]) => {
-                  return product.quantity > 0 ? (
-                    <CartQuantityModal key={id} lineItem={product} callback={this.updateQuantityCallback} />
-                  ) : null;
+                  return (
+                    product.quantity > 0 && (
+                      <QuantityModal key={id} product={product} isLineItem callback={this.updateQuantityCallback} />
+                    )
+                  );
                 })}
               </ScrollView>
             </View>

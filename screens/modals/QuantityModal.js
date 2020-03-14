@@ -4,11 +4,12 @@ import React from 'react';
 import { Modal, TouchableOpacity, View } from 'react-native';
 import Colors from '../../assets/Colors';
 import { Body, ButtonLabel, Title } from '../../components/BaseComponents';
+import LineItemCard from '../../components/LineItemCard';
 import ProductDisplayCard from '../../components/ProductDisplayCard';
 import { ModalCenteredOpacityLayer, QuantityInput } from '../../styled/checkout';
-import { ColumnContainer, RoundedButtonContainer } from '../../styled/shared';
+import { ColumnContainer, RoundedButtonContainer, RowContainer } from '../../styled/shared';
 
-export default class DisplayQuantityModal extends React.Component {
+export default class QuantityModal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -25,12 +26,12 @@ export default class DisplayQuantityModal extends React.Component {
     const quantityInt = product.quantity;
     this.setState({
       product,
-      currentQuantity: quantityInt.toString(10),
+      currentQuantity: quantityInt.toString(),
       isLoading: false
     });
   }
 
-  // TODO is this needed? YES it is because it runs when new props are passed
+  // Forces a re-render when new props are passed
   componentWillReceiveProps(nextProps) {
     const newQuantity = nextProps.product.quantity;
     if (this.state.product.quantity !== newQuantity) {
@@ -40,12 +41,7 @@ export default class DisplayQuantityModal extends React.Component {
 
   setModalVisible = visible => this.setState({ modalVisible: visible });
 
-  // For DisplayQuantityModal modal, don't allow to open modal (they should click on CartQuantityModal instead)
   handleShowModal = () => {
-    const initialQuantity = this.state.product.quantity;
-    if (initialQuantity > 0) {
-      return;
-    }
     this.setModalVisible(!this.state.modalVisible);
   };
 
@@ -67,7 +63,7 @@ export default class DisplayQuantityModal extends React.Component {
     if (this.state.isLoading) {
       return null;
     }
-    const { product } = this.props;
+    const { product, isLineItem } = this.props;
     return (
       <View>
         <Modal
@@ -85,48 +81,61 @@ export default class DisplayQuantityModal extends React.Component {
                 height: '40%',
                 width: '60%',
                 margin: 'auto',
-                alignItems: 'center',
                 justifyContent: 'space-around',
+                alignItems: 'center',
                 backgroundColor: 'white'
               }}>
-              <ColumnContainer style={{ justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+              <RowContainer style={{ justifyContent: 'flex-start', alignItems: 'flex-start' }}>
                 <TouchableOpacity onPress={() => this.setModalVisible(false)}>
                   <FontAwesome5 name="times" size={24} color={Colors.activeText} />
                 </TouchableOpacity>
+              </RowContainer>
+              <ColumnContainer style={{ justifyContent: 'space-between', alignItems: 'center' }}>
+                <Title>Quantity of {product.fullName}</Title>
+                <ColumnContainer>
+                  <Body>Key in the quantity and tap UPDATE QUANTITY</Body>
+                  <Body>OR press the top left X to exit.</Body>
+                </ColumnContainer>
+                <QuantityInput
+                  placeholder="Quantity"
+                  keyboardType="numeric"
+                  maxLength={3}
+                  onChangeText={this.updateQuantity}
+                  value={this.state.currentQuantity}
+                />
+                <RoundedButtonContainer onPress={() => this.handleUpdateCart()}>
+                  <ButtonLabel>Update Quantity</ButtonLabel>
+                </RoundedButtonContainer>
               </ColumnContainer>
-              <Title>Quantity of {product.fullName}</Title>
-              <ColumnContainer style={{ alignItems: 'flex-start' }}>
-                <Body>Key in the quantity and tap UPDATE QUANTITY</Body>
-                <Body>OR press the top left X to exit.</Body>
-              </ColumnContainer>
-              <QuantityInput
-                textAlign="start"
-                placeholder="Quantity"
-                keyboardType="numeric"
-                maxLength={3}
-                onChangeText={this.updateQuantity}
-                value={this.state.currentQuantity}
-              />
-              <RoundedButtonContainer onPress={() => this.handleUpdateCart()}>
-                <ButtonLabel>Update Quantity</ButtonLabel>
-              </RoundedButtonContainer>
             </ColumnContainer>
           </ModalCenteredOpacityLayer>
         </Modal>
 
-        <TouchableOpacity
-          disabled={this.state.product.quantity > 0}
-          onPress={() => {
-            this.handleShowModal();
-          }}>
-          <ProductDisplayCard product={product} />
-        </TouchableOpacity>
+        {isLineItem ? (
+          product.quantity > 0 && (
+            <TouchableOpacity
+              onPress={() => {
+                this.setModalVisible(true);
+              }}>
+              <LineItemCard product={product} />
+            </TouchableOpacity>
+          )
+        ) : (
+          <TouchableOpacity
+            disabled={this.state.product.quantity > 0}
+            onPress={() => {
+              this.handleShowModal();
+            }}>
+            <ProductDisplayCard product={product} />
+          </TouchableOpacity>
+        )}
       </View>
     );
   }
 }
 
-DisplayQuantityModal.propTypes = {
+QuantityModal.propTypes = {
   product: PropTypes.object.isRequired,
-  callback: PropTypes.func.isRequired
+  callback: PropTypes.func.isRequired,
+  isLineItem: PropTypes.bool.isRequired
 };
