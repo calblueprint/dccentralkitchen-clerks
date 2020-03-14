@@ -6,6 +6,7 @@ import { lookupCustomer } from '../lib/lookupUtils';
 import Colors from '../assets/Colors';
 import { Title, FilledButtonContainer, ButtonLabel } from '../components/BaseComponents';
 import { CheckInContainer, CheckInContentContainer, TextField } from '../styled/checkin';
+import BackButton from '../components/BackButton';
 
 export default class CustomerLookupScreen extends React.Component {
   constructor(props) {
@@ -35,12 +36,12 @@ export default class CustomerLookupScreen extends React.Component {
     return formatted;
   };
 
-  customerPermissionHandler = number => {
+  customerPermissionHandler = phoneNumber => {
     let customerPermission = false;
-    if (number.length == 10) {
+    if (phoneNumber.length == 10) {
       customerPermission = true;
     }
-    this.setState({ number, customerPermission });
+    this.setState({ phoneNumber, customerPermission });
   };
 
   handleSubmit = async () => {
@@ -74,6 +75,7 @@ export default class CustomerLookupScreen extends React.Component {
   render() {
     return (
       <CheckInContainer color="#fff">
+        <BackButton navigation={this.props.navigation} />
         <CheckInContentContainer>
           <Title style={{ marginBottom: 32 }} color="#fff">
             Welcome to ____

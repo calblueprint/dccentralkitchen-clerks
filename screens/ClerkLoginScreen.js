@@ -6,6 +6,7 @@ import { loadStoreData, lookupClerk } from '../lib/loginUtils';
 import Colors from '../assets/Colors';
 import { Title, FilledButtonContainer, ButtonLabel } from '../components/BaseComponents';
 import { CheckInContainer, CheckInContentContainer, TextField } from '../styled/checkin';
+import BackButton from '../components/BackButton';
 
 // TODO rename this
 const DismissKeyboard = ({ children }) => (
@@ -16,7 +17,6 @@ export default class ClerkLoginScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      store: null,
       password: '',
       errorMsg: null,
       loginPermission: false
@@ -36,7 +36,7 @@ export default class ClerkLoginScreen extends React.Component {
   // Then navigate to the customer lookup screen
   _asyncLoginClerk = async clerkRecord => {
     await AsyncStorage.setItem('clerkId', clerkRecord.id);
-    await AsyncStorage.setItem('storeId', this.state.store.id);
+    await AsyncStorage.setItem('storeId', this.props.navigation.state.params.store.id);
     this.props.navigation.navigate('CustomerLookup', { clerkName: clerkRecord.clerkName });
   };
 
@@ -52,7 +52,7 @@ export default class ClerkLoginScreen extends React.Component {
   handleSubmit = async () => {
     try {
       // Uses the `Store ID` lookup in AirTable
-      const lookupResult = await lookupClerk(this.state.store.id, this.state.password);
+      const lookupResult = await lookupClerk(this.props.navigation.state.params.store.id, this.state.password);
 
       let clerkRecord = null;
       switch (lookupResult.status) {
@@ -85,14 +85,15 @@ export default class ClerkLoginScreen extends React.Component {
       // TODO break out this onChange into a function
       <DismissKeyboard>
         <CheckInContainer>
+          <BackButton navigation={this.props.navigation} />
           <CheckInContentContainer>
             <Title style={{ marginBottom: 32 }} color="#fff">
-              Welcome to ____
+              Welcome to {store.storeName}!
             </Title>
             <Title color="#fff">Enter your employee PIN</Title>
             <TextField
               style={{ marginTop: 32 }}
-              placeholder="Password"
+              placeholder="ex. 1234"
               keyboardType="number-pad"
               maxLength={4}
               onChangeText={text => this.loginPermissionHandler(text)}
@@ -108,7 +109,7 @@ export default class ClerkLoginScreen extends React.Component {
               <ButtonLabel color="white">Next</ButtonLabel>
             </FilledButtonContainer>
           </CheckInContentContainer>
-          <Button title="Testing Bypass" onPress={() => this._devBypass()} />
+          {/* <Button title="Testing Bypass" onPress={() => this._devBypass()} /> */}
         </CheckInContainer>
       </DismissKeyboard>
     );

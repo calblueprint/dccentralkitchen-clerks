@@ -3,8 +3,7 @@ import Colors from '../assets/Colors';
 
 export const CheckInContainer = styled.View`
   background-color: ${props => props.color || Colors.activeText};
-  height: 100%;
-  width: 100%;
+  flex: 1;
 `;
 
 // Question: Why doesn't justify-content work? // Gotta fix margin
@@ -12,7 +11,7 @@ export const CheckInContentContainer = styled.View`
     display: flex
     flex-direction: column;
     align-items: center;
-    margin: 15% 0;
+    margin: 15%
 `;
 
 export const TextField = styled.TextInput`

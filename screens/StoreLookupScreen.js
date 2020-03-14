@@ -13,7 +13,7 @@ export default class StoreLookupScreen extends React.Component {
     super(props);
     this.state = {
       stores: [],
-      store: null,
+      store: {},
       password: '',
       errorMsg: null,
       storePermission: true
@@ -43,11 +43,11 @@ export default class StoreLookupScreen extends React.Component {
   };
 
   storePermissionHandler = store => {
-    // let storePermission = false;
-    // if (password.length == 4) {
-    //   storePermission = true;
-    // }
-    this.setState({ store });
+    let storePermission = false;
+    if (store) {
+      storePermission = true;
+    }
+    this.setState({ store, storePermission });
   };
 
   handleNavigate = () => {
@@ -64,7 +64,7 @@ export default class StoreLookupScreen extends React.Component {
             style={{ marginTop: 32 }}
             placeholder="ex: Healthy Corner Store"
             onChangeText={text => this.storePermissionHandler(text)}
-            value={this.state.store}
+            value={this.state.store.storeName}
           />
           <FilledButtonContainer
             style={{ marginTop: 32 }}
@@ -77,15 +77,13 @@ export default class StoreLookupScreen extends React.Component {
           </FilledButtonContainer>
         </CheckInContentContainer>
 
-        <Picker mode="dropdown" onValueChange={store => this.setState({ store })} selectedValue={this.state.store}>
+        {/* <Picker mode="dropdown" onValueChange={store => this.setState({ store })} selectedValue={this.state.store}>
           {this.state.stores.map(store => {
-            return <Picker.Item label={store.storeName} value={store.id} key={store.id} />;
+            return <Picker.Item label={store.storeName} value={store} key={store} />;
           })}
         </Picker>
-
-        <SubmitButton color="#008550" title="Log In" onPress={() => this.handleSubmit()} />
-        {this.state.errorMsg ? <Text>{this.state.errorMsg}</Text> : null}
-        <Button title="Testing Bypass" onPress={() => this._devBypass()} />
+        {this.state.errorMsg ? <Text>{this.state.errorMsg}</Text> : null} */}
+        {/* <Button title="Testing Bypass" onPress={() => this._devBypass()} /> */}
       </CheckInContainer>
     );
   }
