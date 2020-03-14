@@ -38,3 +38,17 @@ export const TextInput = styled.TextInput`
   font-weight: bold;
   text-align: center;
 `;
+
+export const RowContainer = styled.View`
+  flex-direction: row;
+  display: flex;
+`;
+
+export const ColumnContainer = styled.View`
+  flex-direction: column;
+  display: flex;
+`;
+
+export const SpaceBetweenRowContainer = styled(RowContainer)`
+  justify-content: space-between;
+`;

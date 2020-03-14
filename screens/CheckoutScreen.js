@@ -115,15 +115,16 @@ export default class CheckoutScreen extends React.Component {
   // Adds the transaction to the user's account and updates their points.
   async confirmTransaction() {
     try {
-      await addTransaction(
+      const transactionId = await addTransaction(
         this.state.customer,
         this.state.cart,
         this.state.currentPoints,
         this.state.totalPoints,
+        this.state.totalPrice,
         this.state.rewardsApplied
       );
       await updateCustomerPoints(this.state.customer, this.state.totalPoints, this.state.rewardsApplied);
-      this.props.navigation.goBack();
+      this.props.navigation.navigate('Confirmation', { transactionId });
     } catch (err) {
       // TODO better handling - should prompt the user to try again, or at least say something is wrong with the service
       // Technically the only thing that could happen is a network failure, but likely indicates a change in column schema etc
