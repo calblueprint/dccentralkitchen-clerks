@@ -38,17 +38,22 @@ export default class ClerkLoginScreen extends React.Component {
   // Configures to use Jeffry Poa & Robin Hood
   _devBypass = async () => {
     await AsyncStorage.setItem('clerkId', 'recgq59j7Cx9zsSYE');
+    await AsyncStorage.setItem('clerkName', 'Jeffry Poa');
     await AsyncStorage.setItem('storeId', 'recw49LpAOInqvX3e');
     await AsyncStorage.setItem('customerId', 'recqx32YmmACiRWMq');
     this.props.navigation.navigate('Checkout');
+  };
+
+  _devBypassConfirm = async () => {
+    this.props.navigation.navigate('Confirmation', { transactionId: 'recbDBXR1bvvpEnOK' });
   };
 
   // Set the clerkId and storeId in AsyncStorage
   // Then navigate to the customer lookup screen
   _asyncLoginClerk = async clerkRecord => {
     await AsyncStorage.setItem('clerkId', clerkRecord.id);
+    await AsyncStorage.setItem('clerkName', clerkRecord.clerkName);
     await AsyncStorage.setItem('storeId', this.state.storeId);
-    this.props.navigation.navigate('CustomerLookup', { clerkName: clerkRecord.clerkName });
   };
 
   // This function will sign the user in if the clerk is found.
@@ -61,7 +66,8 @@ export default class ClerkLoginScreen extends React.Component {
       switch (lookupResult.status) {
         case status.MATCH:
           clerkRecord = lookupResult.record;
-          this._asyncLoginClerk(clerkRecord);
+          await this._asyncLoginClerk(clerkRecord);
+          this.props.navigation.navigate('CustomerLookup');
           break;
         // TODO for production, we should have some sort of logging mechanism (i.e replacing console logs)
         case status.FOUND:
@@ -105,7 +111,8 @@ export default class ClerkLoginScreen extends React.Component {
           />
           <SubmitButton color="#008550" title="Log In" onPress={() => this.handleSubmit()} />
           {this.state.errorMsg ? <Text>{this.state.errorMsg}</Text> : null}
-          <Button title="Testing Bypass" onPress={() => this._devBypass()} />
+          <Button title="Checkout Bypass" onPress={() => this._devBypass()} />
+          <Button title="Confirmation Bypass" onPress={() => this._devBypassConfirm()} />
         </Container>
       </DismissKeyboard>
     );

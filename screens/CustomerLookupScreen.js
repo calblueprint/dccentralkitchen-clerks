@@ -17,7 +17,7 @@ export default class CustomerLookupScreen extends React.Component {
   }
 
   async componentDidMount() {
-    const { clerkName } = this.props.navigation.state.params;
+    const clerkName = await AsyncStorage.getItem('clerkName');
     this.setState({ clerkName });
   }
 
