@@ -17,6 +17,29 @@ export const TopBar = styled.View`
   align-items: center;
 `;
 
+// Alphabetical Tab Bottom Bar
+
+export const BottomBar = styled.View`
+  height: 57px;
+  width: 100%;
+  background: ${Colors.base};
+  flex: 1;
+`;
+
+// Tabs
+
+export const TabContainer = styled.TouchableOpacity`
+  height: 57px;
+  width: 119px;
+  border: 1px solid ${Colors.lightest};
+  background: ${Colors.base};
+  border-top-width: 0px;
+  border-bottom-width: 0px;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+`;
+
 // Products Section
 
 export const ProductsContainer = styled.View`

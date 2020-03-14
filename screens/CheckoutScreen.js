@@ -6,9 +6,16 @@ import ProductCartCard from '../components/ProductCartCard';
 import ProductDisplayCard from '../components/ProductDisplayCard';
 import { getCustomersById } from '../lib/airtable/request';
 import { addTransaction, loadProductsData, updateCustomerPoints } from '../lib/checkoutUtils';
-import { FlatListContainer, TopBar, ProductsContainer, SaleContainer } from '../styled/checkout';
+import {
+  FlatListContainer,
+  TopBar,
+  ProductsContainer,
+  SaleContainer,
+  BottomBar,
+  TabContainer
+} from '../styled/checkout';
 import { TextHeader } from '../styled/shared';
-import { Title, Subhead } from '../components/BaseComponents';
+import { Title, Subhead, FilledButtonContainer, ButtonLabel } from '../components/BaseComponents';
 
 export default class CheckoutScreen extends React.Component {
   constructor(props) {
@@ -211,7 +218,7 @@ export default class CheckoutScreen extends React.Component {
           <ProductsContainer>
             <FlatListContainer
               keyExtractor={product => product.id}
-              numColumns={5}
+              numColumns={3}
               data={products}
               renderItem={({ item }) => (
                 <TouchableOpacity onPress={() => this.addToCart(item)}>
@@ -219,6 +226,17 @@ export default class CheckoutScreen extends React.Component {
                 </TouchableOpacity>
               )}
             />
+            <BottomBar style={{ display: 'flex', flexDirection: 'row', marginBottom: 0 }}>
+              <TabContainer>
+                <Title>A-K</Title>
+              </TabContainer>
+              <TabContainer>
+                <Title>L-S</Title>
+              </TabContainer>
+              <TabContainer>
+                <Title>T-Z</Title>
+              </TabContainer>
+            </BottomBar>
           </ProductsContainer>
           {/* Right column */}
           <SaleContainer>
@@ -251,6 +269,11 @@ export default class CheckoutScreen extends React.Component {
             <TouchableOpacity onPress={() => this.handleSubmit()}>
               <TextHeader style={{ color: '#008550' }}>Checkout</TextHeader>
             </TouchableOpacity>
+            <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+              <FilledButtonContainer style={{ marginBottom: 0 }}>
+                <ButtonLabel>Complete Purchase</ButtonLabel>
+              </FilledButtonContainer>
+            </View>
           </SaleContainer>
         </View>
       </ScrollView>
