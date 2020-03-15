@@ -118,7 +118,7 @@ export default class RewardModal extends React.Component {
       <RowContainer style={{ width: '100%', justifyContent: 'center', alignItems: 'center' }}>
         <Modal
           animationType="none"
-          supportedOrientations={['portrait', 'landscape']}
+          supportedOrientations={['landscape']}
           transparent
           visible={this.state.modalVisible}
           onRequestClose={() => {

@@ -68,7 +68,7 @@ export default class QuantityModal extends React.Component {
       <View>
         <Modal
           animationType="none"
-          supportedOrientations={['portrait', 'landscape']}
+          supportedOrientations={['landscape']}
           transparent
           visible={this.state.modalVisible}
           onRequestClose={() => {
@@ -79,18 +79,23 @@ export default class QuantityModal extends React.Component {
             <ColumnContainer
               style={{
                 height: '40%',
-                width: '60%',
+                width: '50%',
                 margin: 'auto',
-                justifyContent: 'space-around',
+                justifyContent: 'space-between',
                 alignItems: 'center',
                 backgroundColor: 'white'
               }}>
-              <RowContainer style={{ justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+              <RowContainer
+                style={{
+                  alignSelf: 'flex-start',
+                  justifyContent: 'center',
+                  padding: 16
+                }}>
                 <TouchableOpacity onPress={() => this.setModalVisible(false)}>
                   <FontAwesome5 name="times" size={24} color={Colors.activeText} />
                 </TouchableOpacity>
               </RowContainer>
-              <ColumnContainer style={{ justifyContent: 'space-between', alignItems: 'center' }}>
+              <ColumnContainer style={{ flex: 1, justifyContent: 'space-between', alignItems: 'center', padding: 8 }}>
                 <Title>Quantity of {product.fullName}</Title>
                 <ColumnContainer>
                   <Body>Key in the quantity and tap UPDATE QUANTITY</Body>
@@ -102,6 +107,7 @@ export default class QuantityModal extends React.Component {
                   maxLength={3}
                   onChangeText={this.updateQuantity}
                   value={this.state.currentQuantity}
+                  style={{ textAlign: 'left', paddingVertical: 8, paddingHorizontal: 16, fontWeight: 'normal' }}
                 />
                 <RoundedButtonContainer onPress={() => this.handleUpdateCart()}>
                   <ButtonLabel>Update Quantity</ButtonLabel>
