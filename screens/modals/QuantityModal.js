@@ -7,7 +7,7 @@ import { Body, ButtonLabel, Title } from '../../components/BaseComponents';
 import LineItemCard from '../../components/LineItemCard';
 import ProductDisplayCard from '../../components/ProductDisplayCard';
 import { ModalCenteredOpacityLayer, QuantityInput } from '../../styled/checkout';
-import { ColumnContainer, RoundedButtonContainer, RowContainer } from '../../styled/shared';
+import { ColumnContainer, RoundedButtonContainer } from '../../styled/shared';
 
 export default class QuantityModal extends React.Component {
   constructor(props) {
@@ -85,21 +85,25 @@ export default class QuantityModal extends React.Component {
                 alignItems: 'center',
                 backgroundColor: 'white'
               }}>
-              <RowContainer
+              <TouchableOpacity
                 style={{
                   alignSelf: 'flex-start',
                   justifyContent: 'center',
-                  padding: 16
-                }}>
-                <TouchableOpacity onPress={() => this.setModalVisible(false)}>
-                  <FontAwesome5 name="times" size={24} color={Colors.activeText} />
-                </TouchableOpacity>
-              </RowContainer>
-              <ColumnContainer style={{ flex: 1, justifyContent: 'space-between', alignItems: 'center', padding: 8 }}>
-                <Title>Quantity of {product.fullName}</Title>
-                <ColumnContainer>
-                  <Body>Key in the quantity and tap UPDATE QUANTITY</Body>
-                  <Body>OR press the top left X to exit.</Body>
+                  padding: 20,
+                  paddingBottom: 0
+                }}
+                onPress={() => this.setModalVisible(false)}>
+                <FontAwesome5 name="times" size={24} color={Colors.activeText} />
+              </TouchableOpacity>
+              {/* Icon is fixed, while the rest grows, so flex: 1 is used here */}
+              {/* Using space-between gets the icon to stick at the top, but will have an unnecessarily large gap between the icon and the content container */}
+              <ColumnContainer style={{ flex: 1, justifyContent: 'space-around', alignItems: 'center', top: -24 }}>
+                <ColumnContainer style={{ justifyContent: 'space-around', alignItems: 'flex-start', padding: 8 }}>
+                  <Title>Quantity of {product.fullName}</Title>
+                  <ColumnContainer>
+                    <Body>Key in the quantity and tap UPDATE QUANTITY</Body>
+                    <Body>OR press the top left X to exit.</Body>
+                  </ColumnContainer>
                 </ColumnContainer>
                 <QuantityInput
                   placeholder="Quantity"
@@ -107,7 +111,7 @@ export default class QuantityModal extends React.Component {
                   maxLength={3}
                   onChangeText={this.updateQuantity}
                   value={this.state.currentQuantity}
-                  style={{ textAlign: 'left', paddingVertical: 8, paddingHorizontal: 16, fontWeight: 'normal' }}
+                  style={{ textAlign: 'left', paddingVertical: 10, paddingHorizontal: 16, fontWeight: 'normal' }}
                 />
                 <RoundedButtonContainer onPress={() => this.handleUpdateCart()}>
                   <ButtonLabel>Update Quantity</ButtonLabel>
