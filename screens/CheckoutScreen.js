@@ -5,7 +5,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import ProductCartCard from '../components/ProductCartCard';
 import ProductDisplayCard from '../components/ProductDisplayCard';
 import { getCustomersById } from '../lib/airtable/request';
-import { addTransaction, loadProductsData, updateCustomerPoints } from '../lib/checkoutUtils';
+import { addTransaction, loadProductsData, updateCustomerPoints, getNumRowsProducts } from '../lib/checkoutUtils';
 import {
   FlatListContainer,
   TopBar,
@@ -199,9 +199,16 @@ export default class CheckoutScreen extends React.Component {
   }
 
   // Returns index of the first product with a name starting with the given letter in products list.
+  // If no product starting with that letter exists, find the next product.
   getIndexOfFirstProductAtLetter(letter) {
-    const aProduct = this.state.products.filter(product => product.name.charAt(0) === letter)[0];
-    return this.state.products.indexOf(aProduct);
+    let prodList = this.state.products.filter(product => product.name.charAt(0) === letter);
+    let nextLetter = letter;
+    while (prodList.length === 0) {
+      nextLetter = String.fromCharCode(nextLetter.charCodeAt(0) + 1);
+      prodList = this.state.products.filter(product => product.name.charAt(0) === nextLetter);
+    }
+    console.log(this.state.products.indexOf(prodList[0]));
+    return this.state.products.indexOf(prodList[0]);
   }
 
   render() {
@@ -220,28 +227,42 @@ export default class CheckoutScreen extends React.Component {
         <View style={{ display: 'flex', flexDirection: 'row', flex: 1 }}>
           {/* Display products */}
           <ProductsContainer>
-            <FlatListContainer
-              keyExtractor={product => product.id}
-              numColumns={3}
-              data={products}
-              renderItem={({ item }) => (
-                <TouchableOpacity onPress={() => this.addToCart(item)}>
-                  <ProductDisplayCard product={item} />
-                </TouchableOpacity>
-              )}
-            />
+            <ScrollView>
+              <FlatListContainer
+                keyExtractor={product => product.id}
+                numColumns={3}
+                data={products}
+                renderItem={({ item }) => (
+                  <TouchableOpacity onPress={() => this.addToCart(item)}>
+                    <ProductDisplayCard product={item} />
+                  </TouchableOpacity>
+                )}
+              />
+            </ScrollView>
             <BottomBar style={{ display: 'flex', flexDirection: 'row', marginBottom: 0 }}>
-              {/* TODO: Mod calculation on number of rows shouldn't be hard-coded */}
+              {/* TODO: Replace 3 with 5 */}
               <TabContainer
-                onPress={() => this._scrollView.scrollTo({ y: (this.getIndexOfFirstProductAtLetter('A') % 17) * 200 })}>
+                onPress={() =>
+                  this._scrollView.scrollTo({
+                    y: Math.floor(this.getIndexOfFirstProductAtLetter('A') / 3) * 160 + 55
+                  })
+                }>
                 <Title>A-K</Title>
               </TabContainer>
               <TabContainer
-                onPress={() => this._scrollView.scrollTo({ y: (this.getIndexOfFirstProductAtLetter('L') % 17) * 200 })}>
+                onPress={() =>
+                  this._scrollView.scrollTo({
+                    y: Math.floor(this.getIndexOfFirstProductAtLetter('E') / 3) * 160 + 55
+                  })
+                }>
                 <Title>L-S</Title>
               </TabContainer>
               <TabContainer
-                onPress={() => this._scrollView.scrollTo({ y: (this.getIndexOfFirstProductAtLetter('T') % 17) * 200 })}>
+                onPress={() =>
+                  this._scrollView.scrollTo({
+                    y: Math.floor(this.getIndexOfFirstProductAtLetter('T') / 3) * 160 + 55
+                  })
+                }>
                 <Title>T-Z</Title>
               </TabContainer>
             </BottomBar>
