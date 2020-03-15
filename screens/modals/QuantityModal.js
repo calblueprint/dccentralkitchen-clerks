@@ -79,9 +79,9 @@ export default class QuantityModal extends React.Component {
             <ColumnContainer
               style={{
                 height: '40%',
-                width: '50%',
+                width: '45%',
                 margin: 'auto',
-                justifyContent: 'space-between',
+                justifyContent: 'space-around',
                 alignItems: 'center',
                 backgroundColor: 'white'
               }}>
@@ -96,9 +96,9 @@ export default class QuantityModal extends React.Component {
                 <FontAwesome5 name="times" size={24} color={Colors.activeText} />
               </TouchableOpacity>
               {/* Icon is fixed, while the rest grows, so flex: 1 is used here */}
-              {/* Using space-between gets the icon to stick at the top, but will have an unnecessarily large gap between the icon and the content container */}
-              <ColumnContainer style={{ flex: 1, justifyContent: 'space-around', alignItems: 'center', top: -24 }}>
-                <ColumnContainer style={{ justifyContent: 'space-around', alignItems: 'flex-start', padding: 8 }}>
+              {/* For some reason, gap between is really large. Used top: -20 to remedy it */}
+              <ColumnContainer style={{ flex: 1, justifyContent: 'space-around', alignItems: 'center', top: -20 }}>
+                <ColumnContainer style={{ justifyContent: 'space-around', alignItems: 'flex-start' }}>
                   <Title>Quantity of {product.fullName}</Title>
                   <ColumnContainer>
                     <Body>Key in the quantity and tap UPDATE QUANTITY</Body>
