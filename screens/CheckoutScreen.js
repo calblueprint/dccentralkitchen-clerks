@@ -16,6 +16,8 @@ import {
 } from '../styled/checkout';
 import { TextHeader } from '../styled/shared';
 import { Title, Subhead, FilledButtonContainer, ButtonLabel } from '../components/BaseComponents';
+import SubtotalCard from '../components/SubtotalCard';
+import TotalCard from '../components/TotalCard';
 
 export default class CheckoutScreen extends React.Component {
   constructor(props) {
@@ -26,6 +28,7 @@ export default class CheckoutScreen extends React.Component {
       products: [],
       cart: [],
       isLoading: true,
+      subtotalPrice: 0,
       totalPrice: 0,
       totalPoints: 0,
       rewardsApplied: 0,
@@ -46,25 +49,9 @@ export default class CheckoutScreen extends React.Component {
     });
   }
 
-  // Sets total points earned from transaction in state.
-  setTotalPoints() {
-    let points = 0;
-    for (let i = 0; i < this.state.cart.length; i += 1) {
-      const cartItem = this.state.cart[i];
-      points += cartItem.points * cartItem.cartCount;
-    }
-    points -= this.state.rewardsApplied * 500;
-    if (points < 0) {
-      console.error('Total points less than 0!');
-    }
-    this.setState({ totalPoints: points });
-    return points;
-  }
-
   // Handles submit when clerk selects "CHECKOUT".
   handleSubmit = () => {
-    const totalPoints = this.setTotalPoints();
-    this.displayConfirmation(totalPoints);
+    this.displayConfirmation(this.state.totalPoints);
   };
 
   // Adds one item of product type to cart.
@@ -72,14 +59,18 @@ export default class CheckoutScreen extends React.Component {
     item.cartCount += 1;
     const currentCart = this.state.cart;
     const currentItem = currentCart.filter(product => product.id === item.id);
-    let { totalPrice } = this.state;
+    let { totalPrice, subtotalPrice, totalPoints } = this.state;
+    subtotalPrice += item.customerCost;
     totalPrice += item.customerCost;
+    totalPoints += item.points;
     if (currentItem.length === 0) {
       currentCart.push(item);
     }
     this.setState({
       cart: currentCart,
-      totalPrice
+      totalPrice,
+      subtotalPrice,
+      totalPoints
     });
   }
 
@@ -88,11 +79,15 @@ export default class CheckoutScreen extends React.Component {
     item.cartCount -= 1;
     let currentCart = this.state.cart;
     currentCart = currentCart.filter(cartItem => cartItem.cartCount > 0);
-    let { totalPrice } = this.state;
+    let { totalPrice, subtotalPrice, totalPoints } = this.state;
     totalPrice -= item.customerCost;
+    subtotalPrice -= item.customerCost;
+    totalPoints -= item.points;
     this.setState({
       cart: currentCart,
-      totalPrice
+      totalPrice,
+      subtotalPrice,
+      totalPoints
     });
   }
 
@@ -163,7 +158,8 @@ export default class CheckoutScreen extends React.Component {
     this.setState(prevState => ({
       rewardsApplied: prevState.rewardsApplied + 1,
       rewardsAvailable: prevState.rewardsAvailable - 1,
-      totalPrice: prevState.totalPrice - 5
+      totalPrice: prevState.totalPrice - 5,
+      totalPoints: prevState.totalPoints - 500
     }));
   }
 
@@ -171,7 +167,8 @@ export default class CheckoutScreen extends React.Component {
     this.setState(prevState => ({
       rewardsApplied: prevState.rewardsApplied - 1,
       rewardsAvailable: prevState.rewardsAvailable + 1,
-      totalPrice: prevState.totalPrice + 5
+      totalPrice: prevState.totalPrice + 5,
+      totalPoints: prevState.totalPoints + 500
     }));
   }
 
@@ -201,20 +198,26 @@ export default class CheckoutScreen extends React.Component {
     return rewardsApplied;
   }
 
+  // Returns index of the first product with a name starting with the given letter in products list.
+  getIndexOfFirstProductAtLetter(letter) {
+    const aProduct = this.state.products.filter(product => product.name.charAt(0) === letter)[0];
+    return this.state.products.indexOf(aProduct);
+  }
+
   render() {
     if (this.state.isLoading) {
       return null; // TODO @tommypoa waiting (flavicon?)
     }
 
-    const { cart, customer, products, totalPrice } = this.state;
+    const { cart, customer, products, totalPoints, totalPrice, subtotalPrice, rewardsApplied } = this.state;
 
     return (
       // Temp fix for the horizontal orientation not showing Checkout Button
-      <ScrollView>
+      <ScrollView ref={view => (this._scrollView = view)}>
         <TopBar>
           <Title> {'Customer: '.concat(customer.name)} </Title>
         </TopBar>
-        <View style={{ display: 'flex', flexDirection: 'row' }}>
+        <View style={{ display: 'flex', flexDirection: 'row', flex: 1 }}>
           {/* Display products */}
           <ProductsContainer>
             <FlatListContainer
@@ -228,50 +231,56 @@ export default class CheckoutScreen extends React.Component {
               )}
             />
             <BottomBar style={{ display: 'flex', flexDirection: 'row', marginBottom: 0 }}>
-              <TabContainer>
+              {/* TODO: Mod calculation on number of rows shouldn't be hard-coded */}
+              <TabContainer
+                onPress={() => this._scrollView.scrollTo({ y: (this.getIndexOfFirstProductAtLetter('A') % 17) * 200 })}>
                 <Title>A-K</Title>
               </TabContainer>
-              <TabContainer>
+              <TabContainer
+                onPress={() => this._scrollView.scrollTo({ y: (this.getIndexOfFirstProductAtLetter('L') % 17) * 200 })}>
                 <Title>L-S</Title>
               </TabContainer>
-              <TabContainer>
+              <TabContainer
+                onPress={() => this._scrollView.scrollTo({ y: (this.getIndexOfFirstProductAtLetter('T') % 17) * 200 })}>
                 <Title>T-Z</Title>
               </TabContainer>
             </BottomBar>
           </ProductsContainer>
           {/* Right column */}
           <SaleContainer>
-            <Subhead>Current Sale</Subhead>
-            {/* Cart container */}
-            <View style={{ height: '40%', paddingBottom: '5%' }}>
-              <ScrollView>
-                {cart.map(product => (
-                  <TouchableOpacity key={product.id} onPress={() => this.removeFromCart(product)}>
-                    <ProductCartCard product={product} />
-                  </TouchableOpacity>
-                ))}
-              </ScrollView>
+            <View style={{ paddingTop: 13, paddingLeft: 14, paddingBottom: 7 }}>
+              <Subhead>Current Sale</Subhead>
+              {/* Cart container */}
+              <View style={{ height: '40%', paddingBottom: '5%', alignItems: 'center' }}>
+                <ScrollView>
+                  {cart.map(product => (
+                    <TouchableOpacity key={product.id} onPress={() => this.removeFromCart(product)}>
+                      <ProductCartCard product={product} />
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+              </View>
+              <View style={{ height: '20%', paddingBottom: '5%' }}>
+                <TextHeader>Rewards Applied</TextHeader>
+                <ScrollView style={{ alignSelf: 'flex-end' }}>{this.generateRewardsApplied()}</ScrollView>
+              </View>
+              <View style={{ height: '20%', paddingBottom: '5%' }}>
+                <TextHeader>Rewards Available</TextHeader>
+                <ScrollView style={{ alignSelf: 'flex-end' }}>{this.generateRewardsAvailable()}</ScrollView>
+              </View>
             </View>
-            <View style={{ height: '20%', paddingBottom: '5%' }}>
-              <TextHeader>Rewards Applied</TextHeader>
-              <ScrollView style={{ alignSelf: 'flex-end' }}>{this.generateRewardsApplied()}</ScrollView>
-            </View>
-            <View style={{ height: '20%', paddingBottom: '5%' }}>
-              <TextHeader>Rewards Available</TextHeader>
-              <ScrollView style={{ alignSelf: 'flex-end' }}>{this.generateRewardsAvailable()}</ScrollView>
-            </View>
-            <Text
+            <View
               style={{
-                fontWeight: 'bold',
-                textAlign: 'center'
+                flex: 1,
+                justifyContent: 'flex-end',
+                overflow: 'auto',
+                alignItems: 'center'
               }}>
-              Order Total ${totalPrice.toFixed(2)}
-            </Text>
-            <TouchableOpacity onPress={() => this.handleSubmit()}>
-              <TextHeader style={{ color: '#008550' }}>Checkout</TextHeader>
-            </TouchableOpacity>
-            <View style={{ flex: 1, justifyContent: 'flex-end' }}>
-              <FilledButtonContainer style={{ marginBottom: 0 }}>
+              {/* When different types of rewards are created, we can add rewards amount to state. For now, rewards
+              amount is equal to rewards applied * 5. */}
+              <SubtotalCard subtotalPrice={subtotalPrice.toFixed(2)} rewardsAmount={rewardsApplied * 5} />
+              <TotalCard totalPrice={totalPrice.toFixed(2)} totalPoints={totalPoints} />
+              <FilledButtonContainer width="100%" style={{ marginBottom: 0 }} onPress={() => this.handleSubmit()}>
                 <ButtonLabel>Complete Purchase</ButtonLabel>
               </FilledButtonContainer>
             </View>

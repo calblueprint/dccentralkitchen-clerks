@@ -35,7 +35,6 @@ export const TabContainer = styled.TouchableOpacity`
   background: ${Colors.base};
   border-top-width: 0px;
   border-bottom-width: 0px;
-  flex: 1;
   justify-content: center;
   align-items: center;
 `;
@@ -47,7 +46,7 @@ export const ProductsContainer = styled.View`
 `;
 
 export const SaleContainer = styled.View`
-  padding: 13px 14px 0px;
+  flex: 1;
 `;
 
 // Product Cards
@@ -74,8 +73,6 @@ export const LineItem = styled.View`
   border: 1px solid ${Colors.lighter};
   border-left-width: 0px;
   border-right-width: 0px;
-  padding-left: 24px;
-  padding-right: 26px;
   padding: 12px 24px 12px 24px;
 `;
 
