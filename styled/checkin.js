@@ -20,5 +20,20 @@ export const TextField = styled.TextInput`
   background-color: #fff;
   border-color: ${Colors.base};
   border-width: 1px;
+  padding-left: 14px;
+  font-family: poppins-regular;
+`;
+
+export const SearchElement = styled.TouchableOpacity`
+  width: 253px;
+  height: 51px;
+  background-color: #fff;
+  border-color: ${Colors.base};
+  border-width: 1px;
   padding-left: 16px;
+  justify-content: center;
+`;
+
+export const SearchBarContainer = styled.View`
+  height: 179px;
 `;
