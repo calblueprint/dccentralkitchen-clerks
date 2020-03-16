@@ -2,11 +2,17 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Modal, TouchableOpacity, View } from 'react-native';
+
 import Colors from '../../assets/Colors';
 import { Body, ButtonLabel, Title } from '../../components/BaseComponents';
 import LineItemCard from '../../components/LineItemCard';
 import ProductDisplayCard from '../../components/ProductDisplayCard';
-import { ModalCenteredOpacityLayer, ModalContentContainer, QuantityInput } from '../../styled/checkout';
+import {
+  ModalCenteredOpacityLayer,
+  ModalContentContainer,
+  ModalCopyContainer,
+  QuantityInput
+} from '../../styled/modal';
 import { ColumnContainer, RoundedButtonContainer } from '../../styled/shared';
 
 export default class QuantityModal extends React.Component {
@@ -79,36 +85,32 @@ export default class QuantityModal extends React.Component {
             <ModalContentContainer>
               <TouchableOpacity
                 style={{
-                  alignSelf: 'flex-start',
-                  justifyContent: 'center',
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
                   padding: 20,
                   paddingBottom: 0
                 }}
                 onPress={() => this.setModalVisible(false)}>
                 <FontAwesome5 name="times" size={24} color={Colors.activeText} />
               </TouchableOpacity>
-              {/* Icon is fixed, while the rest grows, so flex: 1 is used here */}
-              {/* For some reason, gap between is really large. Used top: -20 to remedy it */}
-              <ColumnContainer style={{ flex: 1, justifyContent: 'space-around', alignItems: 'center', top: -20 }}>
-                <ColumnContainer style={{ justifyContent: 'space-around', alignItems: 'flex-start' }}>
-                  <Title>Quantity of {product.fullName}</Title>
-                  <ColumnContainer>
-                    <Body>Key in the quantity and tap UPDATE QUANTITY</Body>
-                    <Body>OR press the top left X to exit.</Body>
-                  </ColumnContainer>
+              {/* Invisible element used to trick flexbox into spacin correctly with 'space-around' even though 'cancel' button is pinned using position: absolute */}
+              <View>{null}</View>
+              <ModalCopyContainer>
+                <Title>Quantity of {product.fullName}</Title>
+                <ColumnContainer>
+                  <Body>Key in the quantity and tap UPDATE QUANTITY</Body>
+                  <Body>OR press the top left X to exit.</Body>
                 </ColumnContainer>
-                <QuantityInput
-                  placeholder="Quantity"
-                  keyboardType="numeric"
-                  maxLength={3}
-                  onChangeText={this.updateQuantity}
-                  value={this.state.currentQuantity}
-                  style={{ textAlign: 'left', paddingVertical: 10, paddingHorizontal: 16, fontWeight: 'normal' }}
-                />
-                <RoundedButtonContainer onPress={() => this.handleUpdateCart()}>
-                  <ButtonLabel>Update Quantity</ButtonLabel>
-                </RoundedButtonContainer>
-              </ColumnContainer>
+              </ModalCopyContainer>
+              <QuantityInput
+                placeholder="Quantity"
+                onChangeText={this.updateQuantity}
+                value={this.state.currentQuantity}
+              />
+              <RoundedButtonContainer onPress={() => this.handleUpdateCart()}>
+                <ButtonLabel>Update Quantity</ButtonLabel>
+              </RoundedButtonContainer>
             </ModalContentContainer>
           </ModalCenteredOpacityLayer>
         </Modal>
