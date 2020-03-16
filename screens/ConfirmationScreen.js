@@ -61,7 +61,7 @@ export default class ConfirmationScreen extends React.Component {
             </SpaceBetweenRowContainer>
           )}
           <SpaceBetweenRowContainer>
-            <Body>Total:</Body>
+            <Body>Total Sale:</Body>
             <Body>${transaction.totalPrice.toFixed(2)}</Body>
           </SpaceBetweenRowContainer>
         </ColumnContainer>
