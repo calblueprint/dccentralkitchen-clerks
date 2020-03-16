@@ -4,7 +4,7 @@ import React from 'react';
 import { Modal, TouchableOpacity, View } from 'react-native';
 import Colors from '../../assets/Colors';
 import { Body, ButtonLabel, Title } from '../../components/BaseComponents';
-import { ModalCenteredOpacityLayer } from '../../styled/checkout';
+import { ModalCenteredOpacityLayer } from '../../styled/modal';
 import { ColumnContainer, RoundedButtonContainer, RowContainer } from '../../styled/shared';
 
 export default class RewardModal extends React.Component {
