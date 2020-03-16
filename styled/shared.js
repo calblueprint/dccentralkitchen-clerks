@@ -48,3 +48,7 @@ export const ColumnContainer = styled.View`
   display: flex;
   flex-direction: column;
 `;
+
+export const SpaceBetweenRowContainer = styled(RowContainer)`
+  justify-content: space-between;
+`;

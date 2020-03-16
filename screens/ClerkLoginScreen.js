@@ -27,9 +27,14 @@ export default class ClerkLoginScreen extends React.Component {
   // Configures to use Jeffry Poa & Robin Hood
   _devBypass = async () => {
     await AsyncStorage.setItem('clerkId', 'recgq59j7Cx9zsSYE');
+    await AsyncStorage.setItem('clerkName', 'Jeffry Poa');
     await AsyncStorage.setItem('storeId', 'recw49LpAOInqvX3e');
     await AsyncStorage.setItem('customerId', 'recqx32YmmACiRWMq');
     this.props.navigation.navigate('CustomerLookup');
+  };
+
+  _devBypassConfirm = async () => {
+    this.props.navigation.navigate('Confirmation', { transactionId: 'recbDBXR1bvvpEnOK' });
   };
 
   // Set the clerkId and storeId in AsyncStorage
@@ -58,7 +63,8 @@ export default class ClerkLoginScreen extends React.Component {
       switch (lookupResult.status) {
         case status.MATCH:
           clerkRecord = lookupResult.record;
-          this._asyncLoginClerk(clerkRecord);
+          await this._asyncLoginClerk(clerkRecord);
+          this.props.navigation.navigate('CustomerLookup');
           break;
         // TODO for production, we should have some sort of logging mechanism (i.e replacing console logs)
         case status.FOUND:
