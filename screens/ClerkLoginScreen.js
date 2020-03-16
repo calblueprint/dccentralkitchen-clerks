@@ -84,7 +84,7 @@ export default class ClerkLoginScreen extends React.Component {
     return (
       // TODO break out this onChange into a function
       <DismissKeyboard>
-        <CheckInContainer>
+        <CheckInContainer behavior={(platform = 'ios' ? 'position' : null)} keyboardVerticalOffset="-200">
           <BackButton navigation={this.props.navigation} />
           <CheckInContentContainer>
             <Title style={{ marginBottom: 32 }} color="#fff">

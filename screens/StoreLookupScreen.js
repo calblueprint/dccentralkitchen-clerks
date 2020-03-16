@@ -1,6 +1,14 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { AsyncStorage, Button, Keyboard, Picker, Text, TouchableWithoutFeedback } from 'react-native';
+import {
+  AsyncStorage,
+  Button,
+  Keyboard,
+  Picker,
+  Text,
+  TouchableWithoutFeedback,
+  KeyboardAvoidingView
+} from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { status } from '../lib/constants';
 import { loadStoreData, lookupClerk } from '../lib/loginUtils';
@@ -94,7 +102,7 @@ export default class StoreLookupScreen extends React.Component {
     return (
       // TODO break out this onChange into a function
       <DismissKeyboard>
-        <CheckInContainer>
+        <CheckInContainer behavior="position" keyboardVerticalOffset="-200">
           <CheckInContentContainer>
             <Title color="#fff">Enter store name</Title>
             <TextField

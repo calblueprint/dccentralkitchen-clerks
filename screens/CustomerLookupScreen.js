@@ -74,7 +74,7 @@ export default class CustomerLookupScreen extends React.Component {
 
   render() {
     return (
-      <CheckInContainer color="#fff">
+      <CheckInContainer behavior={(platform = 'ios' ? 'position' : null)} keyboardVerticalOffset="-200" color="#fff">
         <BackButton navigation={this.props.navigation} />
         <CheckInContentContainer>
           <Title style={{ marginBottom: 32 }} color="#fff">

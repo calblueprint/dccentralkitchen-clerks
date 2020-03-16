@@ -1,7 +1,7 @@
 import styled from 'styled-components/native';
 import Colors from '../assets/Colors';
 
-export const CheckInContainer = styled.View`
+export const CheckInContainer = styled.KeyboardAvoidingView`
   background-color: ${props => props.color || Colors.activeText};
   flex: 1;
 `;
@@ -11,7 +11,7 @@ export const CheckInContentContainer = styled.View`
     display: flex
     flex-direction: column;
     align-items: center;
-    margin: 15%
+    margin: 25%;
 `;
 
 export const TextField = styled.TextInput`
