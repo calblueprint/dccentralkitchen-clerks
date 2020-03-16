@@ -1,12 +1,12 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { AsyncStorage, Button, Keyboard, Picker, Text, TouchableWithoutFeedback } from 'react-native';
-import { status } from '../lib/constants';
-import { loadStoreData, lookupClerk } from '../lib/loginUtils';
+import { AsyncStorage, Keyboard, TouchableWithoutFeedback, View } from 'react-native';
 import Colors from '../assets/Colors';
-import { Title, FilledButtonContainer, ButtonLabel } from '../components/BaseComponents';
-import { CheckInContainer, CheckInContentContainer, TextField } from '../styled/checkin';
 import BackButton from '../components/BackButton';
+import { ButtonLabel, FilledButtonContainer, Title } from '../components/BaseComponents';
+import { status } from '../lib/constants';
+import { lookupClerk } from '../lib/loginUtils';
+import { CheckInContainer, CheckInContentContainer, TextField } from '../styled/checkin';
 
 // TODO rename this
 const DismissKeyboard = ({ children }) => (
@@ -30,7 +30,7 @@ export default class ClerkLoginScreen extends React.Component {
     await AsyncStorage.setItem('clerkName', 'Jeffry Poa');
     await AsyncStorage.setItem('storeId', 'recw49LpAOInqvX3e');
     await AsyncStorage.setItem('customerId', 'recqx32YmmACiRWMq');
-    this.props.navigation.navigate('Checkout');
+    this.props.navigation.navigate('CustomerLookup');
   };
 
   _devBypassConfirm = async () => {
@@ -47,7 +47,7 @@ export default class ClerkLoginScreen extends React.Component {
 
   loginPermissionHandler = password => {
     let loginPermission = false;
-    if (password.length == 4) {
+    if (password.length === 4) {
       loginPermission = true;
     }
     this.setState({ password, loginPermission });
@@ -88,35 +88,41 @@ export default class ClerkLoginScreen extends React.Component {
   render() {
     const { store } = this.props.navigation.state.params;
     return (
-      // TODO break out this onChange into a function
       <DismissKeyboard>
-        <CheckInContainer>
-          <BackButton navigation={this.props.navigation} />
-          <CheckInContentContainer>
-            <Title style={{ marginBottom: 32 }} color="#fff">
-              Welcome to {store.storeName}!
-            </Title>
-            <Title color="#fff">Enter your employee PIN</Title>
-            <TextField
-              style={{ marginTop: 32 }}
-              placeholder="ex. 1234"
-              keyboardType="number-pad"
-              maxLength={4}
-              onChangeText={text => this.loginPermissionHandler(text)}
-              value={this.state.password}
-            />
-            <FilledButtonContainer
-              style={{ marginTop: 32 }}
-              color={this.state.loginPermission ? Colors.primaryGreen : Colors.lightestGreen}
-              width="253px"
-              height="40px"
-              onPress={() => this.handleSubmit()}
-              disabled={!this.state.loginPermission}>
-              <ButtonLabel color="white">Next</ButtonLabel>
-            </FilledButtonContainer>
-          </CheckInContentContainer>
-          <Button title="Testing Bypass" onPress={() => this._devBypass()} />
-        </CheckInContainer>
+        <View>
+          {/* zIndex 1 used to bring BackButton forward without being caught by the KeyboardAvoiding content container */}
+          <BackButton
+            style={{ zIndex: 1, position: 'absolute', top: 0, left: 0, marginTop: 33, marginLeft: 29 }}
+            navigation={this.props.navigation}
+            light
+          />
+          <CheckInContainer>
+            <CheckInContentContainer>
+              <Title style={{ marginBottom: 32 }} color={Colors.lightest}>
+                Welcome to {store.storeName}!
+              </Title>
+              <Title color="#fff">Enter your employee PIN</Title>
+              <TextField
+                style={{ marginTop: 32 }}
+                placeholder="ex. 1234"
+                keyboardType="number-pad"
+                maxLength={4}
+                onChangeText={text => this.loginPermissionHandler(text)}
+                value={this.state.password}
+              />
+              <FilledButtonContainer
+                style={{ marginTop: 32 }}
+                color={this.state.loginPermission ? Colors.primaryGreen : Colors.lightestGreen}
+                width="253px"
+                height="40px"
+                onPress={() => this.handleSubmit()}
+                disabled={!this.state.loginPermission}>
+                <ButtonLabel color={Colors.lightest}>Next</ButtonLabel>
+              </FilledButtonContainer>
+            </CheckInContentContainer>
+            {/* <Button title="Testing Bypass" onPress={() => this._devBypass()} /> */}
+          </CheckInContainer>
+        </View>
       </DismissKeyboard>
     );
   }
