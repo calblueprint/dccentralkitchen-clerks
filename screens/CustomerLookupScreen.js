@@ -1,12 +1,13 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { AsyncStorage, Text } from 'react-native';
+import { AsyncStorage } from 'react-native';
+import Colors from '../assets/Colors';
+import BackButton from '../components/BackButton';
+import { ButtonLabel, FilledButtonContainer, Title } from '../components/BaseComponents';
 import { status } from '../lib/constants';
 import { lookupCustomer } from '../lib/lookupUtils';
-import Colors from '../assets/Colors';
-import { Title, FilledButtonContainer, ButtonLabel } from '../components/BaseComponents';
 import { CheckInContainer, CheckInContentContainer, TextField } from '../styled/checkin';
-import BackButton from '../components/BackButton';
+import { RowContainer } from '../styled/shared';
 
 export default class CustomerLookupScreen extends React.Component {
   constructor(props) {
@@ -20,9 +21,11 @@ export default class CustomerLookupScreen extends React.Component {
     };
   }
 
+  // TODO: this is currently not being used
+  // Clears error state and phoneNumber entered so far
   async componentDidMount() {
     const { clerkName } = this.props.navigation.state.params;
-    this.setState({ clerkName });
+    this.setState({ clerkName, phoneNumber: '', errorMsg: null });
   }
 
   _asyncCustomerFound = async customerRecord => {
@@ -38,7 +41,7 @@ export default class CustomerLookupScreen extends React.Component {
 
   customerPermissionHandler = phoneNumber => {
     let customerPermission = false;
-    if (phoneNumber.length == 10) {
+    if (phoneNumber.length === 10) {
       customerPermission = true;
     }
     this.setState({ phoneNumber, customerPermission });
@@ -74,12 +77,21 @@ export default class CustomerLookupScreen extends React.Component {
 
   render() {
     return (
-      <CheckInContainer color="#fff">
-        <BackButton navigation={this.props.navigation} />
+      <CheckInContainer color={Colors.lightest}>
+        <RowContainer
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            marginTop: 33,
+            marginLeft: 29,
+            justifyContent: 'flex-start',
+            alignItems: 'center'
+          }}>
+          <BackButton navigation={this.props.navigation} light={false} />
+          <Title style={{ marginLeft: 16 }}>{this.state.clerkName}</Title>
+        </RowContainer>
         <CheckInContentContainer>
-          <Title style={{ marginBottom: 32 }} color="#fff">
-            Welcome to ____
-          </Title>
           <Title>Enter customer phone number</Title>
           <TextField
             style={{ marginTop: 32 }}
@@ -87,7 +99,7 @@ export default class CustomerLookupScreen extends React.Component {
             keyboardType="number-pad"
             maxLength={10}
             onChangeText={text => this.customerPermissionHandler(text)}
-            value={this.state.password}
+            value={this.state.phoneNumber}
           />
           <FilledButtonContainer
             style={{ marginTop: 32 }}

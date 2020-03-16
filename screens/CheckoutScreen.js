@@ -2,14 +2,14 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Alert, AsyncStorage, Text, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
+import BackButton from '../components/BackButton';
+import { Subhead, Title } from '../components/BaseComponents';
 import ProductCartCard from '../components/ProductCartCard';
 import ProductDisplayCard from '../components/ProductDisplayCard';
 import { getCustomersById } from '../lib/airtable/request';
 import { addTransaction, loadProductsData, updateCustomerPoints } from '../lib/checkoutUtils';
-import { FlatListContainer, TopBar, ProductsContainer, SaleContainer } from '../styled/checkout';
+import { FlatListContainer, ProductsContainer, SaleContainer, TopBar } from '../styled/checkout';
 import { TextHeader } from '../styled/shared';
-import { Title, Subhead } from '../components/BaseComponents';
-import BackButton from '../components/BackButton';
 
 export default class CheckoutScreen extends React.Component {
   constructor(props) {
@@ -205,8 +205,10 @@ export default class CheckoutScreen extends React.Component {
       // Temp fix for the horizontal orientation not showing Checkout Button
       <ScrollView>
         <TopBar>
-          <BackButton navigation={this.props.navigation} />
+          <BackButton navigation={this.props.navigation} light={false} style={{ marginTop: 3, marginLeft: 24 }} />
           <Title> {'Customer: '.concat(customer.name)} </Title>
+          {/* Duplicate, invisible element to have left-aligned BackButton */}
+          <BackButton navigation={this.props.navigation} light={false} style={{ opacity: 0.0, disabled: true }} />
         </TopBar>
         <View style={{ display: 'flex', flexDirection: 'row' }}>
           {/* Display products */}

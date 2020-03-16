@@ -38,3 +38,13 @@ export const TextInput = styled.TextInput`
   font-weight: bold;
   text-align: center;
 `;
+
+export const RowContainer = styled.View`
+  display: flex;
+  flex-direction: row;
+`;
+
+export const ColumnContainer = styled.View`
+  display: flex;
+  flex-direction: column;
+`;

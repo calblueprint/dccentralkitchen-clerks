@@ -1,20 +1,25 @@
-import React from 'react';
-import { View } from 'react-native';
-import { LineItem, LineItemRow } from '../styled/checkout.js';
-import Colors from '../assets/Colors';
 import { FontAwesome5 } from '@expo/vector-icons';
-import { ButtonContainer, ButtonLabel } from './BaseComponents';
+import PropTypes from 'prop-types';
+import React from 'react';
+import Colors from '../assets/Colors';
+import { ButtonContainer } from './BaseComponents';
 
-/**
- * @prop
- **/
-
-function BackButton({ navigation }) {
+function BackButton({ navigation, light, style }) {
   return (
-    <ButtonContainer style={{ marginTop: 33, marginLeft: 29 }} onPress={() => navigation.goBack()}>
-      <FontAwesome5 name="arrow-left" size={24} color={Colors.activeText} />
+    <ButtonContainer style={{ ...style }} onPress={() => navigation.goBack()}>
+      <FontAwesome5 name="arrow-left" size={24} color={light ? Colors.lightest : Colors.activeText} />
     </ButtonContainer>
   );
 }
+
+BackButton.propTypes = {
+  navigation: PropTypes.object.isRequired,
+  light: PropTypes.bool.isRequired,
+  style: PropTypes.object
+};
+
+BackButton.defaultProps = {
+  style: {}
+};
 
 export default BackButton;

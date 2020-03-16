@@ -1,12 +1,12 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { AsyncStorage, Button, Keyboard, Picker, Text, TouchableWithoutFeedback } from 'react-native';
-import { status } from '../lib/constants';
-import { loadStoreData, lookupClerk } from '../lib/loginUtils';
+import { AsyncStorage, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import Colors from '../assets/Colors';
-import { Title, FilledButtonContainer, ButtonLabel } from '../components/BaseComponents';
-import { CheckInContainer, CheckInContentContainer, TextField } from '../styled/checkin';
 import BackButton from '../components/BackButton';
+import { ButtonLabel, FilledButtonContainer, Title } from '../components/BaseComponents';
+import { status } from '../lib/constants';
+import { lookupClerk } from '../lib/loginUtils';
+import { CheckInContainer, CheckInContentContainer, TextField } from '../styled/checkin';
 
 // TODO rename this
 const DismissKeyboard = ({ children }) => (
@@ -42,7 +42,7 @@ export default class ClerkLoginScreen extends React.Component {
 
   loginPermissionHandler = password => {
     let loginPermission = false;
-    if (password.length == 4) {
+    if (password.length === 4) {
       loginPermission = true;
     }
     this.setState({ password, loginPermission });
@@ -82,12 +82,15 @@ export default class ClerkLoginScreen extends React.Component {
   render() {
     const { store } = this.props.navigation.state.params;
     return (
-      // TODO break out this onChange into a function
       <DismissKeyboard>
         <CheckInContainer>
-          <BackButton navigation={this.props.navigation} />
+          <BackButton
+            style={{ position: 'absolute', top: 0, left: 0, marginTop: 33, marginLeft: 29 }}
+            navigation={this.props.navigation}
+            light
+          />
           <CheckInContentContainer>
-            <Title style={{ marginBottom: 32 }} color="#fff">
+            <Title style={{ marginBottom: 32 }} color={Colors.lightest}>
               Welcome to {store.storeName}!
             </Title>
             <Title color="#fff">Enter your employee PIN</Title>
@@ -106,7 +109,7 @@ export default class ClerkLoginScreen extends React.Component {
               height="40px"
               onPress={() => this.handleSubmit()}
               disabled={!this.state.loginPermission}>
-              <ButtonLabel color="white">Next</ButtonLabel>
+              <ButtonLabel color={Colors.lightest}>Next</ButtonLabel>
             </FilledButtonContainer>
           </CheckInContentContainer>
           {/* <Button title="Testing Bypass" onPress={() => this._devBypass()} /> */}
