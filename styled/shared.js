@@ -1,5 +1,4 @@
 import styled from 'styled-components/native';
-import { FilledButtonContainer } from '../components/BaseComponents';
 
 // Ostensibly will be deprecated in favor of
 // per-component and better-named containers
@@ -52,11 +51,5 @@ export const ColumnContainer = styled.View`
 
 export const SpaceBetweenRowContainer = styled(RowContainer)`
   justify-content: space-between;
-`;
-
-export const RoundedButtonContainer = styled(FilledButtonContainer)`
-  border-radius: 20px;
-  margin: 12px;
-  width: ${props => props.width || '160px'};
-  height: ${props => props.height || '39px'};
+  width: 100%;
 `;

@@ -2,9 +2,8 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Modal, TouchableOpacity, View } from 'react-native';
-
 import Colors from '../../assets/Colors';
-import { Body, ButtonLabel, Title } from '../../components/BaseComponents';
+import { Body, ButtonLabel, RoundedButtonContainer, Title } from '../../components/BaseComponents';
 import LineItemCard from '../../components/LineItemCard';
 import ProductDisplayCard from '../../components/ProductDisplayCard';
 import {
@@ -13,7 +12,7 @@ import {
   ModalCopyContainer,
   QuantityInput
 } from '../../styled/modal';
-import { ColumnContainer, RoundedButtonContainer } from '../../styled/shared';
+import { ColumnContainer } from '../../styled/shared';
 
 export default class QuantityModal extends React.Component {
   constructor(props) {
@@ -82,7 +81,7 @@ export default class QuantityModal extends React.Component {
           }}>
           {/* Opacity layer */}
           <ModalCenteredOpacityLayer>
-            <ModalContentContainer>
+            <ModalContentContainer style={{ top: -200 }}>
               <TouchableOpacity
                 style={{
                   position: 'absolute',

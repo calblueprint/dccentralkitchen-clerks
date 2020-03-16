@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Body, ButtonLabel, FilledButtonContainer, Title } from '../components/BaseComponents';
 import { getTransactionsById } from '../lib/airtable/request';
+import { displayDollarValue } from '../lib/checkoutUtils';
 import { ColumnContainer, SpaceBetweenRowContainer } from '../styled/shared';
 
 export default class ConfirmationScreen extends React.Component {
@@ -38,6 +39,9 @@ export default class ConfirmationScreen extends React.Component {
     if (isLoading) {
       return null;
     }
+
+    // TODO make this a value in AirTable
+    const rewardValue = 5;
     return (
       <ColumnContainer style={{ width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
         <ColumnContainer style={{ width: '33%', paddingBottom: 48 }}>
@@ -57,12 +61,12 @@ export default class ConfirmationScreen extends React.Component {
           {transaction.rewardsApplied > 0 && (
             <SpaceBetweenRowContainer>
               <Body>Total Discounts:</Body>
-              <Body>${(transaction.rewardsApplied * 5).toFixed(2)}</Body>
+              <Body>{displayDollarValue(transaction.rewardsApplied * rewardValue)}</Body>
             </SpaceBetweenRowContainer>
           )}
           <SpaceBetweenRowContainer>
             <Body>Total Sale:</Body>
-            <Body>${transaction.totalPrice.toFixed(2)}</Body>
+            <Body>{displayDollarValue(transaction.totalPrice)}</Body>
           </SpaceBetweenRowContainer>
         </ColumnContainer>
         <FilledButtonContainer
