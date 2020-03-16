@@ -76,14 +76,7 @@ export default class StoreLookupScreen extends React.Component {
             <ButtonLabel color="white">Next</ButtonLabel>
           </FilledButtonContainer>
         </CheckInContentContainer>
-
-        {/* <Picker mode="dropdown" onValueChange={store => this.setState({ store })} selectedValue={this.state.store}>
-          {this.state.stores.map(store => {
-            return <Picker.Item label={store.storeName} value={store} key={store} />;
-          })}
-        </Picker>
-        {this.state.errorMsg ? <Text>{this.state.errorMsg}</Text> : null} */}
-        {/* <Button title="Testing Bypass" onPress={() => this._devBypass()} /> */}
+        <Button title="Testing Bypass" onPress={() => this._devBypass()} />
       </CheckInContainer>
     );
   }

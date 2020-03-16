@@ -29,7 +29,7 @@ export default class ClerkLoginScreen extends React.Component {
     await AsyncStorage.setItem('clerkId', 'recgq59j7Cx9zsSYE');
     await AsyncStorage.setItem('storeId', 'recw49LpAOInqvX3e');
     await AsyncStorage.setItem('customerId', 'recqx32YmmACiRWMq');
-    this.props.navigation.navigate('CustomerLookup');
+    this.props.navigation.navigate('Checkout');
   };
 
   // Set the clerkId and storeId in AsyncStorage
@@ -109,7 +109,7 @@ export default class ClerkLoginScreen extends React.Component {
               <ButtonLabel color="white">Next</ButtonLabel>
             </FilledButtonContainer>
           </CheckInContentContainer>
-          {/* <Button title="Testing Bypass" onPress={() => this._devBypass()} /> */}
+          <Button title="Testing Bypass" onPress={() => this._devBypass()} />
         </CheckInContainer>
       </DismissKeyboard>
     );
