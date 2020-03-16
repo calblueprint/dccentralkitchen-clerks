@@ -1,9 +1,10 @@
+import { FontAwesome5 } from '@expo/vector-icons';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Modal, View } from 'react-native';
+import { Modal, TouchableOpacity, View } from 'react-native';
 import Colors from '../../assets/Colors';
-import { ButtonLabel, Title } from '../../components/BaseComponents';
-import { ModalCenteredOpacityLayer, RewardAppliedContainer, RewardAvailableContainer } from '../../styled/checkout';
+import { Body, ButtonLabel, Title } from '../../components/BaseComponents';
+import { ModalCenteredOpacityLayer } from '../../styled/checkout';
 import { ColumnContainer, RoundedButtonContainer, RowContainer } from '../../styled/shared';
 
 export default class RewardModal extends React.Component {
@@ -11,8 +12,8 @@ export default class RewardModal extends React.Component {
     super(props);
     this.state = {
       modalVisible: false,
+      rewardsAvailable: 0,
       rewardsApplied: 0,
-      rewardStatus: [],
       totalPrice: 0,
       isLoading: true
     };
@@ -20,25 +21,19 @@ export default class RewardModal extends React.Component {
 
   componentDidMount() {
     const { rewardsAvailable, rewardsApplied, totalPrice } = this.props;
-    const rewardStatus = [];
-    // Build initial status array
-    for (let i = 0; i < rewardsAvailable; i += 1) {
-      if (i < rewardsApplied) {
-        rewardStatus.push(true);
-      } else {
-        rewardStatus.push(false);
-      }
-    }
     this.setState({
+      rewardsAvailable,
       rewardsApplied,
-      rewardStatus,
       totalPrice,
       isLoading: false
     });
   }
 
-  componentWillReceiveProps({ totalPrice }) {
-    this.setState(prevState => ({ ...prevState, totalPrice }));
+  // Forces a re-render when new props are passed
+  componentWillReceiveProps(nextProps) {
+    if (this.state.totalPrice !== nextProps.totalPrice) {
+      this.setState(prevState => ({ ...prevState, totalPrice: nextProps.totalPrice }));
+    }
   }
 
   setModalVisible = visible => this.setState({ modalVisible: visible });
@@ -57,54 +52,22 @@ export default class RewardModal extends React.Component {
     this.setModalVisible(!this.state.modalVisible);
   };
 
-  handleClear = () => {
-    const clearedStatus = this.state.rewardStatus.map(_ => false);
-    this.setState({
-      rewardsApplied: 0,
-      rewardStatus: clearedStatus,
-      totalPrice: this.state.totalPrice + 5 * this.state.rewardsApplied
-    });
-  };
-
   updateReward = (i, apply) => {
     if (apply && this.state.totalPrice < 5) {
       return;
     }
 
-    const rewardStatus = this.state.rewardStatus.slice();
-    rewardStatus[i] = !rewardStatus[i];
-
     if (apply) {
       this.setState({
-        rewardStatus,
         rewardsApplied: this.state.rewardsApplied + 1,
         totalPrice: this.state.totalPrice - 5
       });
     } else {
       this.setState({
-        rewardStatus,
         rewardsApplied: this.state.rewardsApplied - 1,
         totalPrice: this.state.totalPrice + 5
       });
     }
-  };
-
-  // Generates rewards available as a list of TouchableOpacitys to display in modal
-  generateRewardsAvailable = () => {
-    return this.state.rewardStatus.map((appliedStatus, i) => {
-      if (appliedStatus) {
-        return (
-          <RewardAppliedContainer key={i} onPress={() => this.updateReward(i, false)}>
-            <ButtonLabel color={Colors.activeText}>$5 Reward Applied </ButtonLabel>
-          </RewardAppliedContainer>
-        );
-      }
-      return (
-        <RewardAvailableContainer key={i} onPress={() => this.updateReward(i, true)}>
-          <ButtonLabel color={Colors.activeText}>$5 Reward</ButtonLabel>
-        </RewardAvailableContainer>
-      );
-    });
   };
 
   render() {
@@ -134,30 +97,40 @@ export default class RewardModal extends React.Component {
                 alignItems: 'center',
                 backgroundColor: 'white'
               }}>
-              <View>
-                <Title>{customer.name} has the following rewards available:</Title>
-              </View>
-
-              <RowContainer
-                style={{
-                  width: 400,
-                  height: 300,
-                  flexWrap: 'wrap',
-                  alignItems: 'center',
-                  justifyContent: 'space-between'
-                }}>
-                {this.generateRewardsAvailable()}
-              </RowContainer>
-
-              {/* Container for buttons at bottom */}
-              <RowContainer style={{ alignItems: 'center', justifyContent: 'center' }}>
-                <RoundedButtonContainer color={Colors.activeText} onPress={() => this.handleClear()}>
-                  <ButtonLabel>Clear All</ButtonLabel>
-                </RoundedButtonContainer>
+              {/* Icon is fixed, while the rest grows, so flex: 1 is used here */}
+              {/* For some reason, gap between is really large. Used top: -20 to remedy it */}
+              <ColumnContainer style={{ flex: 1, justifyContent: 'space-around', alignItems: 'center', top: -20 }}>
+                <TouchableOpacity
+                  style={{
+                    alignSelf: 'flex-start',
+                    justifyContent: 'center',
+                    padding: 20,
+                    paddingBottom: 0
+                  }}
+                  onPress={() => this.setModalVisible(false)}>
+                  <FontAwesome5 name="times" size={24} color={Colors.activeText} />
+                </TouchableOpacity>
+                <ColumnContainer>
+                  <Title>Apply rewards</Title>
+                  <Body>
+                    {customer.name} has {this.state.rewardsAvailable} rewards
+                  </Body>
+                </ColumnContainer>
+                <View>
+                  <Title>{customer.name} has the following rewards available:</Title>
+                </View>
+                <RowContainer
+                  style={{
+                    width: 400,
+                    height: 300,
+                    flexWrap: 'wrap',
+                    alignItems: 'center',
+                    justifyContent: 'space-between'
+                  }}></RowContainer>
                 <RoundedButtonContainer onPress={() => this.handleApplyRewards()}>
-                  <ButtonLabel>Apply Rewards</ButtonLabel>
+                  <ButtonLabel>Done</ButtonLabel>
                 </RoundedButtonContainer>
-              </RowContainer>
+              </ColumnContainer>
             </ColumnContainer>
           </ModalCenteredOpacityLayer>
         </Modal>
@@ -168,7 +141,7 @@ export default class RewardModal extends React.Component {
           height="40px"
           color={disabled ? Colors.lighter : Colors.activeText}
           onPress={() => this.handleShowModal()}>
-          <ButtonLabel color={Colors.lightest}>Apply Rewards</ButtonLabel>
+          <ButtonLabel color={Colors.lightest}>Rewards</ButtonLabel>
         </RoundedButtonContainer>
       </RowContainer>
     );
