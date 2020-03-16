@@ -151,8 +151,7 @@ export default class CheckoutScreen extends React.Component {
     const { cart, customer, totalPrice } = this.state;
 
     return (
-      // Temp fix for the horizontal orientation not showing Checkout Button
-      <ScrollView>
+      <View>
         <TopBar>
           <Title> {'Customer: '.concat(customer.name)} </Title>
         </TopBar>
@@ -198,7 +197,7 @@ export default class CheckoutScreen extends React.Component {
             </TouchableOpacity>
           </SaleContainer>
         </View>
-      </ScrollView>
+      </View>
     );
   }
 }

@@ -6,7 +6,7 @@ import Colors from '../../assets/Colors';
 import { Body, ButtonLabel, Title } from '../../components/BaseComponents';
 import LineItemCard from '../../components/LineItemCard';
 import ProductDisplayCard from '../../components/ProductDisplayCard';
-import { ModalCenteredOpacityLayer, QuantityInput } from '../../styled/checkout';
+import { ModalCenteredOpacityLayer, ModalContentContainer, QuantityInput } from '../../styled/checkout';
 import { ColumnContainer, RoundedButtonContainer } from '../../styled/shared';
 
 export default class QuantityModal extends React.Component {
@@ -76,15 +76,7 @@ export default class QuantityModal extends React.Component {
           }}>
           {/* Opacity layer */}
           <ModalCenteredOpacityLayer>
-            <ColumnContainer
-              style={{
-                height: '40%',
-                width: '45%',
-                margin: 'auto',
-                justifyContent: 'space-around',
-                alignItems: 'center',
-                backgroundColor: 'white'
-              }}>
+            <ModalContentContainer>
               <TouchableOpacity
                 style={{
                   alignSelf: 'flex-start',
@@ -117,7 +109,7 @@ export default class QuantityModal extends React.Component {
                   <ButtonLabel>Update Quantity</ButtonLabel>
                 </RoundedButtonContainer>
               </ColumnContainer>
-            </ColumnContainer>
+            </ModalContentContainer>
           </ModalCenteredOpacityLayer>
         </Modal>
 

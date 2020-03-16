@@ -16,11 +16,17 @@ export const TopBar = styled.View`
 
 // Products Section
 
-export const ProductsContainer = styled(RowContainer)`
+export const ProductsContainer = styled.ScrollView.attrs({
+  contentContainerStyle: {
+    alignItems: 'center',
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap'
+  }
+})`
   background: rgba(235, 235, 235, 0.5);
   flex-wrap: wrap;
   width: 65%;
-  justify-content: center;
 `;
 
 export const SaleContainer = styled(ColumnContainer)`
@@ -82,7 +88,17 @@ export const RewardAppliedContainer = styled(FilledButtonContainer)`
 `;
 
 // Modals
-// Shared between Login and CustomerLookup
+
+export const ModalContentContainer = styled(ColumnContainer)`
+  height: 40%;
+  width: 45%;
+  margin: auto;
+  justify-content: space-around;
+  align-items: center;
+  background-color: white;
+  top: -200px;
+`;
+
 export const QuantityInput = styled.TextInput`
   border-width: 1px;
   border-color: ${Colors.activeText};
