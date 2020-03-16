@@ -90,7 +90,7 @@ export default class StoreLookupScreen extends React.Component {
   render() {
     return (
       <DismissKeyboard>
-        <CheckInContainer>
+        <CheckInContainer behavior="position" keyboardVerticalOffset="-200">
           <CheckInContentContainer>
             <Title color={Colors.lightest}>Enter store name</Title>
             <TextField

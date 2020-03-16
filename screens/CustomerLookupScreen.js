@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { AsyncStorage } from 'react-native';
+import { AsyncStorage, View } from 'react-native';
 import Colors from '../assets/Colors';
 import BackButton from '../components/BackButton';
 import { ButtonLabel, FilledButtonContainer, Title } from '../components/BaseComponents';
@@ -77,9 +77,10 @@ export default class CustomerLookupScreen extends React.Component {
 
   render() {
     return (
-      <CheckInContainer color={Colors.lightest}>
+      <View>
         <RowContainer
           style={{
+            zIndex: 1,
             position: 'absolute',
             top: 0,
             left: 0,
@@ -91,27 +92,30 @@ export default class CustomerLookupScreen extends React.Component {
           <BackButton navigation={this.props.navigation} light={false} />
           <Title style={{ marginLeft: 16 }}>{this.state.clerkName}</Title>
         </RowContainer>
-        <CheckInContentContainer>
-          <Title>Enter customer phone number</Title>
-          <TextField
-            style={{ marginTop: 32 }}
-            placeholder="(123) 456-7890"
-            keyboardType="number-pad"
-            maxLength={10}
-            onChangeText={text => this.customerPermissionHandler(text)}
-            value={this.state.phoneNumber}
-          />
-          <FilledButtonContainer
-            style={{ marginTop: 32 }}
-            color={this.state.customerPermission ? Colors.primaryGreen : Colors.lightestGreen}
-            width="253px"
-            height="40px"
-            onPress={() => this.handleSubmit()}
-            disabled={!this.state.customerPermission}>
-            <ButtonLabel color="white">Next</ButtonLabel>
-          </FilledButtonContainer>
-        </CheckInContentContainer>
-      </CheckInContainer>
+
+        <CheckInContainer color={Colors.lightest}>
+          <CheckInContentContainer>
+            <Title>Enter customer phone number</Title>
+            <TextField
+              style={{ marginTop: 32 }}
+              placeholder="(123) 456-7890"
+              keyboardType="number-pad"
+              maxLength={10}
+              onChangeText={text => this.customerPermissionHandler(text)}
+              value={this.state.phoneNumber}
+            />
+            <FilledButtonContainer
+              style={{ marginTop: 32 }}
+              color={this.state.customerPermission ? Colors.primaryGreen : Colors.lightestGreen}
+              width="253px"
+              height="40px"
+              onPress={() => this.handleSubmit()}
+              disabled={!this.state.customerPermission}>
+              <ButtonLabel color="white">Next</ButtonLabel>
+            </FilledButtonContainer>
+          </CheckInContentContainer>
+        </CheckInContainer>
+      </View>
     );
   }
 }

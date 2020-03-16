@@ -1,7 +1,11 @@
+import { Platform } from 'react-native';
 import styled from 'styled-components/native';
 import Colors from '../assets/Colors';
 
-export const CheckInContainer = styled.View`
+export const CheckInContainer = styled.KeyboardAvoidingView.attrs({
+  behavior: Platform.OS === 'ios' ? 'position' : null,
+  keyboardVerticalOffset: -200
+})`
   background-color: ${props => props.color || Colors.activeText};
   width: 100%;
   height: 100%;
