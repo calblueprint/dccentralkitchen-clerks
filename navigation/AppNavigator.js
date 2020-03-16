@@ -2,7 +2,16 @@ import { createAppContainer, createStackNavigator } from 'react-navigation';
 import CheckoutScreen from '../screens/CheckoutScreen';
 import ConfirmationScreen from '../screens/ConfirmationScreen';
 import CustomerLookupScreen from '../screens/CustomerLookupScreen';
-import MainTabNavigator from './MainTabNavigator';
+import ClerkLoginScreen from '../screens/ClerkLoginScreen';
+import StoreLookupScreen from '../screens/StoreLookupScreen';
+
+const AuthStack = createStackNavigator(
+  {
+    StoreLookup: StoreLookupScreen,
+    ClerkLogin: ClerkLoginScreen
+  },
+  { headerMode: 'none' }
+);
 
 export default createAppContainer(
   createStackNavigator({

@@ -9,6 +9,7 @@ import { addTransaction, loadProductsData, updateCustomerPoints } from '../lib/c
 import { FlatListContainer, TopBar, ProductsContainer, SaleContainer } from '../styled/checkout';
 import { TextHeader } from '../styled/shared';
 import { Title, Subhead } from '../components/BaseComponents';
+import BackButton from '../components/BackButton';
 
 export default class CheckoutScreen extends React.Component {
   constructor(props) {
@@ -205,6 +206,7 @@ export default class CheckoutScreen extends React.Component {
       // Temp fix for the horizontal orientation not showing Checkout Button
       <ScrollView>
         <TopBar>
+          <BackButton navigation={this.props.navigation} />
           <Title> {'Customer: '.concat(customer.name)} </Title>
         </TopBar>
         <View style={{ display: 'flex', flexDirection: 'row' }}>
