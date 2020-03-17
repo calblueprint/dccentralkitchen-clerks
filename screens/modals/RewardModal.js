@@ -102,7 +102,7 @@ export default class RewardModal extends React.Component {
       return null;
     }
     const { customer } = this.props;
-    const { showError, modalVisible, totalPrice, rewardsApplied, rewardsEligible } = this.state;
+    const { showError, modalVisible, totalPrice, rewardsApplied, rewardsAvailable, rewardsEligible } = this.state;
     // TODO pull rewardValue from Airtable
     const rewardValue = 5;
     const min = rewardsApplied === 0;
@@ -138,7 +138,7 @@ export default class RewardModal extends React.Component {
               <ModalCopyContainer style={{ marginLeft: '15%', alignSelf: 'flex-start' }}>
                 <Title>Apply rewards</Title>
                 <Body color={Colors.secondaryText}>
-                  {customer.name} has {this.state.rewardsAvailable} rewards
+                  {customer.name} has {rewardsAvailable} rewards
                 </Body>
               </ModalCopyContainer>
               <ColumnContainer style={{ width: '50%', margin: 16 }}>
