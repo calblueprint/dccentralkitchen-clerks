@@ -1,15 +1,14 @@
 import React from 'react';
-import { LineItem, LineItemRow } from '../styled/checkout.js';
 import Colors from '../assets/Colors';
-import { Subhead, Body } from '../components/BaseComponents';
 import { calculateLineItemPrice } from '../lib/checkoutUtils';
+import { LineItem, LineItemRow } from '../styled/checkout';
+import { Body, Subhead } from './BaseComponents';
 
 /**
  * @prop
  **/
 
-// TODO @tommypoa to use styled-components
-function ProductCartCard({ product }) {
+function LineItemCard({ product }) {
   return (
     <LineItem>
       <LineItemRow>
@@ -18,13 +17,13 @@ function ProductCartCard({ product }) {
       </LineItemRow>
       <LineItemRow>
         <Body color={Colors.secondaryText}>{product.detail}</Body>
-        <Body color={Colors.secondaryText}>{product.points * product.cartCount} pts</Body>
+        <Body color={Colors.secondaryText}>{product.points * product.quantity} pts</Body>
       </LineItemRow>
       <LineItemRow>
-        <Body color={Colors.secondaryText}>Qty: {product.cartCount}</Body>
+        <Body color={Colors.secondaryText}>Qty: {product.quantity}</Body>
       </LineItemRow>
     </LineItem>
   );
 }
 
-export default ProductCartCard;
+export default LineItemCard;

@@ -52,12 +52,11 @@ export const ButtonLabel = styled.Text`
   text-align: center;
   letter-spacing: 0.01px;
   text-transform: uppercase;
-  color: ${Colors.lightest};
+  color: ${props => props.color || Colors.lightest};
 `;
 
 export const FilledButtonContainer = styled(ButtonContainer)`
   width: ${props => props.width || '309px'};
   height: ${props => props.height || '57px'}
-  background: ${props => (props.color ? props.color : Colors.primaryGreen)};
-  border-radius: 20px;
+  background: ${props => props.color || Colors.primaryGreen};
 `;
