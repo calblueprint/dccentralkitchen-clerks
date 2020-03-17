@@ -55,7 +55,6 @@ export default class CheckoutScreen extends React.Component {
   };
 
   updateQuantityCallback = (product, quantity, priceDifference) => {
-    console.log(priceDifference);
     this.setState(prevState => ({
       cart: update(prevState.cart, { [product.id]: { quantity: { $set: quantity } } }),
       totalPrice: prevState.totalPrice + priceDifference
