@@ -3,6 +3,7 @@ import React from 'react';
 import update from 'react-addons-update';
 import { Alert, AsyncStorage, Text, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
+import BackButton from '../components/BackButton';
 import { Subhead, Title } from '../components/BaseComponents';
 import { getCustomersById } from '../lib/airtable/request';
 import { addTransaction, loadProductsData, updateCustomerPoints } from '../lib/checkoutUtils';
@@ -153,7 +154,10 @@ export default class CheckoutScreen extends React.Component {
     return (
       <View>
         <TopBar>
+          <BackButton navigation={this.props.navigation} light={false} style={{ marginTop: 3, marginLeft: 24 }} />
           <Title> {'Customer: '.concat(customer.name)} </Title>
+          {/* Duplicate, invisible element to have left-aligned BackButton */}
+          <BackButton navigation={this.props.navigation} light={false} style={{ opacity: 0.0, disabled: true }} />
         </TopBar>
         <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}>
           {/* Display products */}

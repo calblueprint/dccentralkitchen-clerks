@@ -59,4 +59,5 @@ export const FilledButtonContainer = styled(ButtonContainer)`
   width: ${props => props.width || '309px'};
   height: ${props => props.height || '57px'}
   background: ${props => (props.color ? props.color : Colors.primaryGreen)};
+  border-radius: 20px;
 `;
