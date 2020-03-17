@@ -6,11 +6,12 @@ import { ColumnContainer, RowContainer } from './shared';
 // Customer Name Top Bar
 
 export const TopBar = styled.View`
-  height: 55px;
+  height: 68px;
   width: 100%;
   background: ${Colors.base};
-  flex: 1;
-  justify-content: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
   align-items: center;
 `;
 
