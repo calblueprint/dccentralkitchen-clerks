@@ -3,6 +3,7 @@ import React from 'react';
 import { Alert, AsyncStorage, Text, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { ButtonLabel, FilledButtonContainer, Subhead, Title } from '../components/BaseComponents';
+import BackButton from '../components/BackButton';
 import ProductCartCard from '../components/ProductCartCard';
 import ProductDisplayCard from '../components/ProductDisplayCard';
 import SubtotalCard from '../components/SubtotalCard';
@@ -221,7 +222,10 @@ export default class CheckoutScreen extends React.Component {
       // Temp fix for the horizontal orientation not showing Checkout Button
       <ScrollView ref={view => (this._scrollView = view)}>
         <TopBar>
+          <BackButton navigation={this.props.navigation} light={false} style={{ marginTop: 3, marginLeft: 24 }} />
           <Title> {'Customer: '.concat(customer.name)} </Title>
+          {/* Duplicate, invisible element to have left-aligned BackButton */}
+          <BackButton navigation={this.props.navigation} light={false} style={{ opacity: 0.0, disabled: true }} />
         </TopBar>
         <View style={{ display: 'flex', flexDirection: 'row', flex: 1 }}>
           {/* Display products */}
