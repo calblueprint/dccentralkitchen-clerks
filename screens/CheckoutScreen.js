@@ -2,8 +2,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Alert, AsyncStorage, Text, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import { ButtonLabel, FilledButtonContainer, Subhead, Title } from '../components/BaseComponents';
 import BackButton from '../components/BackButton';
+import { ButtonLabel, FilledButtonContainer, Subhead, Title } from '../components/BaseComponents';
 import ProductCartCard from '../components/ProductCartCard';
 import ProductDisplayCard from '../components/ProductDisplayCard';
 import SubtotalCard from '../components/SubtotalCard';
@@ -242,7 +242,6 @@ export default class CheckoutScreen extends React.Component {
               style={{ padding: 4 }}
             />
             <BottomBar style={{ display: 'flex', flexDirection: 'row', marginBottom: 0 }}>
-              {/* TODO: Replace 3 with 5 */}
               <TabContainer
                 onPress={() =>
                   this._scrollView.scrollTo({
