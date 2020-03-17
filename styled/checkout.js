@@ -35,6 +35,7 @@ export const TabContainer = styled.TouchableOpacity`
   background: ${Colors.base};
   border-top-width: 0px;
   border-bottom-width: 0px;
+  border-left-width: 0px;
   justify-content: center;
   align-items: center;
 `;
@@ -60,7 +61,7 @@ export const ProductCard = styled.View`
   box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.14);
   display: flex;
   flex-direction: column;
-  margin: 12px;
+  margin: 6px;
   border-radius: 4px;
   padding: 8px 8px 10px;
 `;
@@ -68,7 +69,7 @@ export const ProductCard = styled.View`
 // Transaction Line Items
 
 export const LineItem = styled.View`
-  width: 329px;
+  width: 281px;
   background: ${Colors.lightest};
   border: 1px solid ${Colors.lighter};
   border-left-width: 0px;

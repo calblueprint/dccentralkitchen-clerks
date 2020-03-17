@@ -3,7 +3,6 @@ import { Platform } from 'react-native';
 import { createBottomTabNavigator, createStackNavigator } from 'react-navigation';
 import TabBarIcon from '../components/TabBarIcon';
 import ClerkLoginScreen from '../screens/ClerkLoginScreen';
-import CheckoutScreen from '../screens/CheckoutScreen';
 
 const config = Platform.select({
   web: { headerMode: 'screen' },
@@ -12,7 +11,7 @@ const config = Platform.select({
 
 const HomeStack = createStackNavigator(
   {
-    Home: CheckoutScreen
+    Home: ClerkLoginScreen
   },
   config
 );

@@ -2,22 +2,22 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Alert, AsyncStorage, Text, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
+import { ButtonLabel, FilledButtonContainer, Subhead, Title } from '../components/BaseComponents';
 import ProductCartCard from '../components/ProductCartCard';
 import ProductDisplayCard from '../components/ProductDisplayCard';
-import { getCustomersById } from '../lib/airtable/request';
-import { addTransaction, loadProductsData, updateCustomerPoints, getNumRowsProducts } from '../lib/checkoutUtils';
-import {
-  FlatListContainer,
-  TopBar,
-  ProductsContainer,
-  SaleContainer,
-  BottomBar,
-  TabContainer
-} from '../styled/checkout';
-import { TextHeader } from '../styled/shared';
-import { Title, Subhead, FilledButtonContainer, ButtonLabel } from '../components/BaseComponents';
 import SubtotalCard from '../components/SubtotalCard';
 import TotalCard from '../components/TotalCard';
+import { getCustomersById } from '../lib/airtable/request';
+import { addTransaction, loadProductsData, updateCustomerPoints } from '../lib/checkoutUtils';
+import {
+  BottomBar,
+  FlatListContainer,
+  ProductsContainer,
+  SaleContainer,
+  TabContainer,
+  TopBar
+} from '../styled/checkout';
+import { TextHeader } from '../styled/shared';
 
 export default class CheckoutScreen extends React.Component {
   constructor(props) {
@@ -207,7 +207,6 @@ export default class CheckoutScreen extends React.Component {
       nextLetter = String.fromCharCode(nextLetter.charCodeAt(0) + 1);
       prodList = this.state.products.filter(product => product.name.charAt(0) === nextLetter);
     }
-    console.log(this.state.products.indexOf(prodList[0]));
     return this.state.products.indexOf(prodList[0]);
   }
 
@@ -227,24 +226,23 @@ export default class CheckoutScreen extends React.Component {
         <View style={{ display: 'flex', flexDirection: 'row', flex: 1 }}>
           {/* Display products */}
           <ProductsContainer>
-            <ScrollView>
-              <FlatListContainer
-                keyExtractor={product => product.id}
-                numColumns={3}
-                data={products}
-                renderItem={({ item }) => (
-                  <TouchableOpacity onPress={() => this.addToCart(item)}>
-                    <ProductDisplayCard product={item} />
-                  </TouchableOpacity>
-                )}
-              />
-            </ScrollView>
+            <FlatListContainer
+              keyExtractor={product => product.id}
+              numColumns={5}
+              data={products}
+              renderItem={({ item }) => (
+                <TouchableOpacity onPress={() => this.addToCart(item)}>
+                  <ProductDisplayCard product={item} />
+                </TouchableOpacity>
+              )}
+              style={{ padding: 4 }}
+            />
             <BottomBar style={{ display: 'flex', flexDirection: 'row', marginBottom: 0 }}>
               {/* TODO: Replace 3 with 5 */}
               <TabContainer
                 onPress={() =>
                   this._scrollView.scrollTo({
-                    y: Math.floor(this.getIndexOfFirstProductAtLetter('A') / 3) * 160 + 55
+                    y: Math.floor(this.getIndexOfFirstProductAtLetter('A') / 5) * 160 + 55
                   })
                 }>
                 <Title>A-K</Title>
@@ -252,7 +250,7 @@ export default class CheckoutScreen extends React.Component {
               <TabContainer
                 onPress={() =>
                   this._scrollView.scrollTo({
-                    y: Math.floor(this.getIndexOfFirstProductAtLetter('E') / 3) * 160 + 55
+                    y: Math.floor(this.getIndexOfFirstProductAtLetter('E') / 5) * 160 + 55
                   })
                 }>
                 <Title>L-S</Title>
@@ -260,7 +258,7 @@ export default class CheckoutScreen extends React.Component {
               <TabContainer
                 onPress={() =>
                   this._scrollView.scrollTo({
-                    y: Math.floor(this.getIndexOfFirstProductAtLetter('T') / 3) * 160 + 55
+                    y: Math.floor(this.getIndexOfFirstProductAtLetter('T') / 5) * 160 + 55
                   })
                 }>
                 <Title>T-Z</Title>
