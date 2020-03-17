@@ -1,8 +1,8 @@
 import React from 'react';
 import { Image } from 'react-native';
-import { ProductCard } from '../styled/checkout.js';
-import { Body, Caption } from '../components/BaseComponents';
 import Colors from '../assets/Colors';
+import { ProductCard } from '../styled/checkout';
+import { Body, Caption } from './BaseComponents';
 
 /**
  * @prop

@@ -1,10 +1,7 @@
-import { FlatList } from 'react-native';
 import styled from 'styled-components/native';
 import Colors from '../assets/Colors';
-
-export const FlatListContainer = styled(FlatList)`
-  width: 100%;
-`;
+import { FilledButtonContainer } from '../components/BaseComponents';
+import { ColumnContainer, RowContainer } from './shared';
 
 // Customer Name Top Bar
 
@@ -20,12 +17,23 @@ export const TopBar = styled.View`
 
 // Products Section
 
-export const ProductsContainer = styled.View`
+export const ProductsContainer = styled.ScrollView.attrs({
+  contentContainerStyle: {
+    alignItems: 'center',
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap'
+  }
+})`
   background: rgba(235, 235, 235, 0.5);
+  flex-wrap: wrap;
+  width: 65%;
 `;
 
-export const SaleContainer = styled.View`
+export const SaleContainer = styled(ColumnContainer)`
   padding: 13px 14px 0px;
+  align-items: center;
+  width: 35%;
 `;
 
 // Product Cards
@@ -57,9 +65,25 @@ export const LineItem = styled.View`
   padding: 12px 24px 12px 24px;
 `;
 
-export const LineItemRow = styled.View`
-  display: flex;
-  flex-direction: row;
+export const LineItemRow = styled(RowContainer)`
   justify-content: space-between;
   align-items: center;
+`;
+
+export const RewardAvailableContainer = styled(FilledButtonContainer)`
+  width: 159px;
+  height: 44px;
+  background: ${Colors.lighter};
+  border: 1px solid ${Colors.light};
+  border-radius: 9px;
+  margin: 8px 0px;
+`;
+
+export const RewardAppliedContainer = styled(FilledButtonContainer)`
+  width: 159px;
+  height: 44px;
+  background: ${Colors.lightest};
+  border: 1px solid ${Colors.light};
+  border-radius: 9px;
+  margin: 8px 0px;
 `;

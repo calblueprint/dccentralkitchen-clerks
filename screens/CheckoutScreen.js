@@ -1,59 +1,81 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import update from 'react-addons-update';
 import { Alert, AsyncStorage, Text, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import BackButton from '../components/BackButton';
 import { Subhead, Title } from '../components/BaseComponents';
-import ProductCartCard from '../components/ProductCartCard';
-import ProductDisplayCard from '../components/ProductDisplayCard';
 import { getCustomersById } from '../lib/airtable/request';
 import { addTransaction, loadProductsData, updateCustomerPoints } from '../lib/checkoutUtils';
-import { FlatListContainer, ProductsContainer, SaleContainer, TopBar } from '../styled/checkout';
+import { ProductsContainer, SaleContainer, TopBar } from '../styled/checkout';
 import { TextHeader } from '../styled/shared';
+import QuantityModal from './modals/QuantityModal';
+import RewardModal from './modals/RewardModal';
 
 export default class CheckoutScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      // Populated in componentDidMount
       customer: null,
+      cart: {},
       currentPoints: 0,
-      products: [],
-      cart: [],
-      isLoading: true,
-      totalPrice: 0,
+      rewardsAvailable: 0,
+      // Other state
       totalPoints: 0,
+      totalPrice: 0,
       rewardsApplied: 0,
-      rewardsAvailable: 0
+      isLoading: true
     };
   }
 
   async componentDidMount() {
     const customerId = await AsyncStorage.getItem('customerId');
     const customer = await getCustomersById(customerId);
-    const productsData = await loadProductsData();
+    const products = await loadProductsData();
+    const initialCart = {};
+
+    // Initialize cart a'la Python dictionary, to make updating quantity cleaner
+    // Cart contains line items, which have all initial product attributes, and a quantity
+    products.forEach(product => {
+      initialCart[product.id] = product;
+    });
 
     this.setState({
-      customer: customer,
+      customer,
+      cart: initialCart,
+      currentPoints: customer.points,
       rewardsAvailable: Math.floor(customer.rewardsAvailable),
-      products: productsData,
       isLoading: false
     });
   }
 
+  applyRewardsCallback = (rewardsApplied, totalPrice) => {
+    // Update rewards in parent state
+    this.setState({ rewardsApplied, totalPrice });
+  };
+
+  updateQuantityCallback = (product, quantity, priceDifference) => {
+    this.setState(prevState => ({
+      cart: update(prevState.cart, { [product.id]: { quantity: { $set: quantity } } }),
+      totalPrice: prevState.totalPrice + priceDifference
+    }));
+  };
+
   // Sets total points earned from transaction in state.
-  setTotalPoints() {
+  setTotalPoints = () => {
     let points = 0;
-    for (let i = 0; i < this.state.cart.length; i += 1) {
-      const cartItem = this.state.cart[i];
-      points += cartItem.points * cartItem.cartCount;
-    }
+    // Iterate over lineItems in cart
+    Object.values(this.state.cart).forEach(lineItem => {
+      points += lineItem.points * lineItem.quantity;
+    });
     points -= this.state.rewardsApplied * 500;
     if (points < 0) {
       console.error('Total points less than 0!');
     }
     this.setState({ totalPoints: points });
     return points;
-  }
+  };
 
   // Handles submit when clerk selects "CHECKOUT".
   handleSubmit = () => {
@@ -61,53 +83,26 @@ export default class CheckoutScreen extends React.Component {
     this.displayConfirmation(totalPoints);
   };
 
-  // Adds one item of product type to cart.
-  addToCart(item) {
-    item.cartCount += 1;
-    const currentCart = this.state.cart;
-    const currentItem = currentCart.filter(product => product.id === item.id);
-    let { totalPrice } = this.state;
-    totalPrice += item.customerCost;
-    if (currentItem.length === 0) {
-      currentCart.push(item);
-    }
-    this.setState({
-      cart: currentCart,
-      totalPrice
-    });
-  }
-
-  // Subtracts one item of product type from cart.
-  removeFromCart(item) {
-    item.cartCount -= 1;
-    let currentCart = this.state.cart;
-    currentCart = currentCart.filter(cartItem => cartItem.cartCount > 0);
-    let { totalPrice } = this.state;
-    totalPrice -= item.customerCost;
-    this.setState({
-      cart: currentCart,
-      totalPrice
-    });
-  }
-
   // Generates the confirmation message based on items in cart, points earned,
   // and total spent.
-  generateConfirmationMessage(totalPoints) {
+  generateConfirmationMessage = totalPoints => {
     let msg = 'Transaction Items:\n\n';
-    for (let i = 0; i < this.state.cart.length; i += 1) {
-      // Adding all quantities of items in cart to message.
-      const cartItem = this.state.cart[i];
-      msg = msg.concat(`${cartItem.cartCount} x ${cartItem.name}\n`);
-    }
+    // Iterate over lineItems in cart
+    Object.values(this.state.cart).forEach(lineItem => {
+      if (lineItem.quantity > 0) {
+        msg = msg.concat(`${lineItem.quantity} x ${lineItem.name}\n`);
+      }
+    });
+    msg = msg.concat(`\nRewards Redeemed: ${this.state.rewardsApplied}\n`);
     // Adding total price and total points earned to message. Must be called after setTotalPoints()
     // in handleSubmit() for updated amount.
     msg = msg.concat(`\nTotal Price: $${this.state.totalPrice.toFixed(2)}\n`);
     msg = msg.concat(`Total Points Earned: ${totalPoints}`);
     return msg;
-  }
+  };
 
   // Adds the transaction to the user's account and updates their points.
-  async confirmTransaction() {
+  confirmTransaction = async () => {
     try {
       const transactionId = await addTransaction(
         this.state.customer,
@@ -124,12 +119,12 @@ export default class CheckoutScreen extends React.Component {
       // Technically the only thing that could happen is a network failure, but likely indicates a change in column schema etc
       console.log(err);
     }
-  }
+  };
 
   // Displays a confirmation alert to the clerk.
-  displayConfirmation(totalPoints) {
+  displayConfirmation = totalPoints => {
     // Should not be able to check out if there isn't anything in the transaction.
-    if (totalPoints === 0) {
+    if (totalPoints === 0 && this.state.cart.length === 0) {
       Alert.alert('Empty Transaction', 'This transaction is empty. Please add items to the cart.', [
         {
           text: 'OK',
@@ -141,89 +136,34 @@ export default class CheckoutScreen extends React.Component {
     Alert.alert('Confirm Transaction', this.generateConfirmationMessage(totalPoints), [
       {
         text: 'Cancel',
-        onPress: () => console.log('Canceled'),
         style: 'cancel'
       },
       // TODO should this be an await?
       { text: 'Confirm', onPress: () => this.confirmTransaction() }
     ]);
-  }
-
-  applyReward() {
-    // Cannot apply reward if total price is less than 5
-    if (this.state.totalPrice < 5) {
-      return;
-    }
-    this.setState(prevState => ({
-      rewardsApplied: prevState.rewardsApplied + 1,
-      rewardsAvailable: prevState.rewardsAvailable - 1,
-      totalPrice: prevState.totalPrice - 5
-    }));
-  }
-
-  removeReward() {
-    this.setState(prevState => ({
-      rewardsApplied: prevState.rewardsApplied - 1,
-      rewardsAvailable: prevState.rewardsAvailable + 1,
-      totalPrice: prevState.totalPrice + 5
-    }));
-  }
-
-  // Generates rewards available as a list of TouchableOpacitys to display on checkout screen.
-  generateRewardsAvailable() {
-    const rewardsAvailable = [];
-    for (let i = 0; i < this.state.rewardsAvailable; i += 1) {
-      rewardsAvailable.push(
-        <TouchableOpacity key={i} onPress={() => this.applyReward()}>
-          <Text>APPLY $5 REWARD</Text>
-        </TouchableOpacity>
-      );
-    }
-    return rewardsAvailable;
-  }
-
-  // Generates rewards applied as a list of TouchableOpacitys to display on checkout screen.
-  generateRewardsApplied() {
-    const rewardsApplied = [];
-    for (let i = 0; i < this.state.rewardsApplied; i += 1) {
-      rewardsApplied.push(
-        <TouchableOpacity key={i} onPress={() => this.removeReward()}>
-          <Text>$5 REWARD APPLIED</Text>
-        </TouchableOpacity>
-      );
-    }
-    return rewardsApplied;
-  }
+  };
 
   render() {
     if (this.state.isLoading) {
       return null; // TODO @tommypoa waiting (flavicon?)
     }
 
-    const { cart, customer, products, totalPrice } = this.state;
+    const { cart, customer, totalPrice } = this.state;
 
     return (
-      // Temp fix for the horizontal orientation not showing Checkout Button
-      <ScrollView>
+      <View>
         <TopBar>
           <BackButton navigation={this.props.navigation} light={false} style={{ marginTop: 3, marginLeft: 24 }} />
           <Title> {'Customer: '.concat(customer.name)} </Title>
           {/* Duplicate, invisible element to have left-aligned BackButton */}
           <BackButton navigation={this.props.navigation} light={false} style={{ opacity: 0.0, disabled: true }} />
         </TopBar>
-        <View style={{ display: 'flex', flexDirection: 'row' }}>
+        <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}>
           {/* Display products */}
           <ProductsContainer>
-            <FlatListContainer
-              keyExtractor={product => product.id}
-              numColumns={5}
-              data={products}
-              renderItem={({ item }) => (
-                <TouchableOpacity onPress={() => this.addToCart(item)}>
-                  <ProductDisplayCard product={item} />
-                </TouchableOpacity>
-              )}
-            />
+            {Object.entries(cart).map(([id, product]) => (
+              <QuantityModal key={id} product={product} isLineItem={false} callback={this.updateQuantityCallback} />
+            ))}
           </ProductsContainer>
           {/* Right column */}
           <SaleContainer>
@@ -231,21 +171,23 @@ export default class CheckoutScreen extends React.Component {
             {/* Cart container */}
             <View style={{ height: '40%', paddingBottom: '5%' }}>
               <ScrollView>
-                {cart.map(product => (
-                  <TouchableOpacity key={product.id} onPress={() => this.removeFromCart(product)}>
-                    <ProductCartCard product={product} />
-                  </TouchableOpacity>
-                ))}
+                {Object.entries(cart).map(([id, product]) => {
+                  return (
+                    product.quantity > 0 && (
+                      <QuantityModal key={id} product={product} isLineItem callback={this.updateQuantityCallback} />
+                    )
+                  );
+                })}
               </ScrollView>
             </View>
-            <View style={{ height: '20%', paddingBottom: '5%' }}>
-              <TextHeader>Rewards Applied</TextHeader>
-              <ScrollView style={{ alignSelf: 'flex-end' }}>{this.generateRewardsApplied()}</ScrollView>
-            </View>
-            <View style={{ height: '20%', paddingBottom: '5%' }}>
-              <TextHeader>Rewards Available</TextHeader>
-              <ScrollView style={{ alignSelf: 'flex-end' }}>{this.generateRewardsAvailable()}</ScrollView>
-            </View>
+            {/* Should be greyed out if totalPrice < 5 */}
+            <RewardModal
+              totalPrice={totalPrice}
+              customer={customer}
+              rewardsAvailable={this.state.rewardsAvailable}
+              rewardsApplied={this.state.rewardsApplied}
+              callback={this.applyRewardsCallback}
+            />
             <Text
               style={{
                 fontWeight: 'bold',
@@ -258,7 +200,7 @@ export default class CheckoutScreen extends React.Component {
             </TouchableOpacity>
           </SaleContainer>
         </View>
-      </ScrollView>
+      </View>
     );
   }
 }
