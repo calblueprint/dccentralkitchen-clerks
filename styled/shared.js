@@ -40,13 +40,13 @@ export const TextInput = styled.TextInput`
 `;
 
 export const RowContainer = styled.View`
-  flex-direction: row;
   display: flex;
+  flex-direction: row;
 `;
 
 export const ColumnContainer = styled.View`
-  flex-direction: column;
   display: flex;
+  flex-direction: column;
 `;
 
 export const SpaceBetweenRowContainer = styled(RowContainer)`
