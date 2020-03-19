@@ -3,7 +3,7 @@ import React from 'react';
 import { AsyncStorage, Keyboard, TouchableWithoutFeedback, View } from 'react-native';
 import Colors from '../assets/Colors';
 import BackButton from '../components/BackButton';
-import { ButtonLabel, FilledButtonContainer, Title } from '../components/BaseComponents';
+import { ButtonLabel, RoundedButtonContainer, Title } from '../components/BaseComponents';
 import { status } from '../lib/constants';
 import { lookupClerk } from '../lib/loginUtils';
 import { CheckInContainer, CheckInContentContainer, TextField } from '../styled/checkin';
@@ -23,26 +23,13 @@ export default class ClerkLoginScreen extends React.Component {
     };
   }
 
-  // Purely to bypass the flow for development -- go straight to Checkout.
-  // Configures to use Jeffry Poa & Robin Hood
-  _devBypass = async () => {
-    await AsyncStorage.setItem('clerkId', 'recgq59j7Cx9zsSYE');
-    await AsyncStorage.setItem('clerkName', 'Jeffry Poa');
-    await AsyncStorage.setItem('storeId', 'recw49LpAOInqvX3e');
-    await AsyncStorage.setItem('customerId', 'recqx32YmmACiRWMq');
-    this.props.navigation.navigate('CustomerLookup');
-  };
-
-  _devBypassConfirm = async () => {
-    this.props.navigation.navigate('Confirmation', { transactionId: 'recbDBXR1bvvpEnOK' });
-  };
-
   // Set the clerkId and storeId in AsyncStorage
   // Then navigate to the customer lookup screen
   _asyncLoginClerk = async clerkRecord => {
     await AsyncStorage.setItem('clerkId', clerkRecord.id);
+    await AsyncStorage.setItem('clerkName', clerkRecord.clerkName);
     await AsyncStorage.setItem('storeId', this.props.navigation.state.params.store.id);
-    this.props.navigation.navigate('CustomerLookup', { clerkName: clerkRecord.clerkName });
+    this.props.navigation.navigate('CustomerLookup');
   };
 
   loginPermissionHandler = password => {
@@ -110,7 +97,7 @@ export default class ClerkLoginScreen extends React.Component {
                 onChangeText={text => this.loginPermissionHandler(text)}
                 value={this.state.password}
               />
-              <FilledButtonContainer
+              <RoundedButtonContainer
                 style={{ marginTop: 32 }}
                 color={this.state.loginPermission ? Colors.primaryGreen : Colors.lightestGreen}
                 width="253px"
@@ -118,9 +105,8 @@ export default class ClerkLoginScreen extends React.Component {
                 onPress={() => this.handleSubmit()}
                 disabled={!this.state.loginPermission}>
                 <ButtonLabel color={Colors.lightest}>Next</ButtonLabel>
-              </FilledButtonContainer>
+              </RoundedButtonContainer>
             </CheckInContentContainer>
-            {/* <Button title="Testing Bypass" onPress={() => this._devBypass()} /> */}
           </CheckInContainer>
         </View>
       </DismissKeyboard>
