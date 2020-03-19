@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { AsyncStorage, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { AsyncStorage, Button, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import Colors from '../assets/Colors';
-import { Body, ButtonLabel, FilledButtonContainer, Title } from '../components/BaseComponents';
+import { Body, ButtonLabel, RoundedButtonContainer, Title } from '../components/BaseComponents';
 import { loadStoreData } from '../lib/loginUtils';
 import {
   CheckInContainer,
@@ -47,9 +47,14 @@ export default class StoreLookupScreen extends React.Component {
   // Configures to use Jeffry Poa & Robin Hood
   _devBypass = async () => {
     await AsyncStorage.setItem('clerkId', 'recgq59j7Cx9zsSYE');
+    await AsyncStorage.setItem('clerkName', 'Jeffry Poa');
     await AsyncStorage.setItem('storeId', 'recw49LpAOInqvX3e');
     await AsyncStorage.setItem('customerId', 'recqx32YmmACiRWMq');
     this.props.navigation.navigate('Checkout');
+  };
+
+  _devBypassConfirm = async () => {
+    this.props.navigation.navigate('Confirmation', { transactionId: 'recbDBXR1bvvpEnOK' });
   };
 
   onFocus = () => {
@@ -112,7 +117,7 @@ export default class StoreLookupScreen extends React.Component {
               </SearchBarContainer>
             )}
             {this.state.textFieldBlur && (
-              <FilledButtonContainer
+              <RoundedButtonContainer
                 style={{ marginTop: 32 }}
                 color={this.state.storePermission ? Colors.primaryGreen : Colors.lightestGreen}
                 width="253px"
@@ -120,9 +125,11 @@ export default class StoreLookupScreen extends React.Component {
                 onPress={() => this.handleNavigate()}
                 disabled={!this.state.storePermission}>
                 <ButtonLabel color={Colors.lightest}>Next</ButtonLabel>
-              </FilledButtonContainer>
+              </RoundedButtonContainer>
             )}
           </CheckInContentContainer>
+          <Button title="Checkout Bypass" onPress={() => this._devBypass()} />
+          <Button title="Confirmation Bypass" onPress={() => this._devConfirmBypass()} />
         </CheckInContainer>
       </DismissKeyboard>
     );

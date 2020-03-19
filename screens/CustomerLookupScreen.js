@@ -3,7 +3,7 @@ import React from 'react';
 import { AsyncStorage, View } from 'react-native';
 import Colors from '../assets/Colors';
 import BackButton from '../components/BackButton';
-import { ButtonLabel, FilledButtonContainer, Title } from '../components/BaseComponents';
+import { ButtonLabel, RoundedButtonContainer, Title } from '../components/BaseComponents';
 import { status } from '../lib/constants';
 import { lookupCustomer } from '../lib/lookupUtils';
 import { CheckInContainer, CheckInContentContainer, TextField } from '../styled/checkin';
@@ -24,7 +24,7 @@ export default class CustomerLookupScreen extends React.Component {
   // TODO: this is currently not being used
   // Clears error state and phoneNumber entered so far
   async componentDidMount() {
-    const { clerkName } = this.props.navigation.state.params;
+    const clerkName = await AsyncStorage.getItem('clerkName');
     this.setState({ clerkName, phoneNumber: '', errorMsg: null });
   }
 
@@ -104,7 +104,7 @@ export default class CustomerLookupScreen extends React.Component {
               onChangeText={text => this.customerPermissionHandler(text)}
               value={this.state.phoneNumber}
             />
-            <FilledButtonContainer
+            <RoundedButtonContainer
               style={{ marginTop: 32 }}
               color={this.state.customerPermission ? Colors.primaryGreen : Colors.lightestGreen}
               width="253px"
@@ -112,7 +112,7 @@ export default class CustomerLookupScreen extends React.Component {
               onPress={() => this.handleSubmit()}
               disabled={!this.state.customerPermission}>
               <ButtonLabel color="white">Next</ButtonLabel>
-            </FilledButtonContainer>
+            </RoundedButtonContainer>
           </CheckInContentContainer>
         </CheckInContainer>
       </View>
