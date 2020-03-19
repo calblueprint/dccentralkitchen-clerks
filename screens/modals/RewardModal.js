@@ -29,7 +29,8 @@ export default class RewardModal extends React.Component {
       modalVisible: false,
       rewardsAvailable: 0,
       rewardsApplied: 0,
-      totalPrice: 0,
+      // totalBalance can be negative, since this happens when we apply rewards with a greater value than cart total price
+      totalBalance: 0,
       rewardsEligible: 0,
       showError: false,
       isLoading: true
@@ -37,15 +38,18 @@ export default class RewardModal extends React.Component {
   }
 
   componentDidMount() {
-    const { rewardsAvailable, rewardsApplied, totalPrice } = this.props;
+    const { rewardsAvailable, rewardsApplied, totalBalance } = this.props;
     // TODO make reward value data in AirTable
     const rewardValue = 5;
     // Calculate eligible rewards
-    const rewardsEligible = Math.min(Math.floor(totalPrice / rewardValue), rewardsAvailable);
+    const rewardsAllowed = Math.ceil(totalBalance / rewardValue);
+    const rewardsEligible = Math.min(rewardsAllowed, rewardsAvailable);
+    console.log(this.props);
+    console.log(rewardsEligible);
     this.setState({
       rewardsAvailable,
       rewardsApplied,
-      totalPrice,
+      totalBalance,
       rewardsEligible,
       isLoading: false
     });
@@ -55,12 +59,14 @@ export default class RewardModal extends React.Component {
   componentWillReceiveProps(nextProps) {
     // TODO make reward value data in AirTable
     const rewardValue = 5;
-    const { rewardsAvailable, totalPrice } = nextProps;
-    if (this.state.totalPrice !== totalPrice) {
+    const { rewardsAvailable, totalBalance } = nextProps;
+    if (this.state.totalBalance !== totalBalance) {
       // Recalculate eligible rewards (available/applied are unaffected)
-
-      const rewardsEligible = Math.min(Math.floor(totalPrice / rewardValue), rewardsAvailable);
-      this.setState(prevState => ({ ...prevState, totalPrice, rewardsEligible }));
+      const rewardsAllowed = Math.ceil(totalBalance / rewardValue);
+      const rewardsEligible = Math.min(rewardsAllowed, rewardsAvailable);
+      console.log(nextProps);
+      console.log(rewardsEligible);
+      this.setState(prevState => ({ ...prevState, totalBalance, rewardsEligible }));
     }
   }
 
@@ -77,7 +83,7 @@ export default class RewardModal extends React.Component {
 
   handleApplyRewards = () => {
     // Communicate to parent component
-    this.props.callback(this.state.rewardsApplied, this.state.totalPrice);
+    this.props.callback(this.state.rewardsApplied, this.state.totalBalance);
     this.setModalVisible(!this.state.modalVisible);
   };
 
@@ -87,12 +93,12 @@ export default class RewardModal extends React.Component {
     if (addToApplied) {
       this.setState(prevState => ({
         rewardsApplied: prevState.rewardsApplied + 1,
-        totalPrice: prevState.totalPrice - rewardValue
+        totalBalance: prevState.totalBalance - rewardValue
       }));
     } else {
       this.setState(prevState => ({
         rewardsApplied: prevState.rewardsApplied - 1,
-        totalPrice: prevState.totalPrice + rewardValue
+        totalBalance: prevState.totalBalance + rewardValue
       }));
     }
   };
@@ -102,13 +108,13 @@ export default class RewardModal extends React.Component {
       return null;
     }
     const { customer } = this.props;
-    const { showError, modalVisible, totalPrice, rewardsApplied, rewardsAvailable, rewardsEligible } = this.state;
+    const { showError, modalVisible, totalBalance, rewardsApplied, rewardsAvailable, rewardsEligible } = this.state;
     // TODO pull rewardValue from Airtable
     const rewardValue = 5;
     const min = rewardsApplied === 0;
     const max = rewardsApplied === rewardsEligible;
     const discount = rewardValue * rewardsApplied;
-    const disabled = rewardsEligible === 0;
+    const totalSale = totalBalance >= 0 ? totalBalance : 0;
     return (
       <RowContainer style={{ width: '100%', justifyContent: 'center', alignItems: 'center' }}>
         <Modal
@@ -141,7 +147,7 @@ export default class RewardModal extends React.Component {
                   {customer.name} has {rewardsAvailable} rewards
                 </Body>
               </ModalCopyContainer>
-              <ColumnContainer style={{ width: '50%', margin: 16 }}>
+              <ColumnContainer style={{ width: '40%', margin: 16 }}>
                 <SpaceBetweenRowContainer>
                   <BigTitle>{rewardsApplied}</BigTitle>
                   <RowContainer style={{ justifyContent: 'center' }}>
@@ -165,12 +171,12 @@ export default class RewardModal extends React.Component {
                   </Body>
                 )}
               </ColumnContainer>
-              <ModalCopyContainer alignItems={'center'} style={{ width: '50%', margin: 16 }}>
+              <ModalCopyContainer alignItems={'center'} style={{ width: '40%', margin: 16 }}>
                 {/* TODO make a component for this; pattern is in ConfirmationScreen too */}
                 <SpaceBetweenRowContainer>
                   <SubheadSecondary style={{ alignSelf: 'flex-start' }}>Subtotal</SubheadSecondary>
                   <SubheadSecondary style={{ alignSelf: 'flex-end' }}>
-                    {displayDollarValue(totalPrice + discount)}
+                    {displayDollarValue(totalBalance + discount)}
                   </SubheadSecondary>
                 </SpaceBetweenRowContainer>
                 <SpaceBetweenRowContainer>
@@ -179,7 +185,7 @@ export default class RewardModal extends React.Component {
                 </SpaceBetweenRowContainer>
                 <SpaceBetweenRowContainer>
                   <SubheadActive>Total Sale</SubheadActive>
-                  <SubheadActive>{displayDollarValue(totalPrice)}</SubheadActive>
+                  <SubheadActive>{displayDollarValue(totalSale)}</SubheadActive>
                 </SpaceBetweenRowContainer>
               </ModalCopyContainer>
               <RoundedButtonContainer onPress={() => this.handleApplyRewards()}>
@@ -190,10 +196,9 @@ export default class RewardModal extends React.Component {
         </Modal>
 
         <RoundedButtonContainer
-          disabled={disabled}
           width="179px"
           height="40px"
-          color={disabled ? Colors.lighter : Colors.activeText}
+          color={Colors.activeText}
           onPress={() => this.toggleVisibility()}>
           <ButtonLabel color={Colors.lightest}>Rewards</ButtonLabel>
         </RoundedButtonContainer>
@@ -206,6 +211,6 @@ RewardModal.propTypes = {
   customer: PropTypes.object.isRequired,
   rewardsAvailable: PropTypes.number.isRequired,
   rewardsApplied: PropTypes.number.isRequired,
-  totalPrice: PropTypes.number.isRequired,
+  totalBalance: PropTypes.number.isRequired,
   callback: PropTypes.func.isRequired
 };

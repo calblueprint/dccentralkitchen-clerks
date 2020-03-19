@@ -23,6 +23,7 @@ export default class CheckoutScreen extends React.Component {
       rewardsAvailable: 0,
       // Other state
       totalPoints: 0,
+      totalBalance: 0,
       totalPrice: 0,
       rewardsApplied: 0,
       isLoading: true
@@ -50,15 +51,17 @@ export default class CheckoutScreen extends React.Component {
     });
   }
 
-  applyRewardsCallback = (rewardsApplied, totalPrice) => {
+  applyRewardsCallback = (rewardsApplied, totalBalance) => {
     // Update rewards in parent state
-    this.setState({ rewardsApplied, totalPrice });
+    this.setState({ rewardsApplied, totalBalance });
   };
 
   updateQuantityCallback = (product, quantity, priceDifference) => {
+    // TODO need to undo rewards
     this.setState(prevState => ({
       cart: update(prevState.cart, { [product.id]: { quantity: { $set: quantity } } }),
-      totalPrice: prevState.totalPrice + priceDifference
+      // totalPrice: prevState.totalPrice + priceDifference,
+      totalBalance: prevState.totalBalance + priceDifference
     }));
   };
 
@@ -71,7 +74,10 @@ export default class CheckoutScreen extends React.Component {
     });
     points -= this.state.rewardsApplied * 500;
     if (points < 0) {
-      console.error('Total points less than 0!');
+      console.log(
+        'Total points less than 0! (Can happen when more rewards are applied than value of the cart total, otherwise a bug)'
+      );
+      points = 0;
     }
     this.setState({ totalPoints: points });
     return points;
@@ -145,10 +151,11 @@ export default class CheckoutScreen extends React.Component {
 
   render() {
     if (this.state.isLoading) {
-      return null; // TODO @tommypoa waiting (flavicon?)
+      return null;
     }
 
-    const { cart, customer, totalPrice } = this.state;
+    const { cart, customer, totalBalance } = this.state;
+    const totalPrice = totalBalance > 0 ? totalBalance : 0;
 
     return (
       <View>
@@ -182,7 +189,7 @@ export default class CheckoutScreen extends React.Component {
             </View>
             {/* Should be greyed out if totalPrice < 5 */}
             <RewardModal
-              totalPrice={totalPrice}
+              totalBalance={totalBalance}
               customer={customer}
               rewardsAvailable={this.state.rewardsAvailable}
               rewardsApplied={this.state.rewardsApplied}
