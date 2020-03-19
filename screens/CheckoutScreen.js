@@ -171,7 +171,7 @@ export default class CheckoutScreen extends React.Component {
           {/* Duplicate, invisible element to have left-aligned BackButton */}
           <BackButton navigation={this.props.navigation} light={false} style={{ opacity: 0.0, disabled: true }} />
         </TopBar>
-        <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}>
+        <View style={{ display: 'flex', flexDirection: 'row' }}>
           {/* Display products */}
           <ProductsContainer>
             {Object.entries(cart).map(([id, product]) => (
@@ -206,10 +206,18 @@ export default class CheckoutScreen extends React.Component {
           </ProductsContainer>
           {/* Right column */}
           <SaleContainer>
-            <View style={{ paddingTop: 13, paddingLeft: 14, paddingBottom: 7 }}>
+            <View
+              style={{
+                paddingTop: 13,
+                paddingLeft: 14,
+                paddingRight: 14,
+                paddingBottom: 0,
+                backgroundColor: 'red',
+                flex: 'auto'
+              }}>
               <Subhead>Current Sale</Subhead>
               {/* Cart container */}
-              <View style={{ height: '40%', paddingBottom: '5%' }}>
+              <View style={{ height: '55%', paddingBottom: '5%', backgroundColor: 'green' }}>
                 <ScrollView>
                   {Object.entries(cart).map(([id, product]) => {
                     return (
@@ -220,30 +228,27 @@ export default class CheckoutScreen extends React.Component {
                   })}
                 </ScrollView>
               </View>
-            </View>
-            {/* Should be greyed out if totalPrice < 5 */}
-            <RewardModal
-              totalPrice={totalPrice}
-              customer={customer}
-              rewardsAvailable={this.state.rewardsAvailable}
-              rewardsApplied={this.state.rewardsApplied}
-              callback={this.applyRewardsCallback}
-            />
-            <View
-              style={{
-                flex: 1,
-                justifyContent: 'flex-end',
-                overflow: 'auto',
-                alignItems: 'center'
-              }}>
+              {/* <View style={{ display: 'flex', marginBottom: 0, justifyContent: 'flex-end' }}> */}
+              {/* Should be greyed out if totalPrice < 5 */}
+              <RewardModal
+                totalPrice={totalPrice}
+                customer={customer}
+                rewardsAvailable={this.state.rewardsAvailable}
+                rewardsApplied={this.state.rewardsApplied}
+                callback={this.applyRewardsCallback}
+                style={{ backgroundColor: 'green' }}
+              />
               {/* When different types of rewards are created, we can add rewards amount to state. For now, rewards
               amount is equal to rewards applied * 5. */}
               <SubtotalCard subtotalPrice={subtotalPrice.toFixed(2)} rewardsAmount={this.state.rewardsApplied * 5} />
               <TotalCard totalPrice={totalPrice.toFixed(2)} totalPoints={totalPoints} />
             </View>
-            <FilledButtonContainer width="100%" style={{ marginBottom: 0 }} onPress={() => this.handleSubmit()}>
+            {/* </View> */}
+            <FilledButtonContainer style={{ position: 'absolute', bottom: 0 }} onPress={() => this.handleSubmit()}>
               <ButtonLabel>Complete Purchase</ButtonLabel>
             </FilledButtonContainer>
+
+            {/* </View> */}
           </SaleContainer>
         </View>
       </View>

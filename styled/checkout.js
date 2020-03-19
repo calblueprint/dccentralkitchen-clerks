@@ -56,6 +56,7 @@ export const ProductsContainer = styled.ScrollView.attrs({
 export const SaleContainer = styled(ColumnContainer)`
   align-items: center;
   flex: 2;
+  background: ${Colors.lightest};
 `;
 
 // Product Cards
