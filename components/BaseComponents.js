@@ -60,3 +60,10 @@ export const FilledButtonContainer = styled(ButtonContainer)`
   height: ${props => props.height || '57px'}
   background: ${props => props.color || Colors.primaryGreen};
 `;
+
+export const RoundedButtonContainer = styled(FilledButtonContainer)`
+  border-radius: 20px;
+  margin: 12px;
+  width: ${props => props.width || '160px'};
+  height: ${props => props.height || '39px'};
+`;
