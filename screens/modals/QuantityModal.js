@@ -55,6 +55,7 @@ export default class QuantityModal extends React.Component {
   };
 
   setModalVisible = visible => {
+    // Reset state every time modal is re-opened
     if (visible) {
       this.resetCurrentQuantity();
     }

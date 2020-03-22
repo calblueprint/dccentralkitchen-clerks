@@ -144,7 +144,6 @@ export default class CheckoutScreen extends React.Component {
         text: 'Cancel',
         style: 'cancel'
       },
-      // TODO should this be an await?
       { text: 'Confirm', onPress: () => this.confirmTransaction(transactionInfo) }
     ]);
   };

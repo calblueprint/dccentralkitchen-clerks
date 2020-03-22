@@ -54,8 +54,6 @@ export const ButtonLabel = styled.Text`
   font-family: poppins-semibold;
   font-size: 14px;
   line-height: 21px;
-  display: flex;
-  align-items: center;
   text-align: center;
   letter-spacing: 0.01px;
   text-transform: uppercase;
@@ -64,10 +62,8 @@ export const ButtonLabel = styled.Text`
 
 export const BigTitleLabel = styled(BigTitle)`
   line-height: 54px;
-  display: flex;
-  align-items: center;
   text-align: center;
-  color: ${props => (props.color ? props.color : Colors.lightest)};
+  color: ${props => props.color || Colors.lightest};
 `;
 
 export const FilledButtonContainer = styled(ButtonContainer)`

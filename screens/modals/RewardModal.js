@@ -33,7 +33,7 @@ export default class RewardModal extends React.Component {
       // totalBalance can be negative, since this happens when we apply rewards with a greater value than cart total price
       totalBalance: 0,
       rewardsEligible: 0,
-      showError: false,
+      errorShown: false,
       isLoading: true
     };
   }
@@ -70,11 +70,18 @@ export default class RewardModal extends React.Component {
     });
   };
 
-  setModalVisible = visible => this.setState({ modalVisible: visible });
+  setModalVisible = visible => {
+    // Reset state every time modal is re-opened
+    const { rewardsAvailable, rewardsApplied, totalBalance } = this.props;
+    if (visible) {
+      this._updateState(rewardsAvailable, rewardsApplied, totalBalance);
+    }
+    this.setState({ modalVisible: visible });
+  };
 
   showError = show => {
     // Sets a 2s timeout for the showError
-    this.setState({ showError: show }, () => setTimeout(() => this.setState({ showError: false }), 2000));
+    this.setState({ errorShown: show }, () => setTimeout(() => this.setState({ errorShown: false }), 2000));
   };
 
   handleApplyRewards = () => {
@@ -92,7 +99,8 @@ export default class RewardModal extends React.Component {
     } else {
       this.setState(prevState => ({
         rewardsApplied: prevState.rewardsApplied - 1,
-        totalBalance: prevState.totalBalance + rewardDollarValue
+        totalBalance: prevState.totalBalance + rewardDollarValue,
+        errorShown: false
       }));
     }
   };
@@ -102,7 +110,7 @@ export default class RewardModal extends React.Component {
       return null;
     }
     const { customer } = this.props;
-    const { showError, modalVisible, totalBalance, rewardsApplied, rewardsAvailable, rewardsEligible } = this.state;
+    const { errorShown, modalVisible, totalBalance, rewardsApplied, rewardsAvailable, rewardsEligible } = this.state;
     const min = rewardsApplied === 0;
     const max = rewardsApplied === rewardsEligible;
     const discount = rewardDollarValue * rewardsApplied;
@@ -136,7 +144,7 @@ export default class RewardModal extends React.Component {
               <ModalCopyContainer style={{ marginLeft: '15%', alignSelf: 'flex-start' }}>
                 <Title>Apply rewards</Title>
                 <Body color={Colors.secondaryText}>
-                  {customer.name} has {rewardsAvailable} rewards
+                  {customer.name} has {rewardsAvailable} reward(s)
                 </Body>
               </ModalCopyContainer>
               <ColumnContainer style={{ width: '40%', margin: 16 }}>
@@ -157,7 +165,7 @@ export default class RewardModal extends React.Component {
                     </SquareButtonContainer>
                   </RowContainer>
                 </SpaceBetweenRowContainer>
-                {showError && (
+                {errorShown && (
                   <Body color={Colors.error} style={{ position: 'absolute', bottom: -32 }}>
                     Maximum rewards applied
                   </Body>
