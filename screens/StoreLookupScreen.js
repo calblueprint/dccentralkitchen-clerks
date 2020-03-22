@@ -53,8 +53,8 @@ export default class StoreLookupScreen extends React.Component {
     this.props.navigation.navigate('Checkout');
   };
 
-  _devBypassConfirm = async () => {
-    this.props.navigation.navigate('Confirmation', { transactionId: 'recbDBXR1bvvpEnOK' });
+  _devConfirmBypass = async () => {
+    this.props.navigation.navigate('Confirmation', { transactionId: 'recyzi65efXqsviZb' });
   };
 
   onFocus = () => {
