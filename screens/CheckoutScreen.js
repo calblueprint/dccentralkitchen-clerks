@@ -6,7 +6,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import BackButton from '../components/BackButton';
 import { Subhead, Title } from '../components/BaseComponents';
 import { getCustomersById } from '../lib/airtable/request';
-import { addTransaction, loadProductsData, updateCustomerPoints } from '../lib/checkoutUtils';
+import { addTransaction, displayDollarValue, loadProductsData, updateCustomerPoints } from '../lib/checkoutUtils';
 import { rewardDollarValue } from '../lib/constants';
 import { ProductsContainer, SaleContainer, TopBar } from '../styled/checkout';
 import { TextHeader } from '../styled/shared';
@@ -32,13 +32,10 @@ export default class CheckoutScreen extends React.Component {
     const customerId = await AsyncStorage.getItem('customerId');
     const customer = await getCustomersById(customerId);
     const products = await loadProductsData();
-    const initialCart = {};
 
     // Initialize cart a'la Python dictionary, to make updating quantity cleaner
     // Cart contains line items, which have all initial product attributes, and a quantity
-    products.forEach(product => {
-      initialCart[product.id] = product;
-    });
+    const initialCart = products.reduce((cart, product) => ({ ...cart, [product.id]: product }), {});
 
     this.setState({
       customer,
@@ -106,11 +103,10 @@ export default class CheckoutScreen extends React.Component {
   // Calculates total points earned from transaction
   // Accounts for lineItem individual point values and not allowing points to be earned with rewards daollrs
   getPointsEarned = () => {
-    let pointsEarned = 0;
-    // Iterate over lineItems in cart
-    Object.values(this.state.cart).forEach(lineItem => {
-      pointsEarned += lineItem.points * lineItem.quantity;
-    });
+    let pointsEarned = Object.values(this.state.cart).reduce(
+      (points, lineItem) => points + lineItem.points * lineItem.quantity,
+      0
+    );
     // Customer cannot earn points with rewards dollars; assumes a reward's point multiplier per dollar is 100 pts
     pointsEarned -= this.state.rewardsApplied * rewardDollarValue * 100;
 
@@ -129,12 +125,28 @@ export default class CheckoutScreen extends React.Component {
 
   // Handles submit when clerk selects "CHECKOUT".
   handleSubmit = () => {
+    const { rewardsApplied, totalBalance } = this.state;
+
+    // Calculate actual discount and sale; handle negative balances
+    const discount = rewardsApplied * rewardDollarValue;
+    const subtotal = totalBalance + discount;
+    const totalSale = totalBalance > 0 ? totalBalance : 0;
+    const actualDiscount = totalBalance < 0 ? discount + totalBalance : discount;
     const pointsEarned = this.getPointsEarned();
-    this.displayConfirmation(pointsEarned);
+
+    // Passed through displayConfirmation to generateConfirmationMessage and confirmTransaction
+    const transactionInfo = {
+      discount: actualDiscount,
+      subtotal,
+      totalSale,
+      pointsEarned,
+      rewardsApplied // for convenience
+    };
+    this.displayConfirmation(transactionInfo);
   };
 
   // Displays a confirmation alert to the clerk.
-  displayConfirmation = pointsEarned => {
+  displayConfirmation = transactionInfo => {
     // Should not be able to check out if there isn't anything in the transaction.
     if (this.state.cart.length === 0) {
       Alert.alert('Empty Transaction', 'This transaction is empty. Please add items to the cart.', [
@@ -145,46 +157,42 @@ export default class CheckoutScreen extends React.Component {
       ]);
       return;
     }
-    Alert.alert('Confirm Transaction', this.generateConfirmationMessage(pointsEarned), [
+    Alert.alert('Confirm Transaction', this.generateConfirmationMessage(transactionInfo), [
       {
         text: 'Cancel',
         style: 'cancel'
       },
       // TODO should this be an await?
-      { text: 'Confirm', onPress: () => this.confirmTransaction(pointsEarned) }
+      { text: 'Confirm', onPress: () => this.confirmTransaction(transactionInfo) }
     ]);
+  };
+
+  generateConfirmationLine = (name, value) => {
+    return `\n${name}: ${displayDollarValue(value)}`;
   };
 
   // Generates the confirmation message based on items in cart, points earned,
   // and total spent.
-  generateConfirmationMessage = pointsEarned => {
-    const totalSale = this.state.totalBalance > 0 ? this.state.totalBalance : 0;
-    let msg = 'Transaction Items:\n\n';
-    // Iterate over lineItems in cart
-    Object.values(this.state.cart).forEach(lineItem => {
-      if (lineItem.quantity > 0) {
-        msg = msg.concat(`${lineItem.quantity} x ${lineItem.name}\n`);
-      }
-    });
-    msg = msg.concat(`\nRewards Redeemed: ${this.state.rewardsApplied}\n`);
-    // Adding total price and total points earned to message. Must be called after getPointsEarned()
-    // in handleSubmit() for updated amount.
-    msg = msg.concat(`\nTotal Sale: $${totalSale.toFixed(2)}\n`);
-    msg = msg.concat(`Total Points Earned: ${pointsEarned}`);
+  generateConfirmationMessage = transactionInfo => {
+    let msg = Object.values(this.state.cart).reduce(
+      (msg, lineItem) => (lineItem.quantity > 0 ? msg.concat(`${lineItem.quantity} x ${lineItem.name}\n`) : msg),
+      'Transaction Items:\n\n'
+    );
+    msg = msg.concat(`\nRewards Redeemed: ${transactionInfo.rewardsApplied}\n`);
+    // Adding total price and total points earned to message. Must be called after getPointsEarned() in handleSubmit() for updated amount.
+    console.log(transactionInfo);
+    msg = msg.concat(this.generateConfirmationLine('Subtotal', transactionInfo.subtotal));
+    msg = msg.concat(this.generateConfirmationLine('Discount', transactionInfo.discount));
+    msg = msg.concat(this.generateConfirmationLine('Total Sale', transactionInfo.totalSale));
+    msg = msg.concat(`Total Points Earned: ${transactionInfo.pointsEarned}`);
     return msg;
   };
 
   // Adds the transaction to the user's account and updates their points.
-  confirmTransaction = async pointsEarned => {
+  confirmTransaction = async transactionInfo => {
     try {
-      const transactionId = await addTransaction(
-        this.state.customer,
-        this.state.cart,
-        pointsEarned,
-        this.state.totalBalance,
-        this.state.rewardsApplied
-      );
-      await updateCustomerPoints(this.state.customer, pointsEarned, this.state.rewardsApplied);
+      const transactionId = await addTransaction(this.state.customer, this.state.cart, transactionInfo);
+      await updateCustomerPoints(this.state.customer, transactionInfo.pointsEarned, transactionInfo.rewardsApplied);
       this.props.navigation.navigate('Confirmation', { transactionId });
     } catch (err) {
       // TODO better handling - should prompt the user to try again, or at least say something is wrong with the service
