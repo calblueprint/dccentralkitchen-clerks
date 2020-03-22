@@ -68,7 +68,7 @@ export default class ClerkLoginScreen extends React.Component {
       }
       this.setState({ errorMsg: lookupResult.errorMsg, password: '' });
     } catch (err) {
-      console.error('Airtable: ', err);
+      console.error('Clerk Login Screen:', err);
     }
   };
 

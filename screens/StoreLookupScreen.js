@@ -39,7 +39,7 @@ export default class StoreLookupScreen extends React.Component {
         filteredStores: stores
       });
     } catch (err) {
-      console.error(err);
+      console.error('Store Lookup Screen', err);
     }
   }
 

@@ -71,7 +71,7 @@ export default class CustomerLookupScreen extends React.Component {
       }
       this.setState({ errorMsg: lookupResult.errorMsg, phoneNumber: '' });
     } catch (err) {
-      console.error('Airtable: ', err);
+      console.error('Customer Lookup Screen: ', err);
     }
   };
 

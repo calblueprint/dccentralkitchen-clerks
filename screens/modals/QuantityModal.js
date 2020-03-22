@@ -143,7 +143,6 @@ export default class QuantityModal extends React.Component {
           )
         ) : (
           <TouchableOpacity
-            disabled={this.state.product.quantity > 0}
             onPress={() => {
               this.handleShowModal();
             }}>

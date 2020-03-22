@@ -13,6 +13,7 @@ import {
   Title
 } from '../../components/BaseComponents';
 import { displayDollarValue } from '../../lib/checkoutUtils';
+import { rewardDollarValue } from '../../lib/constants';
 import {
   ModalCenteredOpacityLayer,
   ModalContentContainer,
@@ -39,36 +40,37 @@ export default class RewardModal extends React.Component {
 
   componentDidMount() {
     const { rewardsAvailable, rewardsApplied, totalBalance } = this.props;
-    // TODO make reward value data in AirTable
-    const rewardValue = 5;
-    // Calculate eligible rewards
-    const rewardsAllowed = Math.ceil(totalBalance / rewardValue);
-    const rewardsEligible = Math.min(rewardsAllowed, rewardsAvailable);
-    console.log(this.props);
-    console.log(rewardsEligible);
-    this.setState({
-      rewardsAvailable,
-      rewardsApplied,
-      totalBalance,
-      rewardsEligible,
-      isLoading: false
-    });
+    this._updateState(rewardsAvailable, rewardsApplied, totalBalance);
+    this.setState({ isLoading: false });
   }
 
   // Forces a re-render when new props are passed
   componentWillReceiveProps(nextProps) {
-    // TODO make reward value data in AirTable
-    const rewardValue = 5;
-    const { rewardsAvailable, totalBalance } = nextProps;
+    const { rewardsAvailable, rewardsApplied, totalBalance } = nextProps;
     if (this.state.totalBalance !== totalBalance) {
-      // Recalculate eligible rewards (available/applied are unaffected)
-      const rewardsAllowed = Math.ceil(totalBalance / rewardValue);
-      const rewardsEligible = Math.min(rewardsAllowed, rewardsAvailable);
-      console.log(nextProps);
-      console.log(rewardsEligible);
-      this.setState(prevState => ({ ...prevState, totalBalance, rewardsEligible }));
+      // Recalculate eligible rewards
+      this._updateState(rewardsAvailable, rewardsApplied, totalBalance);
     }
   }
+
+  _updateState = (rewardsAvailable, rewardsApplied, totalBalance) => {
+    console.log('\nrewards modal update');
+    // Calculate eligible rewards
+    /* If negative balance exists, no additional rewards allowed!
+      Must take into account the current rewards applied
+     */
+    const additionalRewardsAllowed = totalBalance > 0 ? Math.ceil(totalBalance / rewardDollarValue) : 0;
+    const additionalRewardsAvailable = rewardsAvailable - rewardsApplied;
+    const additionalRewardsEligible = Math.min(additionalRewardsAllowed, additionalRewardsAvailable);
+    console.log('rewardsAvailable', rewardsAvailable, 'rewardsApplied', rewardsApplied, 'totalBalance', totalBalance);
+    console.log('eligible', additionalRewardsEligible);
+    this.setState({
+      rewardsAvailable,
+      rewardsApplied,
+      totalBalance,
+      rewardsEligible: rewardsApplied + additionalRewardsEligible
+    });
+  };
 
   setModalVisible = visible => this.setState({ modalVisible: visible });
 
@@ -88,17 +90,15 @@ export default class RewardModal extends React.Component {
   };
 
   updateRewardsApplied = addToApplied => {
-    // TODO make reward value data in AirTable
-    const rewardValue = 5;
     if (addToApplied) {
       this.setState(prevState => ({
         rewardsApplied: prevState.rewardsApplied + 1,
-        totalBalance: prevState.totalBalance - rewardValue
+        totalBalance: prevState.totalBalance - rewardDollarValue
       }));
     } else {
       this.setState(prevState => ({
         rewardsApplied: prevState.rewardsApplied - 1,
-        totalBalance: prevState.totalBalance + rewardValue
+        totalBalance: prevState.totalBalance + rewardDollarValue
       }));
     }
   };
@@ -109,11 +109,9 @@ export default class RewardModal extends React.Component {
     }
     const { customer } = this.props;
     const { showError, modalVisible, totalBalance, rewardsApplied, rewardsAvailable, rewardsEligible } = this.state;
-    // TODO pull rewardValue from Airtable
-    const rewardValue = 5;
     const min = rewardsApplied === 0;
     const max = rewardsApplied === rewardsEligible;
-    const discount = rewardValue * rewardsApplied;
+    const discount = rewardDollarValue * rewardsApplied;
     const totalSale = totalBalance >= 0 ? totalBalance : 0;
     return (
       <RowContainer style={{ width: '100%', justifyContent: 'center', alignItems: 'center' }}>
