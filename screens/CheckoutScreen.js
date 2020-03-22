@@ -178,7 +178,7 @@ export default class CheckoutScreen extends React.Component {
               <QuantityModal key={id} product={product} isLineItem={false} callback={this.updateQuantityCallback} />
             ))}
 
-            {/* <BottomBar style={{ display: 'flex', flexDirection: 'row', marginBottom: 0 }}>
+            <BottomBar style={{ display: 'flex', flexDirection: 'row', marginBottom: 0 }}>
               <TabContainer
                 onPress={() =>
                   this._scrollView.scrollTo({
@@ -203,7 +203,7 @@ export default class CheckoutScreen extends React.Component {
                 }>
                 <Title>T-Z</Title>
               </TabContainer>
-            </BottomBar> */}
+            </BottomBar>
           </ProductsContainer>
           {/* Right column */}
           <SaleContainer>

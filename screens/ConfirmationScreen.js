@@ -25,13 +25,9 @@ export default class ConfirmationScreen extends React.Component {
     }
   }
 
-  async handleSubmit() {
-    try {
-      this.props.navigation.navigate('CustomerLookup');
-    } catch (err) {
-      console.error('AsyncStorage: ', err);
-    }
-  }
+  handleSubmit = () => {
+    this.props.navigation.navigate('CustomerLookup');
+  };
 
   render() {
     const { isLoading, transaction } = this.state;
