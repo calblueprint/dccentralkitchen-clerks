@@ -54,7 +54,9 @@ export const ProductsContainer = styled.ScrollView.attrs({
 `;
 
 export const SaleContainer = styled(ColumnContainer)`
-  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   flex: 2;
   background: ${Colors.lightest};
 `;

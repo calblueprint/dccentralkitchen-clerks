@@ -164,19 +164,19 @@ export default class CheckoutScreen extends React.Component {
     const { cart, customer, subtotalPrice, totalPrice, totalPoints } = this.state;
 
     return (
-      <View>
+      <View style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-around', flex: 1 }}>
         <TopBar>
           <BackButton navigation={this.props.navigation} light={false} style={{ marginTop: 3, marginLeft: 24 }} />
           <Title> {'Customer: '.concat(customer.name)} </Title>
           {/* Duplicate, invisible element to have left-aligned BackButton */}
           <BackButton navigation={this.props.navigation} light={false} style={{ opacity: 0.0, disabled: true }} />
         </TopBar>
-        <View style={{ display: 'flex', flexDirection: 'row' }}>
+        <View style={{ display: 'flex', flexDirection: 'row', flex: 1 }}>
           {/* Display products */}
           <ProductsContainer>
-              {Object.entries(cart).map(([id, product]) => (
-                <QuantityModal key={id} product={product} isLineItem={false} callback={this.updateQuantityCallback} />
-              ))}
+            {Object.entries(cart).map(([id, product]) => (
+              <QuantityModal key={id} product={product} isLineItem={false} callback={this.updateQuantityCallback} />
+            ))}
 
             {/* <BottomBar style={{ display: 'flex', flexDirection: 'row', marginBottom: 0 }}>
               <TabContainer
@@ -213,43 +213,45 @@ export default class CheckoutScreen extends React.Component {
                 paddingLeft: 14,
                 paddingRight: 14,
                 paddingBottom: 0,
-                backgroundColor: 'red',
-                flex: 'auto'
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                flex: 1
               }}>
-              <Subhead>Current Sale</Subhead>
-              {/* Cart container */}
-              <View style={{ height: '55%', paddingBottom: '5%', backgroundColor: 'green' }}>
-                <ScrollView>
-                  {Object.entries(cart).map(([id, product]) => {
-                    return (
-                      product.quantity > 0 && (
-                        <QuantityModal key={id} product={product} isLineItem callback={this.updateQuantityCallback} />
-                      )
-                    );
-                  })}
-                </ScrollView>
+              <View>
+                <Subhead>Current Sale</Subhead>
+                {/* Cart container */}
+                <View style={{ flex: 'auto', height: '60%', paddingBottom: '5%' }}>
+                  <ScrollView>
+                    {Object.entries(cart).map(([id, product]) => {
+                      return (
+                        product.quantity > 0 && (
+                          <QuantityModal key={id} product={product} isLineItem callback={this.updateQuantityCallback} />
+                        )
+                      );
+                    })}
+                  </ScrollView>
+                </View>
               </View>
               {/* <View style={{ display: 'flex', marginBottom: 0, justifyContent: 'flex-end' }}> */}
               {/* Should be greyed out if totalPrice < 5 */}
-              <RewardModal
-                totalPrice={totalPrice}
-                customer={customer}
-                rewardsAvailable={this.state.rewardsAvailable}
-                rewardsApplied={this.state.rewardsApplied}
-                callback={this.applyRewardsCallback}
-                style={{ backgroundColor: 'green' }}
-              />
-              {/* When different types of rewards are created, we can add rewards amount to state. For now, rewards
+              <View>
+                <RewardModal
+                  totalPrice={totalPrice}
+                  customer={customer}
+                  rewardsAvailable={this.state.rewardsAvailable}
+                  rewardsApplied={this.state.rewardsApplied}
+                  callback={this.applyRewardsCallback}
+                  style={{ backgroundColor: 'green' }}
+                />
+                {/* When different types of rewards are created, we can add rewards amount to state. For now, rewards
               amount is equal to rewards applied * 5. */}
-              <SubtotalCard subtotalPrice={subtotalPrice.toFixed(2)} rewardsAmount={this.state.rewardsApplied * 5} />
-              <TotalCard totalPrice={totalPrice.toFixed(2)} totalPoints={totalPoints} />
+                <SubtotalCard subtotalPrice={subtotalPrice.toFixed(2)} rewardsAmount={this.state.rewardsApplied * 5} />
+                <TotalCard totalPrice={totalPrice.toFixed(2)} totalPoints={totalPoints} />
+              </View>
             </View>
-            {/* </View> */}
             <FilledButtonContainer onPress={() => this.handleSubmit()}>
               <ButtonLabel>Complete Purchase</ButtonLabel>
             </FilledButtonContainer>
-
-            {/* </View> */}
           </SaleContainer>
         </View>
       </View>
