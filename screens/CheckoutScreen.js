@@ -174,9 +174,10 @@ export default class CheckoutScreen extends React.Component {
         <View style={{ display: 'flex', flexDirection: 'row' }}>
           {/* Display products */}
           <ProductsContainer>
-            {Object.entries(cart).map(([id, product]) => (
-              <QuantityModal key={id} product={product} isLineItem={false} callback={this.updateQuantityCallback} />
-            ))}
+              {Object.entries(cart).map(([id, product]) => (
+                <QuantityModal key={id} product={product} isLineItem={false} callback={this.updateQuantityCallback} />
+              ))}
+
             {/* <BottomBar style={{ display: 'flex', flexDirection: 'row', marginBottom: 0 }}>
               <TabContainer
                 onPress={() =>
@@ -244,7 +245,7 @@ export default class CheckoutScreen extends React.Component {
               <TotalCard totalPrice={totalPrice.toFixed(2)} totalPoints={totalPoints} />
             </View>
             {/* </View> */}
-            <FilledButtonContainer style={{ position: 'absolute', bottom: 0 }} onPress={() => this.handleSubmit()}>
+            <FilledButtonContainer onPress={() => this.handleSubmit()}>
               <ButtonLabel>Complete Purchase</ButtonLabel>
             </FilledButtonContainer>
 
