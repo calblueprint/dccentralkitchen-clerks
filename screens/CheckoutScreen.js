@@ -72,7 +72,11 @@ export default class CheckoutScreen extends React.Component {
       // updatedBalance: rewardDollarValue + (- remainder) = "unapplying" an extra reward
       this.setState(prevState => ({
         cart: update(prevState.cart, { [product.id]: { quantity: { $set: quantity } } }),
-        totalBalance: rewardDollarValue + ((prevState.totalBalance + priceDifference) % rewardDollarValue),
+        totalBalance:
+          // If the remainder is less than 0, updatedBalance = rewardDollarValue + (negative) remainder
+          (prevState.totalBalance + priceDifference) % rewardDollarValue < 0
+            ? rewardDollarValue + ((prevState.totalBalance + priceDifference) % rewardDollarValue)
+            : (prevState.totalBalance + priceDifference) % rewardDollarValue,
         rewardsApplied: prevState.rewardsApplied - rewardsToUndo
       }));
     }
