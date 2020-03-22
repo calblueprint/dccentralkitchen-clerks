@@ -61,10 +61,6 @@ export default class QuantityModal extends React.Component {
     this.setState({ modalVisible: visible });
   };
 
-  handleShowModal = () => {
-    this.setModalVisible(!this.state.modalVisible);
-  };
-
   // Communicate to parent component
   handleUpdateCart = () => {
     const initialQuantity = this.state.product.quantity;
@@ -97,7 +93,7 @@ export default class QuantityModal extends React.Component {
           transparent
           visible={this.state.modalVisible}
           onRequestClose={() => {
-            this.handleShowModal();
+            this.setModalVisible(false);
           }}>
           {/* Opacity layer */}
           <ModalCenteredOpacityLayer>
@@ -137,7 +133,7 @@ export default class QuantityModal extends React.Component {
           product.quantity > 0 && (
             <TouchableOpacity
               onPress={() => {
-                this.handleShowModal();
+                this.setModalVisible(true);
               }}>
               <LineItemCard product={product} />
             </TouchableOpacity>
@@ -145,7 +141,7 @@ export default class QuantityModal extends React.Component {
         ) : (
           <TouchableOpacity
             onPress={() => {
-              this.handleShowModal();
+              this.setModalVisible(true);
             }}>
             <ProductDisplayCard product={product} />
           </TouchableOpacity>

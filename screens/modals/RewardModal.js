@@ -55,7 +55,6 @@ export default class RewardModal extends React.Component {
   }
 
   _updateState = (rewardsAvailable, rewardsApplied, totalBalance) => {
-    console.log('\nrewards modal update');
     // Calculate eligible rewards
     /* If negative balance exists, no additional rewards allowed!
       Must take into account the current rewards applied
@@ -63,8 +62,6 @@ export default class RewardModal extends React.Component {
     const additionalRewardsAllowed = totalBalance > 0 ? Math.ceil(totalBalance / rewardDollarValue) : 0;
     const additionalRewardsAvailable = rewardsAvailable - rewardsApplied;
     const additionalRewardsEligible = Math.min(additionalRewardsAllowed, additionalRewardsAvailable);
-    console.log('rewardsAvailable', rewardsAvailable, 'rewardsApplied', rewardsApplied, 'totalBalance', totalBalance);
-    console.log('eligible', additionalRewardsEligible);
     this.setState({
       rewardsAvailable,
       rewardsApplied,
@@ -74,10 +71,6 @@ export default class RewardModal extends React.Component {
   };
 
   setModalVisible = visible => this.setState({ modalVisible: visible });
-
-  toggleVisibility = () => {
-    this.setModalVisible(!this.state.modalVisible);
-  };
 
   showError = show => {
     // Sets a 2s timeout for the showError
@@ -122,7 +115,7 @@ export default class RewardModal extends React.Component {
           transparent
           visible={modalVisible}
           onRequestClose={() => {
-            this.toggleVisibility();
+            this.setModalVisible(false);
           }}>
           <ModalCenteredOpacityLayer>
             <ModalContentContainer width="50%" height="60%">
@@ -198,7 +191,7 @@ export default class RewardModal extends React.Component {
           width="179px"
           height="40px"
           color={Colors.activeText}
-          onPress={() => this.toggleVisibility()}>
+          onPress={() => this.setModalVisible(true)}>
           <ButtonLabel color={Colors.lightest}>Rewards</ButtonLabel>
         </RoundedButtonContainer>
       </RowContainer>

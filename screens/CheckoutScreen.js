@@ -46,16 +46,12 @@ export default class CheckoutScreen extends React.Component {
   }
 
   applyRewardsCallback = (rewardsApplied, totalBalance) => {
-    console.log('\nrewards callback');
-    console.log('rewards applied', rewardsApplied, 'total balance', totalBalance);
     // Update rewards in parent state
     this.setState({ rewardsApplied, totalBalance });
   };
 
   updateQuantityCallback = (product, quantity, priceDifference) => {
     const newBalance = this.state.totalBalance + priceDifference;
-    console.log('\nquantity callback');
-    console.log(quantity, priceDifference);
     // Undoing Rewards
     /* IF: 
       1) Quantity is increasing
@@ -63,7 +59,6 @@ export default class CheckoutScreen extends React.Component {
       3) The new balance is non-negative
       No special handling */
     if (priceDifference >= 0 || this.state.rewardsApplied === 0 || newBalance >= 0) {
-      console.log('newBalance', newBalance);
       this.setState(prevState => ({
         cart: update(prevState.cart, { [product.id]: { quantity: { $set: quantity } } }),
         totalBalance: prevState.totalBalance + priceDifference
@@ -73,25 +68,8 @@ export default class CheckoutScreen extends React.Component {
     } else if (newBalance < 0) {
       // MUST take absolute value first, otherwise will be incorrect
       const rewardsToUndo = Math.ceil(Math.abs(newBalance) / rewardDollarValue);
-      console.assert(this.state.rewardsApplied > rewardsToUndo);
-      // This keeps the "extra" reward unapplied by default. To swap it, take the remainder instead
-      const updatedBalance = rewardDollarValue + (newBalance % rewardDollarValue); // rewardDollarValue + (- remainder) = "unapplying" an extra reward
-      // Note: updatedBalance = newBalance % rewardDollarValue = prevState.totalBalance + (updatedRewardsApplied * rewardDollarValue) + priceDifference
-      console.log(
-        'priceDifference',
-        priceDifference,
-        'newbalance',
-        newBalance,
-        'totalbalance',
-        this.state.totalBalance,
-        'updatedBalance',
-        updatedBalance,
-        'rewardsApplied',
-        this.state.rewardsApplied,
-        'rewardsToUndo',
-        rewardsToUndo
-      );
-
+      // This keeps the "extra" reward UNAPPLIED by default. To swap it, take the remainder instead
+      // updatedBalance: rewardDollarValue + (- remainder) = "unapplying" an extra reward
       this.setState(prevState => ({
         cart: update(prevState.cart, { [product.id]: { quantity: { $set: quantity } } }),
         totalBalance: rewardDollarValue + ((prevState.totalBalance + priceDifference) % rewardDollarValue),
@@ -180,11 +158,10 @@ export default class CheckoutScreen extends React.Component {
     );
     msg = msg.concat(`\nRewards Redeemed: ${transactionInfo.rewardsApplied}\n`);
     // Adding total price and total points earned to message. Must be called after getPointsEarned() in handleSubmit() for updated amount.
-    console.log(transactionInfo);
     msg = msg.concat(this.generateConfirmationLine('Subtotal', transactionInfo.subtotal));
     msg = msg.concat(this.generateConfirmationLine('Discount', transactionInfo.discount));
     msg = msg.concat(this.generateConfirmationLine('Total Sale', transactionInfo.totalSale));
-    msg = msg.concat(`Total Points Earned: ${transactionInfo.pointsEarned}`);
+    msg = msg.concat(`\nTotal Points Earned: ${transactionInfo.pointsEarned}`);
     return msg;
   };
 
