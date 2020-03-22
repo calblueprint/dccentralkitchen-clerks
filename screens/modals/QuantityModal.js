@@ -36,6 +36,7 @@ export default class QuantityModal extends React.Component {
   }
 
   // Forces a re-render when new props are passed
+  // TODO: this is deprecated - may need to find an alternative to getDerivedStateFromProps
   componentWillReceiveProps(nextProps) {
     const newQuantity = nextProps.product.quantity;
     if (this.state.currentQuantity !== newQuantity) {

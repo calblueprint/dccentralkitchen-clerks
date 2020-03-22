@@ -45,6 +45,7 @@ export default class RewardModal extends React.Component {
   }
 
   // Forces a re-render when new props are passed
+  // TODO: this is deprecated - may need to find an alternative to getDerivedStateFromProps
   componentWillReceiveProps(nextProps) {
     const { rewardsAvailable, rewardsApplied, totalBalance } = nextProps;
     if (this.state.totalBalance !== totalBalance) {
