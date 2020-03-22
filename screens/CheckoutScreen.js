@@ -75,10 +75,10 @@ export default class CheckoutScreen extends React.Component {
       // i.e rewardsValue * rewardsApplied > cartTotal after quantity drops
     } else if (newBalance < 0) {
       // MUST take absolute value first, otherwise will be incorrect
-      const rewardsToUndo = Math.floor(Math.abs(newBalance) / rewardDollarValue);
+      const rewardsToUndo = Math.ceil(Math.abs(newBalance) / rewardDollarValue);
       console.assert(this.state.rewardsApplied > rewardsToUndo);
-      // This keeps the "extra" reward applied by default.
-      const updatedBalance = newBalance % rewardDollarValue;
+      // This keeps the "extra" reward unapplied by default. To swap it, take the remainder instead
+      const updatedBalance = rewardDollarValue + (newBalance % rewardDollarValue); // rewardDollarValue + (- remainder) = "unapplying" an extra reward
       // Note: updatedBalance = newBalance % rewardDollarValue = prevState.totalBalance + (updatedRewardsApplied * rewardDollarValue) + priceDifference
       console.log(
         'priceDifference',
@@ -97,7 +97,7 @@ export default class CheckoutScreen extends React.Component {
 
       this.setState(prevState => ({
         cart: update(prevState.cart, { [product.id]: { quantity: { $set: quantity } } }),
-        totalBalance: (prevState.totalBalance + priceDifference) % rewardDollarValue,
+        totalBalance: rewardDollarValue + ((prevState.totalBalance + priceDifference) % rewardDollarValue),
         rewardsApplied: prevState.rewardsApplied - rewardsToUndo
       }));
     }
