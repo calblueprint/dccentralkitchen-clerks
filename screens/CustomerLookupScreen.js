@@ -3,6 +3,7 @@ import React from 'react';
 import { AsyncStorage, View } from 'react-native';
 import Colors from '../assets/Colors';
 import BackButton from '../components/BackButton';
+import DrawerButton from '../components/DrawerButton';
 import { ButtonLabel, RoundedButtonContainer, Title } from '../components/BaseComponents';
 import { status } from '../lib/constants';
 import { lookupCustomer } from '../lib/lookupUtils';
@@ -89,7 +90,7 @@ export default class CustomerLookupScreen extends React.Component {
             justifyContent: 'flex-start',
             alignItems: 'center'
           }}>
-          <BackButton navigation={this.props.navigation} light={false} />
+          <DrawerButton navigation={this.props.navigation} light={false} />
           <Title style={{ marginLeft: 16 }}>{this.state.clerkName}</Title>
         </RowContainer>
 
