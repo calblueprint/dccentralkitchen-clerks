@@ -17,7 +17,7 @@ export const AuthStack = createStackNavigator(
     StoreLookup: StoreLookupScreen,
     ClerkLogin: ClerkLoginScreen
   },
-  { headerMode: 'none' }
+  { headerMode: 'none', navigationOptions: { header: null } }
 );
 
 export const AppStack = createStackNavigator({
@@ -66,7 +66,6 @@ export class DrawerContent extends React.Component {
             alignItems: 'flex-end',
             padding: 16
           }}>
-          {console.log(this.state.clerkName)}
           <Title style={{ color: 'white' }}>{this.state.clerkName}</Title>
         </View>
         <TouchableOpacity style={{ padding: 16 }} onPress={() => Linking.openURL('http://tiny.cc/SubmitFeedbackClerk')}>
