@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Body, ButtonLabel, FilledButtonContainer, Title } from '../components/BaseComponents';
 import { getTransactionsById } from '../lib/airtable/request';
+import { displayDollarValue } from '../lib/checkoutUtils';
 import { ColumnContainer, SpaceBetweenRowContainer } from '../styled/shared';
 
 export default class ConfirmationScreen extends React.Component {
@@ -34,32 +35,35 @@ export default class ConfirmationScreen extends React.Component {
     if (isLoading) {
       return null;
     }
+
     return (
       <ColumnContainer style={{ width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
-        <ColumnContainer style={{ width: '33%', paddingBottom: 48 }}>
-          <Title>Purchase Recorded! </Title>
-        </ColumnContainer>
-        <ColumnContainer style={{ width: '33%', justifyContent: 'space-around', margin: 12, paddingBottom: 48 }}>
-          <Title>Purchase Total</Title>
-          <SpaceBetweenRowContainer>
-            <Body>Points Earned:</Body>
-            <Body>{transaction.pointsEarned}</Body>
-          </SpaceBetweenRowContainer>
-          <SpaceBetweenRowContainer>
-            <Body>Rewards Redeemed:</Body>
-            <Body>{transaction.rewardsApplied}</Body>
-          </SpaceBetweenRowContainer>
-
-          {transaction.rewardsApplied > 0 && (
+        <ColumnContainer style={{ width: '33%', justifyContent: 'space-around', margin: 12, paddingBottom: 32 }}>
+          <Title>Purchase Summary</Title>
+          <ColumnContainer style={{ width: '100%%', justifyContent: 'space-around', margin: 12 }}>
             <SpaceBetweenRowContainer>
-              <Body>Total Discounts:</Body>
-              <Body>${(transaction.rewardsApplied * 5).toFixed(2)}</Body>
+              <Body>Points Earned</Body>
+              <Body>{transaction.pointsEarned} pts</Body>
             </SpaceBetweenRowContainer>
-          )}
-          <SpaceBetweenRowContainer>
-            <Body>Total:</Body>
-            <Body>${transaction.totalPrice.toFixed(2)}</Body>
-          </SpaceBetweenRowContainer>
+            <SpaceBetweenRowContainer style={{ paddingBottom: 12 }}>
+              <Body>Rewards Redeemed</Body>
+              <Body>{transaction.rewardsApplied}</Body>
+            </SpaceBetweenRowContainer>
+            <SpaceBetweenRowContainer>
+              <Body>Subtotal</Body>
+              <Body>{displayDollarValue(transaction.discount)}</Body>
+            </SpaceBetweenRowContainer>
+            {transaction.rewardsApplied > 0 && (
+              <SpaceBetweenRowContainer>
+                <Body>Total Discounts</Body>
+                <Body>{displayDollarValue(transaction.discount)}</Body>
+              </SpaceBetweenRowContainer>
+            )}
+            <SpaceBetweenRowContainer>
+              <Body>Total Sale</Body>
+              <Body>{displayDollarValue(transaction.totalPrice)}</Body>
+            </SpaceBetweenRowContainer>
+          </ColumnContainer>
         </ColumnContainer>
         <FilledButtonContainer
           onPress={() => this.handleSubmit()}

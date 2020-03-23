@@ -8,7 +8,8 @@ import { ButtonLabel, FilledButtonContainer, Subhead, Title } from '../component
 import SubtotalCard from '../components/SubtotalCard';
 import TotalCard from '../components/TotalCard';
 import { getCustomersById } from '../lib/airtable/request';
-import { addTransaction, loadProductsData, updateCustomerPoints } from '../lib/checkoutUtils';
+import { addTransaction, displayDollarValue, loadProductsData, updateCustomerPoints } from '../lib/checkoutUtils';
+import { rewardDollarValue } from '../lib/constants';
 import { BottomBar, ProductsContainer, SaleContainer, TabContainer, TopBar } from '../styled/checkout';
 import QuantityModal from './modals/QuantityModal';
 import RewardModal from './modals/RewardModal';
@@ -20,12 +21,9 @@ export default class CheckoutScreen extends React.Component {
       // Populated in componentDidMount
       customer: null,
       cart: {},
-      currentPoints: 0,
       rewardsAvailable: 0,
       // Other state
-      totalPoints: 0,
-      subtotalPrice: 0,
-      totalPrice: 0,
+      totalBalance: 0,
       rewardsApplied: 0,
       products: [],
       isLoading: true
@@ -36,98 +34,106 @@ export default class CheckoutScreen extends React.Component {
     const customerId = await AsyncStorage.getItem('customerId');
     const customer = await getCustomersById(customerId);
     const products = await loadProductsData();
-    const initialCart = {};
 
     // Initialize cart a'la Python dictionary, to make updating quantity cleaner
     // Cart contains line items, which have all initial product attributes, and a quantity
-    products.forEach(product => {
-      initialCart[product.id] = product;
-    });
+    const initialCart = products.reduce((cart, product) => ({ ...cart, [product.id]: product }), {});
 
     this.setState({
       customer,
       cart: initialCart,
-      currentPoints: customer.points,
       rewardsAvailable: Math.floor(customer.rewardsAvailable),
       products,
       isLoading: false
     });
   }
 
-  applyRewardsCallback = (rewardsApplied, totalPrice) => {
+  applyRewardsCallback = (rewardsApplied, totalBalance) => {
     // Update rewards in parent state
-    this.setState({ rewardsApplied, totalPrice });
+    this.setState({ rewardsApplied, totalBalance });
   };
 
   updateQuantityCallback = (product, quantity, priceDifference) => {
-    this.setState(prevState => ({
-      cart: update(prevState.cart, { [product.id]: { quantity: { $set: quantity } } }),
-      totalPrice: prevState.totalPrice + priceDifference
-    }));
+    const newBalance = this.state.totalBalance + priceDifference;
+    // Undoing Rewards
+    /* IF: 
+      1) Quantity is increasing
+      2) No rewards have been applied, or
+      3) The new balance is non-negative
+      No special handling */
+    if (priceDifference >= 0 || this.state.rewardsApplied === 0 || newBalance >= 0) {
+      this.setState(prevState => ({
+        cart: update(prevState.cart, { [product.id]: { quantity: { $set: quantity } } }),
+        totalBalance: prevState.totalBalance + priceDifference
+      }));
+      // Special case: negative balance when rewards have been applied, but need to be restored
+      // i.e rewardsValue * rewardsApplied > cartTotal after quantity drops
+    } else if (newBalance < 0) {
+      // MUST take absolute value first, otherwise will be incorrect
+      const rewardsToUndo = Math.ceil(Math.abs(newBalance) / rewardDollarValue);
+      // This keeps the "extra" reward UNAPPLIED by default. To swap it, take the remainder instead
+      // updatedBalance: rewardDollarValue + (- remainder) = "unapplying" an extra reward
+      this.setState(prevState => ({
+        cart: update(prevState.cart, { [product.id]: { quantity: { $set: quantity } } }),
+        totalBalance:
+          // If the remainder is less than 0, updatedBalance = rewardDollarValue + (negative) remainder
+          (prevState.totalBalance + priceDifference) % rewardDollarValue < 0
+            ? rewardDollarValue + ((prevState.totalBalance + priceDifference) % rewardDollarValue)
+            : (prevState.totalBalance + priceDifference) % rewardDollarValue,
+        rewardsApplied: prevState.rewardsApplied - rewardsToUndo
+      }));
+    }
   };
 
-  // Sets total points earned from transaction in state.
-  setTotalPoints = () => {
-    let points = 0;
-    // Iterate over lineItems in cart
-    Object.values(this.state.cart).forEach(lineItem => {
-      points += lineItem.points * lineItem.quantity;
-    });
-    points -= this.state.rewardsApplied * 500;
-    if (points < 0) {
-      console.error('Total points less than 0!');
+  // Calculates total points earned from transaction
+  // Accounts for lineItem individual point values and not allowing points to be earned with rewards daollrs
+  getPointsEarned = () => {
+    let pointsEarned = Object.values(this.state.cart).reduce(
+      (points, lineItem) => points + lineItem.points * lineItem.quantity,
+      0
+    );
+    // Customer cannot earn points with rewards dollars; assumes a reward's point multiplier per dollar is 100 pts
+    pointsEarned -= this.state.rewardsApplied * rewardDollarValue * 100;
+
+    // TODO this might be a design edge case now that rewards applied can bring the technical balance to a negative
+    if (pointsEarned < 0) {
+      if (this.state.totalBalance > 0) {
+        console.log(
+          'Total points less than 0! This is likely a bug, unless the value of various items is < 100 pts per item, since the real balance is positive. '
+        );
+      }
+      // Otherwise, expected - value of rewards applied > value of items in cart
+      pointsEarned = 0;
     }
-    this.setState({ totalPoints: points });
-    return points;
+    return pointsEarned;
   };
 
   // Handles submit when clerk selects "CHECKOUT".
   handleSubmit = () => {
-    this.displayConfirmation(this.state.totalPoints);
-  };
+    const { rewardsApplied, totalBalance } = this.state;
 
-  // Generates the confirmation message based on items in cart, points earned,
-  // and total spent.
-  generateConfirmationMessage = totalPoints => {
-    let msg = 'Transaction Items:\n\n';
-    // Iterate over lineItems in cart
-    Object.values(this.state.cart).forEach(lineItem => {
-      if (lineItem.quantity > 0) {
-        msg = msg.concat(`${lineItem.quantity} x ${lineItem.name}\n`);
-      }
-    });
-    msg = msg.concat(`\nRewards Redeemed: ${this.state.rewardsApplied}\n`);
-    // Adding total price and total points earned to message. Must be called after setTotalPoints()
-    // in handleSubmit() for updated amount.
-    msg = msg.concat(`\nTotal Price: $${this.state.totalPrice.toFixed(2)}\n`);
-    msg = msg.concat(`Total Points Earned: ${totalPoints}`);
-    return msg;
-  };
+    // Calculate actual discount and sale; handle negative balances
+    const discount = rewardsApplied * rewardDollarValue;
+    const subtotal = totalBalance + discount;
+    const totalSale = totalBalance > 0 ? totalBalance : 0;
+    const actualDiscount = totalBalance < 0 ? discount + totalBalance : discount;
+    const pointsEarned = this.getPointsEarned();
 
-  // Adds the transaction to the user's account and updates their points.
-  confirmTransaction = async () => {
-    try {
-      const transactionId = await addTransaction(
-        this.state.customer,
-        this.state.cart,
-        this.state.currentPoints,
-        this.state.totalPoints,
-        this.state.totalPrice,
-        this.state.rewardsApplied
-      );
-      await updateCustomerPoints(this.state.customer, this.state.totalPoints, this.state.rewardsApplied);
-      this.props.navigation.navigate('Confirmation', { transactionId });
-    } catch (err) {
-      // TODO better handling - should prompt the user to try again, or at least say something is wrong with the service
-      // Technically the only thing that could happen is a network failure, but likely indicates a change in column schema etc
-      console.log(err);
-    }
+    // Passed through displayConfirmation to generateConfirmationMessage and confirmTransaction
+    const transactionInfo = {
+      discount: actualDiscount,
+      subtotal,
+      totalSale,
+      pointsEarned,
+      rewardsApplied // for convenience
+    };
+    this.displayConfirmation(transactionInfo);
   };
 
   // Displays a confirmation alert to the clerk.
-  displayConfirmation = totalPoints => {
+  displayConfirmation = transactionInfo => {
     // Should not be able to check out if there isn't anything in the transaction.
-    if (totalPoints === 0 && this.state.cart.length === 0) {
+    if (this.state.cart.length === 0) {
       Alert.alert('Empty Transaction', 'This transaction is empty. Please add items to the cart.', [
         {
           text: 'OK',
@@ -136,13 +142,12 @@ export default class CheckoutScreen extends React.Component {
       ]);
       return;
     }
-    Alert.alert('Confirm Transaction', this.generateConfirmationMessage(totalPoints), [
+    Alert.alert('Confirm Transaction', this.generateConfirmationMessage(transactionInfo), [
       {
         text: 'Cancel',
         style: 'cancel'
       },
-      // TODO should this be an await?
-      { text: 'Confirm', onPress: () => this.confirmTransaction() }
+      { text: 'Confirm', onPress: () => this.confirmTransaction(transactionInfo) }
     ]);
   };
 
@@ -157,13 +162,48 @@ export default class CheckoutScreen extends React.Component {
     }
     return this.state.products.indexOf(prodList[0]);
   }
+  generateConfirmationLine = (name, value) => {
+    return `\n${name}: ${displayDollarValue(value)}`;
+  };
+
+  // Generates the confirmation message based on items in cart, points earned,
+  // and total spent.
+  generateConfirmationMessage = transactionInfo => {
+    let msg = Object.values(this.state.cart).reduce(
+      (msg, lineItem) => (lineItem.quantity > 0 ? msg.concat(`${lineItem.quantity} x ${lineItem.name}\n`) : msg),
+      'Transaction Items:\n\n'
+    );
+    msg = msg.concat(`\nRewards Redeemed: ${transactionInfo.rewardsApplied}\n`);
+    // Adding total price and total points earned to message. Must be called after getPointsEarned() in handleSubmit() for updated amount.
+    msg = msg.concat(this.generateConfirmationLine('Subtotal', transactionInfo.subtotal));
+    msg = msg.concat(this.generateConfirmationLine('Discount', transactionInfo.discount));
+    msg = msg.concat(this.generateConfirmationLine('Total Sale', transactionInfo.totalSale));
+    msg = msg.concat(`\nTotal Points Earned: ${transactionInfo.pointsEarned}`);
+    return msg;
+  };
+
+  // Adds the transaction to the user's account and updates their points.
+  confirmTransaction = async transactionInfo => {
+    try {
+      const transactionId = await addTransaction(this.state.customer, this.state.cart, transactionInfo);
+      await updateCustomerPoints(this.state.customer, transactionInfo.pointsEarned, transactionInfo.rewardsApplied);
+      this.props.navigation.navigate('Confirmation', { transactionId });
+    } catch (err) {
+      // TODO better handling - should prompt the user to try again, or at least say something is wrong with the service
+      // Technically the only thing that could happen is a network failure, but likely indicates a change in column schema etc
+      console.log('Error creating transaction in Airtable', err);
+    }
+  };
 
   render() {
     if (this.state.isLoading) {
-      return null; // TODO @tommypoa waiting (flavicon?)
+      return null;
     }
 
-    const { cart, customer, subtotalPrice, totalPrice, totalPoints } = this.state;
+    const { cart, customer, totalBalance } = this.state;
+    const totalSale = totalBalance > 0 ? totalBalance : 0;
+    const pointsEarned = this.getPointsEarned();
+    const subtotal = totalBalance + this.state.rewardsApplied * rewardDollarValue;
 
     return (
       <View style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-around', flex: 1 }}>
@@ -247,17 +287,16 @@ export default class CheckoutScreen extends React.Component {
               {/* Should be greyed out if totalPrice < 5 */}
               <View>
                 <RewardModal
-                  totalPrice={totalPrice}
+                  totalBalance={totalBalance}
                   customer={customer}
                   rewardsAvailable={this.state.rewardsAvailable}
                   rewardsApplied={this.state.rewardsApplied}
                   callback={this.applyRewardsCallback}
-                  style={{ backgroundColor: 'green' }}
                 />
                 {/* When different types of rewards are created, we can add rewards amount to state. For now, rewards
               amount is equal to rewards applied * 5. */}
-                <SubtotalCard subtotalPrice={subtotalPrice.toFixed(2)} rewardsAmount={this.state.rewardsApplied * 5} />
-                <TotalCard totalPrice={totalPrice.toFixed(2)} totalPoints={totalPoints} />
+                <SubtotalCard subtotalPrice={subtotal.toFixed(2)} rewardsAmount={this.state.rewardsApplied * 5} />
+                <TotalCard totalPrice={totalSale.toFixed(2)} totalPoints={pointsEarned} />
               </View>
             </View>
             <FilledButtonContainer onPress={() => this.handleSubmit()}>
