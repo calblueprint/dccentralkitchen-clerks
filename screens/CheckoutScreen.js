@@ -133,7 +133,11 @@ export default class CheckoutScreen extends React.Component {
   // Displays a confirmation alert to the clerk.
   displayConfirmation = transactionInfo => {
     // Should not be able to check out if there isn't anything in the transaction.
-    if (this.state.cart.length === 0) {
+    const emptyCart = Object.values(this.state.cart).reduce(
+      (empty, lineItem) => lineItem.quantity === 0 && empty,
+      true
+    );
+    if (emptyCart) {
       Alert.alert('Empty Transaction', 'This transaction is empty. Please add items to the cart.', [
         {
           text: 'OK',
