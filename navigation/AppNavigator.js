@@ -66,9 +66,10 @@ export class DrawerContent extends React.Component {
             alignItems: 'flex-end',
             padding: 16
           }}>
+          {console.log(this.state.clerkName)}
           <Title style={{ color: 'white' }}>{this.state.clerkName}</Title>
         </View>
-        <TouchableOpacity style={{ padding: 16 }} onPress={() => Linking.openURL('http://tiny.cc/ClerkFeedback')}>
+        <TouchableOpacity style={{ padding: 16 }} onPress={() => Linking.openURL('tiny.cc/SubmitFeedbackClerk')}>
           <Title>Feedback</Title>
         </TouchableOpacity>
         <TouchableOpacity style={{ paddingLeft: 16 }} onPress={() => Linking.openURL('http://tiny.cc/ClerkFeedback')}>
