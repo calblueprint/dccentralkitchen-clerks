@@ -9,7 +9,7 @@ import SubtotalCard from '../components/SubtotalCard';
 import TotalCard from '../components/TotalCard';
 import { getCustomersById } from '../lib/airtable/request';
 import { addTransaction, loadProductsData, updateCustomerPoints } from '../lib/checkoutUtils';
-import { ProductsContainer, SaleContainer, TopBar } from '../styled/checkout';
+import { BottomBar, ProductsContainer, SaleContainer, TabContainer, TopBar } from '../styled/checkout';
 import QuantityModal from './modals/QuantityModal';
 import RewardModal from './modals/RewardModal';
 
@@ -27,6 +27,7 @@ export default class CheckoutScreen extends React.Component {
       subtotalPrice: 0,
       totalPrice: 0,
       rewardsApplied: 0,
+      products: [],
       isLoading: true
     };
   }
@@ -48,6 +49,7 @@ export default class CheckoutScreen extends React.Component {
       cart: initialCart,
       currentPoints: customer.points,
       rewardsAvailable: Math.floor(customer.rewardsAvailable),
+      products,
       isLoading: false
     });
   }
@@ -173,16 +175,23 @@ export default class CheckoutScreen extends React.Component {
         </TopBar>
         <View style={{ display: 'flex', flexDirection: 'row', flex: 1 }}>
           {/* Display products */}
-          <ProductsContainer>
-            {Object.entries(cart).map(([id, product]) => (
-              <QuantityModal key={id} product={product} isLineItem={false} callback={this.updateQuantityCallback} />
-            ))}
-
-            <BottomBar style={{ display: 'flex', flexDirection: 'row', marginBottom: 0 }}>
+          <View style={{ display: 'flex', flex: 5, flexDirection: 'column' }}>
+            <ProductsContainer
+              ref={scrollView => {
+                this._scrollView = scrollView;
+              }}>
+              {/* <ScrollView> */}
+              {Object.entries(cart).map(([id, product]) => (
+                <QuantityModal key={id} product={product} isLineItem={false} callback={this.updateQuantityCallback} />
+              ))}
+              {/* </ScrollView> */}
+            </ProductsContainer>
+            {/* <View> */}
+            <BottomBar style={{ display: 'flex', flexDirection: 'row' }}>
               <TabContainer
                 onPress={() =>
                   this._scrollView.scrollTo({
-                    y: Math.floor(this.getIndexOfFirstProductAtLetter('A') / 5) * 160 + 55
+                    y: Math.floor(this.getIndexOfFirstProductAtLetter('A') / 5) * 160
                   })
                 }>
                 <Title>A-K</Title>
@@ -190,7 +199,7 @@ export default class CheckoutScreen extends React.Component {
               <TabContainer
                 onPress={() =>
                   this._scrollView.scrollTo({
-                    y: Math.floor(this.getIndexOfFirstProductAtLetter('E') / 5) * 160 + 55
+                    y: Math.floor(this.getIndexOfFirstProductAtLetter('L') / 5) * 160
                   })
                 }>
                 <Title>L-S</Title>
@@ -198,13 +207,15 @@ export default class CheckoutScreen extends React.Component {
               <TabContainer
                 onPress={() =>
                   this._scrollView.scrollTo({
-                    y: Math.floor(this.getIndexOfFirstProductAtLetter('T') / 5) * 160 + 55
+                    y: Math.floor(this.getIndexOfFirstProductAtLetter('T') / 5) * 160
                   })
                 }>
                 <Title>T-Z</Title>
               </TabContainer>
             </BottomBar>
-          </ProductsContainer>
+            {/* </View> */}
+          </View>
+
           {/* Right column */}
           <SaleContainer>
             <View
