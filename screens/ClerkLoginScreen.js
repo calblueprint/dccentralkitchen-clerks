@@ -1,13 +1,14 @@
+import { FontAwesome5 } from '@expo/vector-icons';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { AsyncStorage, Keyboard, TouchableWithoutFeedback, View } from 'react-native';
 import Colors from '../assets/Colors';
 import BackButton from '../components/BackButton';
-import { ButtonLabel, RoundedButtonContainer, Title } from '../components/BaseComponents';
+import { ButtonLabel, RoundedButtonContainer, Subhead, Title } from '../components/BaseComponents';
 import { status } from '../lib/constants';
 import { lookupClerk } from '../lib/loginUtils';
 import { CheckInContainer, CheckInContentContainer, TextField } from '../styled/checkin';
-
+import { RowContainer } from '../styled/shared';
 // TODO rename this
 const DismissKeyboard = ({ children }) => (
   <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>{children}</TouchableWithoutFeedback>
@@ -19,6 +20,7 @@ export default class ClerkLoginScreen extends React.Component {
     this.state = {
       password: '',
       errorMsg: null,
+      errorShown: false,
       loginPermission: false
     };
   }
@@ -34,10 +36,14 @@ export default class ClerkLoginScreen extends React.Component {
 
   loginPermissionHandler = password => {
     let loginPermission = false;
+    let errorShown = true;
+    if (password.length > 0) {
+      errorShown = false;
+    }
     if (password.length === 4) {
       loginPermission = true;
     }
-    this.setState({ password, loginPermission });
+    this.setState({ password, loginPermission, errorShown });
   };
 
   // This function will sign the user in if the clerk is found.
@@ -47,8 +53,10 @@ export default class ClerkLoginScreen extends React.Component {
       const lookupResult = await lookupClerk(this.props.navigation.state.params.store.id, this.state.password);
 
       let clerkRecord = null;
+      let foundError = true;
       switch (lookupResult.status) {
         case status.MATCH:
+          foundError = false;
           clerkRecord = lookupResult.record;
           await this._asyncLoginClerk(clerkRecord);
           this.props.navigation.navigate('CustomerLookup');
@@ -66,7 +74,7 @@ export default class ClerkLoginScreen extends React.Component {
         default:
           return;
       }
-      this.setState({ errorMsg: lookupResult.errorMsg, password: '' });
+      this.setState({ errorMsg: lookupResult.errorMsg, password: '', errorShown: foundError });
     } catch (err) {
       console.error('Clerk Login Screen:', err);
     }
@@ -90,13 +98,24 @@ export default class ClerkLoginScreen extends React.Component {
               </Title>
               <Title color="#fff">Enter your employee PIN</Title>
               <TextField
-                style={{ marginTop: 32 }}
+                style={
+                  this.state.errorShown
+                    ? { marginTop: 32, borderWidth: 2, borderColor: Colors.error }
+                    : { marginTop: 32, borderWidth: 2 }
+                }
+                selectionColor={Colors.primaryGreen}
                 placeholder="ex. 1234"
                 keyboardType="number-pad"
                 maxLength={4}
                 onChangeText={text => this.loginPermissionHandler(text)}
                 value={this.state.password}
               />
+              {this.state.errorShown && (
+                <RowContainer style={{ alignItems: 'center', marginTop: 8 }}>
+                  <FontAwesome5 name="exclamation-circle" size={16} color={Colors.error} style={{ marginRight: 8 }} />
+                  <Subhead color={Colors.lightest}>Invalid PIN</Subhead>
+                </RowContainer>
+              )}
               <RoundedButtonContainer
                 style={{ marginTop: 32 }}
                 color={this.state.loginPermission ? Colors.primaryGreen : Colors.lightestGreen}
