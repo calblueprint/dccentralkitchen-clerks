@@ -99,11 +99,13 @@ export default class StoreLookupScreen extends React.Component {
           <CheckInContentContainer>
             <Title color={Colors.lightest}>Enter store name</Title>
             <TextField
+              selectionColor={Colors.primaryGreen}
               style={{ marginTop: 32 }}
               placeholder="ex: Healthy Corner Store"
               onChangeText={text => this.handleChangeText(text)}
               value={this.state.searchStr}
               onFocus={() => this.onFocus()}
+              autoCorrect={false}
             />
             {!this.state.textFieldBlur && (
               <SearchBarContainer>
@@ -120,7 +122,7 @@ export default class StoreLookupScreen extends React.Component {
               <RoundedButtonContainer
                 style={{ marginTop: 32 }}
                 color={this.state.storePermission ? Colors.primaryGreen : Colors.lightestGreen}
-                width="253px"
+                width="100%"
                 height="40px"
                 onPress={() => this.handleNavigate()}
                 disabled={!this.state.storePermission}>
