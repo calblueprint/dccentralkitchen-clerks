@@ -170,6 +170,15 @@ export default class CheckoutScreen extends React.Component {
 
   // Adds the transaction to the user's account and updates their points.
   confirmTransaction = async transactionInfo => {
+    // Clerk Training: if storeId is "Clerk Training"'s ID
+    // do not create the transaction or update points
+    // Navigate to Confirmation Screen with a pre-filed transaction ID
+    const storeId = await AsyncStorage.getItem('storeId');
+    if (storeId === 'recq6630DixVw63un') {
+      this.props.navigation.navigate('Confirmation', { transactionId: 'recY2qAeAinDXrfzh' });
+      return;
+    }
+
     try {
       const transactionId = await addTransaction(this.state.customer, this.state.cart, transactionInfo);
       await updateCustomerPoints(this.state.customer, transactionInfo.pointsEarned, transactionInfo.rewardsApplied);

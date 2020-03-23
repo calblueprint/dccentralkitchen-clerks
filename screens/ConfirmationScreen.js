@@ -22,7 +22,7 @@ export default class ConfirmationScreen extends React.Component {
       const transaction = await getTransactionsById(transactionId);
       this.setState({ transaction, isLoading: false });
     } catch (err) {
-      console.error(err);
+      console.error('Confirmation screen: loading transaction ', err);
     }
   }
 

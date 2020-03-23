@@ -19,9 +19,29 @@ export default class ClerkLoginScreen extends React.Component {
     this.state = {
       password: '',
       errorMsg: null,
-      loginPermission: false
+      loginPermission: false,
+      loading: true
     };
   }
+
+  componentDidMount() {
+    this._reset();
+    this.setState({ loading: false });
+  }
+
+  componentDidUpdate() {
+    if (!this.state.loading) {
+      this._reset();
+    }
+  }
+
+  componentWillUnmount() {
+    this.setState({ loading: true });
+  }
+
+  _reset = () => {
+    this.setState({ password: '', errorMsg: null, loginPermission: false });
+  };
 
   // Set the clerkId and storeId in AsyncStorage
   // Then navigate to the customer lookup screen

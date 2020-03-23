@@ -17,21 +17,37 @@ export default class CustomerLookupScreen extends React.Component {
       clerkName: '',
       phoneNumber: '',
       errorMsg: '',
-      customerPermission: false
+      customerPermission: false,
+      loading: true
     };
   }
 
   // TODO: this is currently not being used
   // Clears error state and phoneNumber entered so far
   async componentDidMount() {
+    await this._reset();
+    this.setState({ loading: false });
+  }
+
+  async componentDidUpdate() {
+    if (!this.state.loading) {
+      await this._reset();
+    }
+  }
+
+  componentWillUnmount() {
+    this.setState({ loading: true });
+  }
+
+  _reset = async () => {
     const clerkName = await AsyncStorage.getItem('clerkName');
     // Clerk Training: pre-fill customer (Summer Strawberry) phone number
     if (clerkName === 'Sunny Citrus') {
       this.setState({ clerkName, phoneNumber: '1112223344', customerPermission: true, errorMsg: null });
     } else {
-      this.setState({ clerkName, phoneNumber: '', errorMsg: null });
+      this.setState({ clerkName, phoneNumber: '', customerPermission: false, errorMsg: null });
     }
-  }
+  };
 
   _asyncCustomerFound = async customerRecord => {
     await AsyncStorage.setItem('customerId', customerRecord.id);
