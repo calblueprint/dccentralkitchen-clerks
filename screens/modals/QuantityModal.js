@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Modal, TouchableOpacity, View } from 'react-native';
 import Colors from '../../assets/Colors';
-import { Body, ButtonLabel, Title } from '../../components/BaseComponents';
+import { Body, ButtonLabel, RoundedButtonContainer, Title } from '../../components/BaseComponents';
 import LineItemCard from '../../components/LineItemCard';
 import ProductDisplayCard from '../../components/ProductDisplayCard';
 import {
@@ -12,7 +12,7 @@ import {
   ModalCopyContainer,
   QuantityInput
 } from '../../styled/modal';
-import { ColumnContainer, RoundedButtonContainer } from '../../styled/shared';
+import { ColumnContainer } from '../../styled/shared';
 
 export default class QuantityModal extends React.Component {
   constructor(props) {
@@ -36,6 +36,7 @@ export default class QuantityModal extends React.Component {
   }
 
   // Forces a re-render when new props are passed
+  // TODO: this is deprecated - may need to find an alternative to getDerivedStateFromProps
   componentWillReceiveProps(nextProps) {
     const newQuantity = nextProps.product.quantity;
     if (this.state.currentQuantity !== newQuantity) {
@@ -54,14 +55,11 @@ export default class QuantityModal extends React.Component {
   };
 
   setModalVisible = visible => {
+    // Reset state every time modal is re-opened
     if (visible) {
       this.resetCurrentQuantity();
     }
     this.setState({ modalVisible: visible });
-  };
-
-  handleShowModal = () => {
-    this.setModalVisible(!this.state.modalVisible);
   };
 
   // Communicate to parent component
@@ -96,11 +94,11 @@ export default class QuantityModal extends React.Component {
           transparent
           visible={this.state.modalVisible}
           onRequestClose={() => {
-            this.handleShowModal();
+            this.setModalVisible(false);
           }}>
           {/* Opacity layer */}
           <ModalCenteredOpacityLayer>
-            <ModalContentContainer>
+            <ModalContentContainer style={{ top: -200 }}>
               <TouchableOpacity
                 style={{
                   position: 'absolute',
@@ -136,16 +134,15 @@ export default class QuantityModal extends React.Component {
           product.quantity > 0 && (
             <TouchableOpacity
               onPress={() => {
-                this.handleShowModal();
+                this.setModalVisible(true);
               }}>
               <LineItemCard product={product} />
             </TouchableOpacity>
           )
         ) : (
           <TouchableOpacity
-            disabled={this.state.product.quantity > 0}
             onPress={() => {
-              this.handleShowModal();
+              this.setModalVisible(true);
             }}>
             <ProductDisplayCard product={product} />
           </TouchableOpacity>

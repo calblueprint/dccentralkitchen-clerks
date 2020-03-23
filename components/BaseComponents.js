@@ -2,6 +2,13 @@ import styled from 'styled-components/native';
 import Colors from '../assets/Colors';
 
 // Text Components
+export const BigTitle = styled.Text`
+  font-family: poppins-medium;
+  font-size: 32px;
+  line-height: 48px;
+  color: ${props => props.color || Colors.black};
+`;
+
 export const Title = styled.Text`
   font-family: poppins-medium;
   font-size: 20px;
@@ -47,11 +54,15 @@ export const ButtonLabel = styled.Text`
   font-family: poppins-semibold;
   font-size: 14px;
   line-height: 21px;
-  display: flex;
-  align-items: center;
   text-align: center;
   letter-spacing: 0.01px;
   text-transform: uppercase;
+  color: ${props => props.color || Colors.lightest};
+`;
+
+export const BigTitleLabel = styled(BigTitle)`
+  line-height: 54px;
+  text-align: center;
   color: ${props => props.color || Colors.lightest};
 `;
 
@@ -66,4 +77,9 @@ export const RoundedButtonContainer = styled(FilledButtonContainer)`
   margin: 12px;
   width: ${props => props.width || '160px'};
   height: ${props => props.height || '39px'};
+`;
+
+export const SquareButtonContainer = styled(FilledButtonContainer)`
+  width: ${props => props.side || '54px'};
+  height: ${props => props.side || '54px'};
 `;

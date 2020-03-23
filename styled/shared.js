@@ -52,6 +52,7 @@ export const ColumnContainer = styled.View`
 
 export const SpaceBetweenRowContainer = styled(RowContainer)`
   justify-content: space-between;
+  width: 100%;
 `;
 
 export const RoundedButtonContainer = styled(FilledButtonContainer)`

@@ -1,6 +1,6 @@
 import React from 'react';
 import Colors from '../assets/Colors';
-import { calculateLineItemPrice } from '../lib/checkoutUtils';
+import { calculateLineItemPrice, displayDollarValue } from '../lib/checkoutUtils';
 import { LineItem, LineItemRow } from '../styled/checkout';
 import { Body, Subhead } from './BaseComponents';
 
@@ -13,7 +13,7 @@ function LineItemCard({ product }) {
     <LineItem>
       <LineItemRow>
         <Subhead>{product.name}</Subhead>
-        <Subhead>${calculateLineItemPrice(product)}</Subhead>
+        <Subhead>{displayDollarValue(calculateLineItemPrice(product))}</Subhead>
       </LineItemRow>
       <LineItemRow>
         <Body color={Colors.secondaryText}>{product.detail}</Body>
