@@ -228,10 +228,10 @@ export default class CheckoutScreen extends React.Component {
                 justifyContent: 'space-between',
                 flex: 1
               }}>
-              <View>
+              <View style={{ height: '60%' }}>
                 <Subhead>Current Sale</Subhead>
                 {/* Cart container */}
-                <View style={{ flex: 'auto', height: '60%', paddingBottom: '5%' }}>
+                <View style={{ height: '100%', paddingBottom: '5%' }}>
                   <ScrollView>
                     {Object.entries(cart).map(([id, product]) => {
                       return (
