@@ -151,21 +151,6 @@ export default class CheckoutScreen extends React.Component {
     ]);
   };
 
-  // Returns index of the first product with a name starting with the given letter in products list.
-  // If no product starting with that letter exists, find the next product.
-  getIndexOfFirstProductAtLetter(letter) {
-    let prodList = this.state.products.filter(product => product.name.charAt(0) === letter);
-    let nextLetter = letter;
-    while (prodList.length === 0) {
-      nextLetter = String.fromCharCode(nextLetter.charCodeAt(0) + 1);
-      prodList = this.state.products.filter(product => product.name.charAt(0) === nextLetter);
-    }
-    return this.state.products.indexOf(prodList[0]);
-  }
-  generateConfirmationLine = (name, value) => {
-    return `\n${name}: ${displayDollarValue(value)}`;
-  };
-
   // Generates the confirmation message based on items in cart, points earned,
   // and total spent.
   generateConfirmationMessage = transactionInfo => {
@@ -195,6 +180,37 @@ export default class CheckoutScreen extends React.Component {
     }
   };
 
+  // Returns index of the first product with a name starting with the given letter in products list.
+  // If no product starting with that letter exists, find the next product.
+  getIndexOfFirstProductAtLetter = letter => {
+    let prodList = this.state.products.filter(product => product.name.charAt(0) === letter);
+    let nextLetter = letter;
+    while (prodList.length === 0) {
+      nextLetter = String.fromCharCode(nextLetter.charCodeAt(0) + 1);
+      prodList = this.state.products.filter(product => product.name.charAt(0) === nextLetter);
+    }
+    return this.state.products.indexOf(prodList[0]);
+  };
+
+  generateConfirmationLine = (name, value) => {
+    return `\n${name}: ${displayDollarValue(value)}`;
+  };
+
+  // Takes in strings tab label (i.e. "A-K") and starting letter (i.e. "A") and returns a
+  // tab for the bottom alphabetical scroll bar.
+  alphabeticalScrollTab = (label, letter) => {
+    return (
+      <TabContainer
+        onPress={() =>
+          this._scrollView.scrollTo({
+            y: Math.floor(this.getIndexOfFirstProductAtLetter(letter) / 5) * 160
+          })
+        }>
+        <Title>{label}</Title>
+      </TabContainer>
+    );
+  };
+
   render() {
     if (this.state.isLoading) {
       return null;
@@ -220,42 +236,16 @@ export default class CheckoutScreen extends React.Component {
               ref={scrollView => {
                 this._scrollView = scrollView;
               }}>
-              {/* <ScrollView> */}
               {Object.entries(cart).map(([id, product]) => (
                 <QuantityModal key={id} product={product} isLineItem={false} callback={this.updateQuantityCallback} />
               ))}
-              {/* </ScrollView> */}
             </ProductsContainer>
-            {/* <View> */}
             <BottomBar style={{ display: 'flex', flexDirection: 'row' }}>
-              <TabContainer
-                onPress={() =>
-                  this._scrollView.scrollTo({
-                    y: Math.floor(this.getIndexOfFirstProductAtLetter('A') / 5) * 160
-                  })
-                }>
-                <Title>A-K</Title>
-              </TabContainer>
-              <TabContainer
-                onPress={() =>
-                  this._scrollView.scrollTo({
-                    y: Math.floor(this.getIndexOfFirstProductAtLetter('L') / 5) * 160
-                  })
-                }>
-                <Title>L-S</Title>
-              </TabContainer>
-              <TabContainer
-                onPress={() =>
-                  this._scrollView.scrollTo({
-                    y: Math.floor(this.getIndexOfFirstProductAtLetter('T') / 5) * 160
-                  })
-                }>
-                <Title>T-Z</Title>
-              </TabContainer>
+              {this.alphabeticalScrollTab('A-K', 'A')}
+              {this.alphabeticalScrollTab('L-S', 'L')}
+              {this.alphabeticalScrollTab('T-Z', 'T')}
             </BottomBar>
-            {/* </View> */}
           </View>
-
           {/* Right column */}
           <SaleContainer>
             <View
@@ -283,7 +273,6 @@ export default class CheckoutScreen extends React.Component {
                   </ScrollView>
                 </View>
               </View>
-              {/* <View style={{ display: 'flex', marginBottom: 0, justifyContent: 'flex-end' }}> */}
               {/* Should be greyed out if totalPrice < 5 */}
               <View>
                 <RewardModal
