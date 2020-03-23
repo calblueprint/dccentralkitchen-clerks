@@ -151,6 +151,10 @@ export default class CheckoutScreen extends React.Component {
     ]);
   };
 
+  generateConfirmationLine = (name, value) => {
+    return `\n${name}: ${displayDollarValue(value)}`;
+  };
+
   // Generates the confirmation message based on items in cart, points earned,
   // and total spent.
   generateConfirmationMessage = transactionInfo => {
@@ -190,10 +194,6 @@ export default class CheckoutScreen extends React.Component {
       prodList = this.state.products.filter(product => product.name.charAt(0) === nextLetter);
     }
     return this.state.products.indexOf(prodList[0]);
-  };
-
-  generateConfirmationLine = (name, value) => {
-    return `\n${name}: ${displayDollarValue(value)}`;
   };
 
   // Takes in strings tab label (i.e. "A-K") and starting letter (i.e. "A") and returns a
