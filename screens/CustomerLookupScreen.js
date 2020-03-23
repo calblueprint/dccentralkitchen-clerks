@@ -25,7 +25,9 @@ export default class CustomerLookupScreen extends React.Component {
   // Clears error state and phoneNumber entered so far
   async componentDidMount() {
     const clerkName = await AsyncStorage.getItem('clerkName');
-    this.setState({ clerkName, phoneNumber: '', errorMsg: null });
+    // Clerk Training: pre-fill customer phone number for Summer Strawberry
+    const phoneNumber = clerkName === 'Sunny Citrus' ? '1112223344' : '';
+    this.setState({ clerkName, phoneNumber, errorMsg: null });
   }
 
   _asyncCustomerFound = async customerRecord => {

@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Body, ButtonLabel, FilledButtonContainer, Title } from '../components/BaseComponents';
+import { Body, ButtonLabel, FilledButtonContainer, Subhead, Title } from '../components/BaseComponents';
 import { getTransactionsById } from '../lib/airtable/request';
 import { displayDollarValue } from '../lib/checkoutUtils';
 import { ColumnContainer, SpaceBetweenRowContainer } from '../styled/shared';
@@ -35,28 +35,37 @@ export default class ConfirmationScreen extends React.Component {
     if (isLoading) {
       return null;
     }
+    // Display last seven letters/digits as transaction code for Clerk to report issues
+    const truncatedId = transaction.id.slice(-7);
 
     return (
       <ColumnContainer style={{ width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
-        <ColumnContainer style={{ width: '33%', justifyContent: 'space-around', margin: 12, paddingBottom: 32 }}>
+        <ColumnContainer
+          style={{ width: '33%', height: '35%', justifyContent: 'space-around', margin: 12, paddingBottom: 32 }}>
           <Title>Purchase Summary</Title>
-          <ColumnContainer style={{ width: '100%%', justifyContent: 'space-around', margin: 12 }}>
+          <SpaceBetweenRowContainer>
+            <Subhead>Transaction ID</Subhead>
+            <Subhead style={{ textTransform: 'uppercase' }}>{truncatedId}</Subhead>
+          </SpaceBetweenRowContainer>
+          <ColumnContainer style={{ width: '100%%', justifyContent: 'space-around' }}>
             <SpaceBetweenRowContainer>
               <Body>Points Earned</Body>
               <Body>{transaction.pointsEarned} pts</Body>
             </SpaceBetweenRowContainer>
-            <SpaceBetweenRowContainer style={{ paddingBottom: 12 }}>
+            <SpaceBetweenRowContainer>
               <Body>Rewards Redeemed</Body>
               <Body>{transaction.rewardsApplied}</Body>
             </SpaceBetweenRowContainer>
+          </ColumnContainer>
+          <ColumnContainer style={{ width: '100%%', justifyContent: 'space-around' }}>
             <SpaceBetweenRowContainer>
               <Body>Subtotal</Body>
-              <Body>{displayDollarValue(transaction.discount)}</Body>
+              <Body>{displayDollarValue(transaction.subtotal)}</Body>
             </SpaceBetweenRowContainer>
             {transaction.rewardsApplied > 0 && (
               <SpaceBetweenRowContainer>
-                <Body>Total Discounts</Body>
-                <Body>{displayDollarValue(transaction.discount)}</Body>
+                <Body>Rewards</Body>
+                <Body>{displayDollarValue(transaction.discount, false)}</Body>
               </SpaceBetweenRowContainer>
             )}
             <SpaceBetweenRowContainer>
