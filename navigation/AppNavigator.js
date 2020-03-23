@@ -22,9 +22,9 @@ export const AuthStack = createStackNavigator(
 
 export const AppStack = createStackNavigator({
   Auth: AuthStack,
-  CustomerLookup: { screen: CustomerLookupScreen },
-  Checkout: { screen: CheckoutScreen },
-  Confirmation: { screen: ConfirmationScreen }
+  CustomerLookup: { screen: CustomerLookupScreen, navigationOptions: { header: null } },
+  Checkout: { screen: CheckoutScreen, navigationOptions: { header: null } },
+  Confirmation: { screen: ConfirmationScreen, navigationOptions: { header: null } }
 });
 
 AppStack.navigationOptions = {
@@ -114,10 +114,10 @@ export default createAppContainer(
     {
       Auth: AuthStack,
       App: {
-        screen: MyDrawerNavigator
+        screen: MyDrawerNavigator,
+        navigationOptions: { header: null }
       }
     },
-    { headerMode: 'none' },
     {
       initialRouteName: 'Auth'
     }
