@@ -105,6 +105,8 @@ export default class CustomerLookupScreen extends React.Component {
           <CheckInContentContainer>
             <Title>Enter customer phone number</Title>
             <TextField
+              clearButtonMode={'always'}
+              selectionColor={Colors.primaryGreen}
               style={{ marginTop: 32 }}
               error={this.state.errorShown}
               placeholder="ex. 1234567890"

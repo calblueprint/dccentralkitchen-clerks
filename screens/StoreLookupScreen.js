@@ -100,6 +100,7 @@ export default class StoreLookupScreen extends React.Component {
           <CheckInContentContainer>
             <Title color={Colors.lightest}>Enter store name</Title>
             <TextField
+              clearButtonMode={'always'}
               selectionColor={Colors.primaryGreen}
               style={{ marginTop: 32 }}
               placeholder="ex: Healthy Corner Store"
@@ -110,7 +111,7 @@ export default class StoreLookupScreen extends React.Component {
             />
             {!this.state.textFieldBlur && (
               <SearchBarContainer>
-                <ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+                <ScrollView bounces={false} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
                   {this.state.filteredStores.map(store => (
                     <SearchElement key={store.id} onPress={() => this.onSearchElementPress(store)}>
                       <Body>{store.storeName}</Body>
