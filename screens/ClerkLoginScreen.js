@@ -98,6 +98,7 @@ export default class ClerkLoginScreen extends React.Component {
               </Title>
               <Title color="#fff">Enter your employee PIN</Title>
               <TextField
+                autoFocus
                 style={{ marginTop: 32 }}
                 error={this.state.errorShown}
                 selectionColor={Colors.primaryGreen}
