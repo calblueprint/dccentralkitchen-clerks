@@ -29,16 +29,6 @@ export default class ClerkLoginScreen extends React.Component {
     this.setState({ loading: false });
   }
 
-  componentDidUpdate() {
-    if (!this.state.loading) {
-      this._reset();
-    }
-  }
-
-  componentWillUnmount() {
-    this.setState({ loading: true });
-  }
-
   _reset = () => {
     this.setState({ password: '', errorMsg: null, loginPermission: false });
   };

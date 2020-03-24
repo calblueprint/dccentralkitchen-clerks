@@ -29,16 +29,6 @@ export default class CustomerLookupScreen extends React.Component {
     this.setState({ loading: false });
   }
 
-  async componentDidUpdate() {
-    if (!this.state.loading) {
-      await this._reset();
-    }
-  }
-
-  componentWillUnmount() {
-    this.setState({ loading: true });
-  }
-
   _reset = async () => {
     const clerkName = await AsyncStorage.getItem('clerkName');
     // Clerk Training: pre-fill customer (Summer Strawberry) phone number
