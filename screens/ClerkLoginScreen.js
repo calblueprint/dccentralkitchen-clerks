@@ -98,11 +98,8 @@ export default class ClerkLoginScreen extends React.Component {
               </Title>
               <Title color="#fff">Enter your employee PIN</Title>
               <TextField
-                style={
-                  this.state.errorShown
-                    ? { marginTop: 32, borderWidth: 2, borderColor: Colors.error }
-                    : { marginTop: 32, borderWidth: 2 }
-                }
+                style={{ marginTop: 32 }}
+                error={this.state.errorShown}
                 selectionColor={Colors.primaryGreen}
                 placeholder="ex. 1234"
                 keyboardType="number-pad"
