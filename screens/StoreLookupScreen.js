@@ -80,6 +80,7 @@ export default class StoreLookupScreen extends React.Component {
     this.setState({ searchStr: store.storeName, store, textFieldBlur: true });
     this.storePermissionHandler(store);
     this.updateFilteredStores(store.storeName);
+    Keyboard.dismiss();
   };
 
   handleNavigate = () => {
@@ -109,7 +110,7 @@ export default class StoreLookupScreen extends React.Component {
             />
             {!this.state.textFieldBlur && (
               <SearchBarContainer>
-                <ScrollView showsVerticalScrollIndicator={false}>
+                <ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
                   {this.state.filteredStores.map(store => (
                     <SearchElement key={store.id} onPress={() => this.onSearchElementPress(store)}>
                       <Body>{store.storeName}</Body>
