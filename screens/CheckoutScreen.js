@@ -2,11 +2,18 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import update from 'react-addons-update';
 import { Alert, AsyncStorage, Text, TouchableOpacity, View } from 'react-native';
+import AlertAsync from 'react-native-alert-async';
 import { ScrollView } from 'react-native-gesture-handler';
 import BackButton from '../components/BackButton';
 import { Subhead, Title } from '../components/BaseComponents';
 import { getCustomersById } from '../lib/airtable/request';
-import { addTransaction, displayDollarValue, loadProductsData, updateCustomerPoints } from '../lib/checkoutUtils';
+import {
+  addTransaction,
+  calculateEligibleRewards,
+  displayDollarValue,
+  loadProductsData,
+  updateCustomerPoints
+} from '../lib/checkoutUtils';
 import { rewardDollarValue } from '../lib/constants';
 import { ProductsContainer, SaleContainer, TopBar } from '../styled/checkout';
 import { TextHeader } from '../styled/shared';
@@ -128,7 +135,7 @@ export default class CheckoutScreen extends React.Component {
   };
 
   // Displays a confirmation alert to the clerk.
-  displayConfirmation = transactionInfo => {
+  displayConfirmation = async transactionInfo => {
     // Should not be able to check out if there isn't anything in the transaction.
     if (this.state.cart.length === 0) {
       Alert.alert('Empty Transaction', 'This transaction is empty. Please add items to the cart.', [
@@ -139,6 +146,20 @@ export default class CheckoutScreen extends React.Component {
       ]);
       return;
     }
+    if (this.state.rewardsApplied === 0) {
+      const eligibleRewards = calculateEligibleRewards(
+        this.state.rewardsAvailable,
+        this.state.rewardsApplied,
+        this.state.totalBalance
+      );
+      const eligibleSavings = eligibleRewards * rewardDollarValue;
+      if (eligibleRewards) {
+        const continueWithoutRewards = await this.confirmNoRewards(eligibleSavings, eligibleRewards);
+        if (!continueWithoutRewards) {
+          return;
+        }
+      }
+    }
     Alert.alert('Confirm Transaction', this.generateConfirmationMessage(transactionInfo), [
       {
         text: 'Cancel',
@@ -146,6 +167,29 @@ export default class CheckoutScreen extends React.Component {
       },
       { text: 'Confirm', onPress: () => this.confirmTransaction(transactionInfo) }
     ]);
+  };
+
+  confirmNoRewards = async (eligibleSavings, eligibleRewards) => {
+    const response = await AlertAsync(
+      'Available rewards were not applied',
+      'This customer could apply up to '
+        .concat(eligibleRewards)
+        .concat(' rewards to this sale and save up to ')
+        .concat(displayDollarValue(eligibleSavings)),
+      [
+        {
+          text: 'Go back to apply rewards',
+          style: 'cancel',
+          onPress: () => false
+        },
+        {
+          text: 'Continue without rewards',
+          onPress: () => true,
+          style: 'default'
+        }
+      ]
+    );
+    return response;
   };
 
   generateConfirmationLine = (name, value) => {
