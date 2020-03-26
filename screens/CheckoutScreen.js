@@ -172,10 +172,7 @@ export default class CheckoutScreen extends React.Component {
   confirmNoRewards = async (eligibleSavings, eligibleRewards) => {
     const response = await AlertAsync(
       'Available rewards were not applied',
-      'This customer could apply up to '
-        .concat(eligibleRewards)
-        .concat(' rewards to this sale and save up to ')
-        .concat(displayDollarValue(eligibleSavings)),
+      'This customer could apply up to '.concat(eligibleRewards).concat(' rewards to this sale.'),
       [
         {
           text: 'Go back to apply rewards',
