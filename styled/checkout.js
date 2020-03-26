@@ -8,7 +8,7 @@ import { ColumnContainer, RowContainer } from './shared';
 export const TopBar = styled.View`
   height: 68px;
   width: 100%;
-  background: ${Colors.base};
+  background: ${props => (props.trainingColor ? '#FFC300' : Colors.base)};
   display: flex;
   flex-direction: row;
   justify-content: space-between;

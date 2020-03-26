@@ -12,7 +12,6 @@ import { ProductsContainer, SaleContainer, TopBar } from '../styled/checkout';
 import { TextHeader } from '../styled/shared';
 import QuantityModal from './modals/QuantityModal';
 import RewardModal from './modals/RewardModal';
-
 export default class CheckoutScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -177,6 +176,7 @@ export default class CheckoutScreen extends React.Component {
       discount: transactionInfo.discount,
       totalPrice: transactionInfo.totalSale
     };
+    console.log(fakeTransaction);
     return fakeTransaction;
   };
 
@@ -216,9 +216,13 @@ export default class CheckoutScreen extends React.Component {
 
     return (
       <View>
-        <TopBar>
+        <TopBar trainingColor={trainingMode}>
           <BackButton navigation={this.props.navigation} light={false} style={{ marginTop: 3, marginLeft: 24 }} />
-          <Title> {'Customer: '.concat(customer.name)} </Title>
+          <Title>
+            {'Customer: '
+              .concat(customer.name)
+              .concat(trainingMode ? '   |   Training Mode (sales will not be saved)' : '')}
+          </Title>
           {/* Duplicate, invisible element to have left-aligned BackButton */}
           <BackButton navigation={this.props.navigation} light={false} style={{ opacity: 0.0, disabled: true }} />
         </TopBar>
