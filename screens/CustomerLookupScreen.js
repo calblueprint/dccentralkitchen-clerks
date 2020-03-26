@@ -1,9 +1,10 @@
+import { FontAwesome5 } from '@expo/vector-icons';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { AsyncStorage, View } from 'react-native';
 import Colors from '../assets/Colors';
 import BackButton from '../components/BackButton';
-import { ButtonLabel, RoundedButtonContainer, Title } from '../components/BaseComponents';
+import { ButtonLabel, RoundedButtonContainer, Subhead, Title } from '../components/BaseComponents';
 import { status } from '../lib/constants';
 import { lookupCustomer } from '../lib/lookupUtils';
 import { CheckInContainer, CheckInContentContainer, TextField } from '../styled/checkin';
@@ -17,6 +18,7 @@ export default class CustomerLookupScreen extends React.Component {
       clerkName: '',
       phoneNumber: '',
       errorMsg: '',
+      errorShown: false,
       customerPermission: false
     };
   }
@@ -41,10 +43,14 @@ export default class CustomerLookupScreen extends React.Component {
 
   customerPermissionHandler = phoneNumber => {
     let customerPermission = false;
+    let errorShown = true;
+    if (phoneNumber.length > 0) {
+      errorShown = false;
+    }
     if (phoneNumber.length === 10) {
       customerPermission = true;
     }
-    this.setState({ phoneNumber, customerPermission });
+    this.setState({ phoneNumber, customerPermission, errorShown });
   };
 
   handleSubmit = async () => {
@@ -54,8 +60,10 @@ export default class CustomerLookupScreen extends React.Component {
       const lookupResult = await lookupCustomer(formattedPhoneNumber);
       let customerRecord = null;
 
+      let customerNotFound = true;
       switch (lookupResult.status) {
         case status.FOUND:
+          customerNotFound = false;
           customerRecord = lookupResult.record;
           this._asyncCustomerFound(customerRecord);
           break;
@@ -69,7 +77,7 @@ export default class CustomerLookupScreen extends React.Component {
         default:
           return;
       }
-      this.setState({ errorMsg: lookupResult.errorMsg, phoneNumber: '' });
+      this.setState({ errorMsg: lookupResult.errorMsg, phoneNumber: '', errorShown: customerNotFound });
     } catch (err) {
       console.error('Customer Lookup Screen: ', err);
     }
@@ -97,13 +105,22 @@ export default class CustomerLookupScreen extends React.Component {
           <CheckInContentContainer>
             <Title>Enter customer phone number</Title>
             <TextField
+              clearButtonMode={'always'}
+              selectionColor={Colors.primaryGreen}
               style={{ marginTop: 32 }}
-              placeholder="(123) 456-7890"
+              error={this.state.errorShown}
+              placeholder="ex. 1234567890"
               keyboardType="number-pad"
               maxLength={10}
               onChangeText={text => this.customerPermissionHandler(text)}
               value={this.state.phoneNumber}
             />
+            {this.state.errorShown && (
+              <RowContainer style={{ alignItems: 'center', marginTop: 8 }}>
+                <FontAwesome5 name="exclamation-circle" size={16} color={Colors.error} style={{ marginRight: 8 }} />
+                <Subhead color={Colors.activeText}>Invalid phone number</Subhead>
+              </RowContainer>
+            )}
             <RoundedButtonContainer
               style={{ marginTop: 32 }}
               color={this.state.customerPermission ? Colors.primaryGreen : Colors.lightestGreen}
