@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { AsyncStorage } from 'react-native';
+import { Alert, AsyncStorage, Clipboard, TouchableOpacity } from 'react-native';
 import { Body, ButtonLabel, FilledButtonContainer, Subhead, Title } from '../components/BaseComponents';
 import { getTransactionsById } from '../lib/airtable/request';
 import { displayDollarValue } from '../lib/checkoutUtils';
@@ -35,6 +35,11 @@ export default class ConfirmationScreen extends React.Component {
     this.props.navigation.navigate('CustomerLookup');
   };
 
+  writeToClipboard = copyText => {
+    Clipboard.setString(copyText);
+    Alert.alert('Copied to Clipboard!', copyText);
+  };
+
   render() {
     const { isLoading, transaction } = this.state;
     if (isLoading) {
@@ -50,7 +55,9 @@ export default class ConfirmationScreen extends React.Component {
           <Title>Purchase Summary</Title>
           <SpaceBetweenRowContainer>
             <Subhead>Transaction ID</Subhead>
-            <Subhead style={{ textTransform: 'uppercase' }}>{truncatedId}</Subhead>
+            <TouchableOpacity onLongPress={() => this.writeToClipboard(truncatedId)}>
+              <Subhead style={{ textTransform: 'uppercase' }}>{truncatedId}</Subhead>
+            </TouchableOpacity>
           </SpaceBetweenRowContainer>
           <ColumnContainer style={{ width: '100%%', justifyContent: 'space-around' }}>
             <SpaceBetweenRowContainer>
