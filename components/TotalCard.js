@@ -1,19 +1,16 @@
+import PropTypes from 'prop-types';
 import React from 'react';
-import { LineItem, LineItemRow } from '../styled/checkout.js';
 import Colors from '../assets/Colors';
-import { Body, Subhead } from '../components/BaseComponents';
+import { displayDollarValue } from '../lib/checkoutUtils';
+import { LineItem, LineItemRow } from '../styled/checkout';
+import { Body, Subhead } from './BaseComponents';
 
-/**
- * @prop
- **/
-
-// TODO @tommypoa to use styled-components
-function TotalCard({ totalPrice, totalPoints }) {
+function TotalCard({ totalSale, totalPoints }) {
   return (
     <LineItem>
       <LineItemRow>
-        <Subhead>Total</Subhead>
-        <Subhead>${totalPrice}</Subhead>
+        <Subhead>Total Sale</Subhead>
+        <Subhead>{displayDollarValue(totalSale)}</Subhead>
       </LineItemRow>
       <LineItemRow>
         <Body color={Colors.secondaryText}>Points Earned</Body>
@@ -24,3 +21,8 @@ function TotalCard({ totalPrice, totalPoints }) {
 }
 
 export default TotalCard;
+
+TotalCard.propTypes = {
+  totalSale: PropTypes.number.isRequired,
+  totalPoints: PropTypes.number.isRequired
+};

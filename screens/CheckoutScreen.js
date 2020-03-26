@@ -9,7 +9,7 @@ import SubtotalCard from '../components/SubtotalCard';
 import TotalCard from '../components/TotalCard';
 import { getCustomersById } from '../lib/airtable/request';
 import { addTransaction, displayDollarValue, loadProductsData, updateCustomerPoints } from '../lib/checkoutUtils';
-import { rewardDollarValue } from '../lib/constants';
+import { checkoutNumCols, productCardPxHeight, rewardDollarValue } from '../lib/constants';
 import { BottomBar, ProductsContainer, SaleContainer, TabContainer, TopBar } from '../styled/checkout';
 import QuantityModal from './modals/QuantityModal';
 import RewardModal from './modals/RewardModal';
@@ -138,7 +138,7 @@ export default class CheckoutScreen extends React.Component {
       true
     );
     if (emptyCart) {
-      Alert.alert('Empty Transaction', 'This transaction is empty. Please add items to the cart.', [
+      Alert.alert('Empty Sale', 'This sale is empty. Please add items to the cart.', [
         {
           text: 'OK',
           style: 'cancel'
@@ -146,7 +146,7 @@ export default class CheckoutScreen extends React.Component {
       ]);
       return;
     }
-    Alert.alert('Confirm Transaction', this.generateConfirmationMessage(transactionInfo), [
+    Alert.alert('Confirm Sale', this.generateConfirmationMessage(transactionInfo), [
       {
         text: 'Cancel',
         style: 'cancel'
@@ -164,7 +164,7 @@ export default class CheckoutScreen extends React.Component {
   generateConfirmationMessage = transactionInfo => {
     let msg = Object.values(this.state.cart).reduce(
       (msg, lineItem) => (lineItem.quantity > 0 ? msg.concat(`${lineItem.quantity} x ${lineItem.name}\n`) : msg),
-      'Transaction Items:\n\n'
+      'Sale Items:\n\n'
     );
     msg = msg.concat(`\nRewards Redeemed: ${transactionInfo.rewardsApplied}\n`);
     // Adding total price and total points earned to message. Must be called after getPointsEarned() in handleSubmit() for updated amount.
@@ -190,27 +190,39 @@ export default class CheckoutScreen extends React.Component {
 
   // Returns index of the first product with a name starting with the given letter in products list.
   // If no product starting with that letter exists, find the next product.
-  getIndexOfFirstProductAtLetter = letter => {
-    let prodList = this.state.products.filter(product => product.name.charAt(0) === letter);
-    let nextLetter = letter;
-    while (prodList.length === 0) {
-      nextLetter = String.fromCharCode(nextLetter.charCodeAt(0) + 1);
-      prodList = this.state.products.filter(product => product.name.charAt(0) === nextLetter);
+  getIndexOfFirstProductAtLetter = (startLetter, endLetter) => {
+    let prodList = this.state.products.filter(
+      product =>
+        product.name.charAt(0).toUpperCase() >= startLetter.toUpperCase() &&
+        product.name.charAt(0) < endLetter.toUpperCase()
+    );
+    // There are no products in the letter range.
+    if (prodList.length === 0) {
+      // TODO: Shouldn't error out. Maybe have a nonfunctional button?
+      console.log('No products in range', startLetter, 'to', endLetter);
+      return null;
     }
     return this.state.products.indexOf(prodList[0]);
   };
 
   // Takes in strings tab label (i.e. "A-K") and starting letter (i.e. "A") and returns a
   // tab for the bottom alphabetical scroll bar.
-  alphabeticalScrollTab = (label, letter) => {
+  alphabeticalScrollTab = (startLetter, endLetter) => {
     return (
       <TabContainer
         onPress={() =>
           this._scrollView.scrollTo({
-            y: Math.floor(this.getIndexOfFirstProductAtLetter(letter) / 5) * 160
+            y:
+              Math.floor(this.getIndexOfFirstProductAtLetter(startLetter, endLetter) / checkoutNumCols) *
+              productCardPxHeight
           })
         }>
-        <Title>{label}</Title>
+        <Title>
+          {startLetter
+            .toUpperCase()
+            .concat(' - ')
+            .concat(endLetter.toUpperCase())}
+        </Title>
       </TabContainer>
     );
   };
@@ -245,9 +257,9 @@ export default class CheckoutScreen extends React.Component {
               ))}
             </ProductsContainer>
             <BottomBar style={{ display: 'flex', flexDirection: 'row' }}>
-              {this.alphabeticalScrollTab('A-K', 'A')}
-              {this.alphabeticalScrollTab('L-S', 'L')}
-              {this.alphabeticalScrollTab('T-Z', 'T')}
+              {this.alphabeticalScrollTab('A', 'K')}
+              {this.alphabeticalScrollTab('L', 'S')}
+              {this.alphabeticalScrollTab('T', 'Z')}
             </BottomBar>
           </View>
           {/* Right column */}
@@ -266,7 +278,11 @@ export default class CheckoutScreen extends React.Component {
                 <Subhead>Current Sale</Subhead>
                 {/* Cart container */}
                 <View style={{ height: '100%', paddingBottom: '5%' }}>
-                  <ScrollView>
+                  <ScrollView
+                    ref={scrollView => {
+                      this.cartScrollView = scrollView;
+                    }}
+                    onContentSizeChange={() => this.cartScrollView.scrollToEnd({ animated: true })}>
                     {Object.entries(cart).map(([id, product]) => {
                       return (
                         product.quantity > 0 && (
@@ -277,7 +293,6 @@ export default class CheckoutScreen extends React.Component {
                   </ScrollView>
                 </View>
               </View>
-              {/* Should be greyed out if totalPrice < 5 */}
               <View>
                 <RewardModal
                   totalBalance={totalBalance}
@@ -287,13 +302,13 @@ export default class CheckoutScreen extends React.Component {
                   callback={this.applyRewardsCallback}
                 />
                 {/* When different types of rewards are created, we can add rewards amount to state. For now, rewards
-              amount is equal to rewards applied * 5. */}
-                <SubtotalCard subtotalPrice={subtotal.toFixed(2)} rewardsAmount={this.state.rewardsApplied * 5} />
-                <TotalCard totalPrice={totalSale.toFixed(2)} totalPoints={pointsEarned} />
+              amount is equal to rewardsApplied * rewardDollarValue. */}
+                <SubtotalCard subtotalPrice={subtotal} rewardsAmount={this.state.rewardsApplied * rewardDollarValue} />
+                <TotalCard totalSale={totalSale} totalPoints={pointsEarned} />
               </View>
             </View>
             <FilledButtonContainer onPress={() => this.handleSubmit()}>
-              <ButtonLabel>Complete Purchase</ButtonLabel>
+              <ButtonLabel>Complete Sale</ButtonLabel>
             </FilledButtonContainer>
           </SaleContainer>
         </View>

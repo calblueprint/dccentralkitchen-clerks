@@ -39,7 +39,7 @@ export default class ConfirmationScreen extends React.Component {
     return (
       <ColumnContainer style={{ width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
         <ColumnContainer style={{ width: '33%', justifyContent: 'space-around', margin: 12, paddingBottom: 32 }}>
-          <Title>Purchase Summary</Title>
+          <Title>Sale Summary</Title>
           <ColumnContainer style={{ width: '100%%', justifyContent: 'space-around', margin: 12 }}>
             <SpaceBetweenRowContainer>
               <Body>Points Earned</Body>

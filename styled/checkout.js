@@ -16,13 +16,11 @@ export const TopBar = styled.View`
 `;
 
 // Alphabetical Tab Bottom Bar
-// TODO: flex value fixes height of alphabetical bar to match height of checkout button. Is there a better way to do this?
 
 export const BottomBar = styled.View`
   height: 57px;
   width: 100%;
   background: ${Colors.base};
-  flex: 0.44;
 `;
 
 // Tabs
