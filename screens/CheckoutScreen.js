@@ -211,7 +211,7 @@ export default class CheckoutScreen extends React.Component {
     return (
       <TabContainer
         onPress={() =>
-          this._scrollView.scrollTo({
+          this.productScrollView.scrollTo({
             y:
               Math.floor(this.getIndexOfFirstProductAtLetter(startLetter, endLetter) / checkoutNumCols) *
               productCardPxHeight
@@ -250,7 +250,7 @@ export default class CheckoutScreen extends React.Component {
           <View style={{ display: 'flex', flex: 5, flexDirection: 'column' }}>
             <ProductsContainer
               ref={scrollView => {
-                this._scrollView = scrollView;
+                this.productScrollView = scrollView;
               }}>
               {Object.entries(cart).map(([id, product]) => (
                 <QuantityModal key={id} product={product} isLineItem={false} callback={this.updateQuantityCallback} />
