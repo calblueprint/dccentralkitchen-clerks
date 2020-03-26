@@ -53,10 +53,10 @@ export default class ClerkLoginScreen extends React.Component {
       const lookupResult = await lookupClerk(this.props.navigation.state.params.store.id, this.state.password);
 
       let clerkRecord = null;
-      let foundError = true;
+      let clerkNotFound = true;
       switch (lookupResult.status) {
         case status.MATCH:
-          foundError = false;
+          clerkNotFound = false;
           clerkRecord = lookupResult.record;
           await this._asyncLoginClerk(clerkRecord);
           this.props.navigation.navigate('CustomerLookup');
@@ -74,7 +74,7 @@ export default class ClerkLoginScreen extends React.Component {
         default:
           return;
       }
-      this.setState({ errorMsg: lookupResult.errorMsg, password: '', errorShown: foundError });
+      this.setState({ errorMsg: lookupResult.errorMsg, password: '', errorShown: clerkNotFound });
     } catch (err) {
       console.error('Clerk Login Screen:', err);
     }

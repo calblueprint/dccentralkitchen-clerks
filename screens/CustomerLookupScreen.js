@@ -60,10 +60,10 @@ export default class CustomerLookupScreen extends React.Component {
       const lookupResult = await lookupCustomer(formattedPhoneNumber);
       let customerRecord = null;
 
-      let foundError = true;
+      let customerNotFound = true;
       switch (lookupResult.status) {
         case status.FOUND:
-          foundError = false;
+          customerNotFound = false;
           customerRecord = lookupResult.record;
           this._asyncCustomerFound(customerRecord);
           break;
@@ -77,7 +77,7 @@ export default class CustomerLookupScreen extends React.Component {
         default:
           return;
       }
-      this.setState({ errorMsg: lookupResult.errorMsg, phoneNumber: '', errorShown: foundError });
+      this.setState({ errorMsg: lookupResult.errorMsg, phoneNumber: '', errorShown: customerNotFound });
     } catch (err) {
       console.error('Customer Lookup Screen: ', err);
     }
