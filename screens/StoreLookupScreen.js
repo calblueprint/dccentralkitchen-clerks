@@ -83,6 +83,9 @@ export default class StoreLookupScreen extends React.Component {
   };
 
   handleNavigate = () => {
+    if (this.state.store.storeName === 'CLERK TRAINING') {
+      console.log('settrainingmodetotruebutidkhow');
+    }
     this.props.navigation.navigate('ClerkLogin', { store: this.state.store, storeName: this.state.store.storeName });
   };
 

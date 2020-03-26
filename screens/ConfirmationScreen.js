@@ -3,8 +3,8 @@ import React from 'react';
 import { Body, ButtonLabel, FilledButtonContainer, Subhead, Title } from '../components/BaseComponents';
 import { getTransactionsById } from '../lib/airtable/request';
 import { displayDollarValue } from '../lib/checkoutUtils';
+import { trainingMode } from '../lib/constants';
 import { ColumnContainer, SpaceBetweenRowContainer } from '../styled/shared';
-
 export default class ConfirmationScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -18,8 +18,13 @@ export default class ConfirmationScreen extends React.Component {
     try {
       // Could have done this by passing all info from CheckoutScreen,
       // But decided it was better to not silently fail if a transaction didn't make it to AirTable.
-      const { transactionId } = this.props.navigation.state.params;
-      const transaction = await getTransactionsById(transactionId);
+      let transaction = null;
+      if (trainingMode) {
+        transaction = this.props.navigation.state.params;
+      } else {
+        const { transactionId } = this.props.navigation.state.params;
+        transaction = await getTransactionsById(transactionId);
+      }
       this.setState({ transaction, isLoading: false });
     } catch (err) {
       console.error('Confirmation screen: loading transaction ', err);

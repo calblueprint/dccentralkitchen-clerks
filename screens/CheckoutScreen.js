@@ -7,7 +7,7 @@ import BackButton from '../components/BackButton';
 import { Subhead, Title } from '../components/BaseComponents';
 import { getCustomersById } from '../lib/airtable/request';
 import { addTransaction, displayDollarValue, loadProductsData, updateCustomerPoints } from '../lib/checkoutUtils';
-import { rewardDollarValue } from '../lib/constants';
+import { rewardDollarValue, trainingMode } from '../lib/constants';
 import { ProductsContainer, SaleContainer, TopBar } from '../styled/checkout';
 import { TextHeader } from '../styled/shared';
 import QuantityModal from './modals/QuantityModal';
@@ -168,6 +168,18 @@ export default class CheckoutScreen extends React.Component {
     return msg;
   };
 
+  createFakeTransaction = transactionInfo => {
+    const fakeTransaction = {
+      id: 'TRAINED',
+      pointsEarned: transactionInfo.pointsEarned,
+      rewardsApplied: transactionInfo.rewardsApplied,
+      subtotal: transactionInfo.subtotal,
+      discount: transactionInfo.discount,
+      totalPrice: transactionInfo.totalSale
+    };
+    return fakeTransaction;
+  };
+
   // Adds the transaction to the user's account and updates their points.
   confirmTransaction = async transactionInfo => {
     // Clerk Training: if storeId is "Clerk Training"'s ID
@@ -179,6 +191,10 @@ export default class CheckoutScreen extends React.Component {
       return;
     }
 
+    if (trainingMode) {
+      this.props.navigation.navigate('Confirmation', this.createFakeTransaction(transactionInfo));
+      return;
+    }
     try {
       const transactionId = await addTransaction(this.state.customer, this.state.cart, transactionInfo);
       await updateCustomerPoints(this.state.customer, transactionInfo.pointsEarned, transactionInfo.rewardsApplied);
