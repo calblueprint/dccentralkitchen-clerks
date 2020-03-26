@@ -6,8 +6,14 @@ import { ScrollView } from 'react-native-gesture-handler';
 import BackButton from '../components/BackButton';
 import { Subhead, Title } from '../components/BaseComponents';
 import { getCustomersById } from '../lib/airtable/request';
-import { addTransaction, displayDollarValue, loadProductsData, updateCustomerPoints } from '../lib/checkoutUtils';
-import { rewardDollarValue, trainingMode } from '../lib/constants';
+import {
+  addTransaction,
+  createFakeTransaction,
+  displayDollarValue,
+  loadProductsData,
+  updateCustomerPoints
+} from '../lib/checkoutUtils';
+import { rewardDollarValue } from '../lib/constants';
 import { ProductsContainer, SaleContainer, TopBar } from '../styled/checkout';
 import { TextHeader } from '../styled/shared';
 import QuantityModal from './modals/QuantityModal';
@@ -31,7 +37,7 @@ export default class CheckoutScreen extends React.Component {
     const customerId = await AsyncStorage.getItem('customerId');
     const customer = await getCustomersById(customerId);
     const products = await loadProductsData();
-
+    const training = JSON.parse(await AsyncStorage.getItem('trainingMode'));
     // Initialize cart a'la Python dictionary, to make updating quantity cleaner
     // Cart contains line items, which have all initial product attributes, and a quantity
     const initialCart = products.reduce((cart, product) => ({ ...cart, [product.id]: product }), {});
@@ -40,7 +46,8 @@ export default class CheckoutScreen extends React.Component {
       customer,
       cart: initialCart,
       rewardsAvailable: Math.floor(customer.rewardsAvailable),
-      isLoading: false
+      isLoading: false,
+      trainingMode: training
     });
   }
 
@@ -167,32 +174,14 @@ export default class CheckoutScreen extends React.Component {
     return msg;
   };
 
-  createFakeTransaction = transactionInfo => {
-    const fakeTransaction = {
-      id: 'TRAINED',
-      pointsEarned: transactionInfo.pointsEarned,
-      rewardsApplied: transactionInfo.rewardsApplied,
-      subtotal: transactionInfo.subtotal,
-      discount: transactionInfo.discount,
-      totalPrice: transactionInfo.totalSale
-    };
-    console.log(fakeTransaction);
-    return fakeTransaction;
-  };
-
   // Adds the transaction to the user's account and updates their points.
   confirmTransaction = async transactionInfo => {
     // Clerk Training: if storeId is "Clerk Training"'s ID
     // do not create the transaction or update points
     // Navigate to Confirmation Screen with a pre-filed transaction ID
     const storeId = await AsyncStorage.getItem('storeId');
-    if (storeId === 'recq6630DixVw63un') {
-      this.props.navigation.navigate('Confirmation', { transactionId: 'recY2qAeAinDXrfzh' });
-      return;
-    }
-
-    if (trainingMode) {
-      this.props.navigation.navigate('Confirmation', this.createFakeTransaction(transactionInfo));
+    if (JSON.parse(await AsyncStorage.getItem('trainingMode'))) {
+      this.props.navigation.navigate('Confirmation', createFakeTransaction(transactionInfo));
       return;
     }
     try {
@@ -211,9 +200,8 @@ export default class CheckoutScreen extends React.Component {
       return null;
     }
 
-    const { cart, customer, totalBalance } = this.state;
+    const { cart, customer, totalBalance, trainingMode } = this.state;
     const totalSale = totalBalance > 0 ? totalBalance : 0;
-
     return (
       <View>
         <TopBar trainingColor={trainingMode}>

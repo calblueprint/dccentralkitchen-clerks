@@ -50,6 +50,7 @@ export default class StoreLookupScreen extends React.Component {
     await AsyncStorage.setItem('clerkName', 'Jeffry Poa');
     await AsyncStorage.setItem('storeId', 'recw49LpAOInqvX3e');
     await AsyncStorage.setItem('customerId', 'recqx32YmmACiRWMq');
+    await AsyncStorage.setItem('trainingMode', JSON.stringify(false));
     this.props.navigation.navigate('Checkout');
   };
 
@@ -82,9 +83,11 @@ export default class StoreLookupScreen extends React.Component {
     this.updateFilteredStores(store.storeName);
   };
 
-  handleNavigate = () => {
+  handleNavigate = async () => {
     if (this.state.store.storeName === 'CLERK TRAINING') {
-      console.log('settrainingmodetotruebutidkhow');
+      await AsyncStorage.setItem('trainingMode', JSON.stringify(true));
+    } else {
+      await AsyncStorage.setItem('trainingMode', JSON.stringify(false));
     }
     this.props.navigation.navigate('ClerkLogin', { store: this.state.store, storeName: this.state.store.storeName });
   };

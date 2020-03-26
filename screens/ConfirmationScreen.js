@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { AsyncStorage } from 'react-native';
 import { Body, ButtonLabel, FilledButtonContainer, Subhead, Title } from '../components/BaseComponents';
 import { getTransactionsById } from '../lib/airtable/request';
 import { displayDollarValue } from '../lib/checkoutUtils';
-import { trainingMode } from '../lib/constants';
 import { ColumnContainer, SpaceBetweenRowContainer } from '../styled/shared';
 export default class ConfirmationScreen extends React.Component {
   constructor(props) {
@@ -19,7 +19,7 @@ export default class ConfirmationScreen extends React.Component {
       // Could have done this by passing all info from CheckoutScreen,
       // But decided it was better to not silently fail if a transaction didn't make it to AirTable.
       let transaction = null;
-      if (trainingMode) {
+      if (JSON.parse(await AsyncStorage.getItem('trainingMode'))) {
         transaction = this.props.navigation.state.params;
       } else {
         const { transactionId } = this.props.navigation.state.params;

@@ -4,7 +4,7 @@ import { AsyncStorage, View } from 'react-native';
 import Colors from '../assets/Colors';
 import BackButton from '../components/BackButton';
 import { ButtonLabel, RoundedButtonContainer, Title } from '../components/BaseComponents';
-import { status, trainingMode } from '../lib/constants';
+import { status } from '../lib/constants';
 import { lookupCustomer } from '../lib/lookupUtils';
 import { CheckInContainer, CheckInContentContainer, TextField } from '../styled/checkin';
 import { RowContainer } from '../styled/shared';
@@ -32,7 +32,7 @@ export default class CustomerLookupScreen extends React.Component {
   _reset = async () => {
     const clerkName = await AsyncStorage.getItem('clerkName');
     // Clerk Training: pre-fill customer (Summer Strawberry) phone number
-    if (trainingMode) {
+    if (JSON.parse(await AsyncStorage.getItem('trainingMode'))) {
       this.setState({ clerkName, phoneNumber: '1112223344', customerPermission: true, errorMsg: null });
     } else {
       this.setState({ clerkName, phoneNumber: '', customerPermission: false, errorMsg: null });
