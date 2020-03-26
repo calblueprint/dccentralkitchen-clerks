@@ -123,18 +123,18 @@ export default class CheckoutScreen extends React.Component {
     const pointsEarned = this.getPointsEarned();
 
     // Passed through displayConfirmation to generateConfirmationMessage and confirmTransaction
-    const transactionInfo = {
+    const transaction = {
       discount: actualDiscount,
       subtotal,
       totalSale,
       pointsEarned,
       rewardsApplied // for convenience
     };
-    this.displayConfirmation(transactionInfo);
+    this.displayConfirmation(transaction);
   };
 
   // Displays a confirmation alert to the clerk.
-  displayConfirmation = transactionInfo => {
+  displayConfirmation = transaction => {
     // Should not be able to check out if there isn't anything in the transaction.
     if (this.state.cart.length === 0) {
       Alert.alert('Empty Transaction', 'This transaction is empty. Please add items to the cart.', [
@@ -145,12 +145,12 @@ export default class CheckoutScreen extends React.Component {
       ]);
       return;
     }
-    Alert.alert('Confirm Transaction', this.generateConfirmationMessage(transactionInfo), [
+    Alert.alert('Confirm Transaction', this.generateConfirmationMessage(transaction), [
       {
         text: 'Cancel',
         style: 'cancel'
       },
-      { text: 'Confirm', onPress: () => this.confirmTransaction(transactionInfo) }
+      { text: 'Confirm', onPress: () => this.confirmTransaction(transaction) }
     ]);
   };
 
@@ -160,33 +160,33 @@ export default class CheckoutScreen extends React.Component {
 
   // Generates the confirmation message based on items in cart, points earned,
   // and total spent.
-  generateConfirmationMessage = transactionInfo => {
+  generateConfirmationMessage = transaction => {
     let msg = Object.values(this.state.cart).reduce(
       (msg, lineItem) => (lineItem.quantity > 0 ? msg.concat(`${lineItem.quantity} x ${lineItem.name}\n`) : msg),
       'Transaction Items:\n\n'
     );
-    msg = msg.concat(`\nRewards Redeemed: ${transactionInfo.rewardsApplied}\n`);
+    msg = msg.concat(`\nRewards Redeemed: ${transaction.rewardsApplied}\n`);
     // Adding total price and total points earned to message. Must be called after getPointsEarned() in handleSubmit() for updated amount.
-    msg = msg.concat(this.generateConfirmationLine('Subtotal', transactionInfo.subtotal));
-    msg = msg.concat(this.generateConfirmationLine('Discount', transactionInfo.discount));
-    msg = msg.concat(this.generateConfirmationLine('Total Sale', transactionInfo.totalSale));
-    msg = msg.concat(`\nTotal Points Earned: ${transactionInfo.pointsEarned}`);
+    msg = msg.concat(this.generateConfirmationLine('Subtotal', transaction.subtotal));
+    msg = msg.concat(this.generateConfirmationLine('Discount', transaction.discount));
+    msg = msg.concat(this.generateConfirmationLine('Total Sale', transaction.totalSale));
+    msg = msg.concat(`\nTotal Points Earned: ${transaction.pointsEarned}`);
     return msg;
   };
 
   // Adds the transaction to the user's account and updates their points.
-  confirmTransaction = async transactionInfo => {
+  confirmTransaction = async transaction => {
     // Clerk Training: if storeId is "Clerk Training"'s ID
     // do not create the transaction or update points
     // Navigate to Confirmation Screen with a pre-filed transaction ID
     const storeId = await AsyncStorage.getItem('storeId');
     if (JSON.parse(await AsyncStorage.getItem('trainingMode'))) {
-      this.props.navigation.navigate('Confirmation', createFakeTransaction(transactionInfo));
+      this.props.navigation.navigate('Confirmation', createFakeTransaction(transaction));
       return;
     }
     try {
-      const transactionId = await addTransaction(this.state.customer, this.state.cart, transactionInfo);
-      await updateCustomerPoints(this.state.customer, transactionInfo.pointsEarned, transactionInfo.rewardsApplied);
+      const transactionId = await addTransaction(this.state.customer, this.state.cart, transaction);
+      await updateCustomerPoints(this.state.customer, transaction.pointsEarned, transaction.rewardsApplied);
       this.props.navigation.navigate('Confirmation', { transactionId });
     } catch (err) {
       // TODO better handling - should prompt the user to try again, or at least say something is wrong with the service
