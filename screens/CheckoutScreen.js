@@ -152,9 +152,8 @@ export default class CheckoutScreen extends React.Component {
         this.state.rewardsApplied,
         this.state.totalBalance
       );
-      const eligibleSavings = eligibleRewards * rewardDollarValue;
-      if (eligibleRewards) {
-        const continueWithoutRewards = await this.confirmNoRewards(eligibleSavings, eligibleRewards);
+      if (eligibleRewards && transactionInfo.totalSale >= rewardDollarValue) {
+        const continueWithoutRewards = await this.confirmNoRewards(eligibleRewards);
         if (!continueWithoutRewards) {
           return;
         }
@@ -169,7 +168,7 @@ export default class CheckoutScreen extends React.Component {
     ]);
   };
 
-  confirmNoRewards = async (eligibleSavings, eligibleRewards) => {
+  confirmNoRewards = async eligibleRewards => {
     const response = await AlertAsync(
       'Available rewards were not applied',
       'This customer could apply up to '.concat(eligibleRewards).concat(' rewards to this sale.'),
