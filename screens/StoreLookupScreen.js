@@ -80,6 +80,7 @@ export default class StoreLookupScreen extends React.Component {
     this.setState({ searchStr: store.storeName, store, textFieldBlur: true });
     this.storePermissionHandler(store);
     this.updateFilteredStores(store.storeName);
+    Keyboard.dismiss();
   };
 
   handleNavigate = () => {
@@ -99,15 +100,18 @@ export default class StoreLookupScreen extends React.Component {
           <CheckInContentContainer>
             <Title color={Colors.lightest}>Enter store name</Title>
             <TextField
+              clearButtonMode={'always'}
+              selectionColor={Colors.primaryGreen}
               style={{ marginTop: 32 }}
               placeholder="ex: Healthy Corner Store"
               onChangeText={text => this.handleChangeText(text)}
               value={this.state.searchStr}
               onFocus={() => this.onFocus()}
+              autoCorrect={false}
             />
             {!this.state.textFieldBlur && (
               <SearchBarContainer>
-                <ScrollView showsVerticalScrollIndicator={false}>
+                <ScrollView bounces={false} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
                   {this.state.filteredStores.map(store => (
                     <SearchElement key={store.id} onPress={() => this.onSearchElementPress(store)}>
                       <Body>{store.storeName}</Body>
@@ -120,7 +124,7 @@ export default class StoreLookupScreen extends React.Component {
               <RoundedButtonContainer
                 style={{ marginTop: 32 }}
                 color={this.state.storePermission ? Colors.primaryGreen : Colors.lightestGreen}
-                width="253px"
+                width="100%"
                 height="40px"
                 onPress={() => this.handleNavigate()}
                 disabled={!this.state.storePermission}>
