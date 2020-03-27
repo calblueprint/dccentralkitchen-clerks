@@ -139,8 +139,8 @@ export default class CheckoutScreen extends React.Component {
   };
 
   // Displays a confirmation alert to the clerk.
-  displayConfirmation = transactionInfo => {
-    Alert.alert('Confirm Sale', this.generateConfirmationMessage(transactionInfo), [
+  displayConfirmation = transaction => {
+    Alert.alert('Confirm Sale', this.generateConfirmationMessage(transaction), [
       {
         text: 'Cancel',
         style: 'cancel'
