@@ -12,7 +12,7 @@
     },
     "version": "1.1.0",
     "orientation": "landscape",
-    "icon": "./assets/images/hc_clerk.png",
+    "icon": "./assets/images/hc_clerk_icon.png",
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
