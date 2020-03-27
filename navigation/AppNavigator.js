@@ -1,11 +1,10 @@
 import React from 'react';
-import { AsyncStorage, View, TouchableOpacity, Linking } from 'react-native';
+import { AsyncStorage, Linking, TouchableOpacity, View } from 'react-native';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
-import { createDrawerNavigator, DrawerItems } from 'react-navigation-drawer';
+import { createDrawerNavigator } from 'react-navigation-drawer';
 import { createStackNavigator } from 'react-navigation-stack';
-import { Title } from '../components/BaseComponents';
 import Colors from '../assets/Colors';
-
+import { Title } from '../components/BaseComponents';
 import CheckoutScreen from '../screens/CheckoutScreen';
 import ClerkLoginScreen from '../screens/ClerkLoginScreen';
 import ConfirmationScreen from '../screens/ConfirmationScreen';
@@ -68,10 +67,18 @@ export class DrawerContent extends React.Component {
           }}>
           <Title style={{ color: 'white' }}>{this.state.clerkName}</Title>
         </View>
+        <TouchableOpacity
+          style={{ padding: 16, paddingTop: 32 }}
+          onPress={() => Linking.openURL('http://tiny.cc/RegisterACustomer')}>
+          <Title>Register Customer</Title>
+        </TouchableOpacity>
+        <TouchableOpacity style={{ padding: 16 }} onPress={() => Linking.openURL('http://tiny.cc/ClerkGuide')}>
+          <Title>Clerk Guide</Title>
+        </TouchableOpacity>
         <TouchableOpacity style={{ padding: 16 }} onPress={() => Linking.openURL('http://tiny.cc/SubmitFeedbackClerk')}>
           <Title>Feedback</Title>
         </TouchableOpacity>
-        <TouchableOpacity style={{ paddingLeft: 16 }} onPress={() => Linking.openURL('http://tiny.cc/ClerkFeedback')}>
+        <TouchableOpacity style={{ padding: 16 }} onPress={() => Linking.openURL('http://tiny.cc/ClerkFeedback')}>
           <Title>Report Issue</Title>
         </TouchableOpacity>
 
