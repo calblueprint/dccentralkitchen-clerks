@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import update from 'react-addons-update';
 import { Alert, AsyncStorage, View } from 'react-native';
