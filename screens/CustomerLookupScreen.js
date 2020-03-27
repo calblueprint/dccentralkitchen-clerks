@@ -86,11 +86,11 @@ export default class CustomerLookupScreen extends React.Component {
         default:
           return;
       }
-      // if (JSON.parse(await AsyncStorage.getItem('trainingMode'))) {
-      //   this.setState({ errorMsg: lookupResult.errorMsg, phoneNumber: '1112223344' });
-      // } else {
-      //   this.setState({ errorMsg: lookupResult.errorMsg, phoneNumber: '', errorShown: customerNotFound });
-      // }
+      if (JSON.parse(await AsyncStorage.getItem('trainingMode'))) {
+        this.setState({ errorMsg: lookupResult.errorMsg, phoneNumber: '1112223344' });
+      } else {
+        this.setState({ errorMsg: lookupResult.errorMsg, phoneNumber: '', errorShown: customerNotFound });
+      }
     } catch (err) {
       console.error('Customer Lookup Screen: ', err);
     }

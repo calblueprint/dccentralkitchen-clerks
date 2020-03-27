@@ -83,7 +83,8 @@ export default class ClerkLoginScreen extends React.Component {
         default:
           return;
       }
-      // this.setState({ errorMsg: lookupResult.errorMsg, password: '', errorShown: clerkNotFound });
+      // TODO reset state using onFocusEffect; this can cause memory leaks
+      this.setState({ errorMsg: lookupResult.errorMsg, password: '', errorShown: clerkNotFound });
     } catch (err) {
       console.error('Clerk Login Screen:', err);
     }
