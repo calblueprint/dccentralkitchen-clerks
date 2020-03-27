@@ -128,11 +128,13 @@ export default class CustomerLookupScreen extends React.Component {
               onChangeText={text => this.customerPermissionHandler(text)}
               value={this.state.phoneNumber}
             />
-            {this.state.errorShown && (
-              <RowContainer style={{ alignItems: 'center', marginTop: 8 }}>
+            {this.state.errorShown ? (
+              <RowContainer style={{ alignItems: 'center', marginTop: 8, height: 28 }}>
                 <FontAwesome5 name="exclamation-circle" size={16} color={Colors.error} style={{ marginRight: 8 }} />
                 <Subhead color={Colors.activeText}>{this.state.errorMsg}</Subhead>
               </RowContainer>
+            ) : (
+              <RowContainer style={{ marginTop: 8, height: 28 }} />
             )}
             <RoundedButtonContainer
               style={{ marginTop: 32 }}

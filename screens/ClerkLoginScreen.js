@@ -119,11 +119,14 @@ export default class ClerkLoginScreen extends React.Component {
                 onChangeText={text => this.loginPermissionHandler(text)}
                 value={this.state.password}
               />
-              {this.state.errorShown && (
-                <RowContainer style={{ alignItems: 'center', marginTop: 8 }}>
+              {/* Display error message or empty row to maintain consistent spacing. */}
+              {this.state.errorShown ? (
+                <RowContainer style={{ alignItems: 'center', marginTop: 8, height: 28 }}>
                   <FontAwesome5 name="exclamation-circle" size={16} color={Colors.error} style={{ marginRight: 8 }} />
                   <Subhead color={Colors.lightest}>{this.state.errorMsg}</Subhead>
                 </RowContainer>
+              ) : (
+                <RowContainer style={{ marginTop: 8, height: 28 }} />
               )}
               <RoundedButtonContainer
                 style={{ marginTop: 32 }}
