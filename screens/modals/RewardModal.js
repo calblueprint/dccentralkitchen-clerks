@@ -115,6 +115,8 @@ export default class RewardModal extends React.Component {
     const max = rewardsApplied === rewardsEligible;
     const discount = rewardDollarValue * rewardsApplied;
     const totalSale = totalBalance >= 0 ? totalBalance : 0;
+    const actualDiscount = totalBalance < 0 ? discount + totalBalance : discount;
+
     return (
       <RowContainer style={{ width: '100%', justifyContent: 'center', alignItems: 'center' }}>
         <Modal
@@ -144,7 +146,7 @@ export default class RewardModal extends React.Component {
               <ModalCopyContainer style={{ marginLeft: '15%', alignSelf: 'flex-start' }}>
                 <Title>Apply rewards</Title>
                 <Body color={Colors.secondaryText}>
-                  {customer.name} has {rewardsAvailable} reward(s)
+                  {customer.name} has{rewardsAvailable} reward(s)
                 </Body>
               </ModalCopyContainer>
               <ColumnContainer style={{ width: '40%', margin: 16 }}>
@@ -171,7 +173,7 @@ export default class RewardModal extends React.Component {
                   </Body>
                 )}
               </ColumnContainer>
-              <ModalCopyContainer alignItems={'center'} style={{ width: '40%', margin: 16 }}>
+              <ModalCopyContainer alignItems="center" style={{ width: '40%', margin: 16 }}>
                 {/* TODO make a component for this; pattern is in ConfirmationScreen too */}
                 <SpaceBetweenRowContainer>
                   <SubheadSecondary style={{ alignSelf: 'flex-start' }}>Subtotal</SubheadSecondary>
@@ -181,7 +183,7 @@ export default class RewardModal extends React.Component {
                 </SpaceBetweenRowContainer>
                 <SpaceBetweenRowContainer>
                   <SubheadSecondary>Rewards</SubheadSecondary>
-                  <SubheadSecondary>{displayDollarValue(discount, false)}</SubheadSecondary>
+                  <SubheadSecondary>{displayDollarValue(actualDiscount, false)}</SubheadSecondary>
                 </SpaceBetweenRowContainer>
                 <SpaceBetweenRowContainer>
                   <SubheadActive>Total Sale</SubheadActive>

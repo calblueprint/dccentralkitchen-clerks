@@ -15,6 +15,28 @@ export const TopBar = styled.View`
   align-items: center;
 `;
 
+// Alphabetical Tab Bottom Bar
+
+export const BottomBar = styled.View`
+  height: 57px;
+  width: 100%;
+  background: ${Colors.base};
+`;
+
+// Tabs
+
+export const TabContainer = styled.TouchableOpacity`
+  height: 57px;
+  width: 119px;
+  border: 1px solid ${Colors.lightest};
+  background: ${Colors.base};
+  border-top-width: 0px;
+  border-bottom-width: 0px;
+  border-left-width: 0px;
+  justify-content: center;
+  align-items: center;
+`;
+
 // Products Section
 
 export const ProductsContainer = styled.ScrollView.attrs({
@@ -27,13 +49,15 @@ export const ProductsContainer = styled.ScrollView.attrs({
 })`
   background: rgba(235, 235, 235, 0.5);
   flex-wrap: wrap;
-  width: 65%;
+  flex: 5;
 `;
 
 export const SaleContainer = styled(ColumnContainer)`
-  padding: 13px 14px 0px;
-  align-items: center;
-  width: 35%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 2;
+  background: ${Colors.lightest};
 `;
 
 // Product Cards
@@ -47,7 +71,7 @@ export const ProductCard = styled.View`
   box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.14);
   display: flex;
   flex-direction: column;
-  margin: 12px;
+  margin: 6px;
   border-radius: 4px;
   padding: 8px 8px 10px;
 `;
@@ -55,13 +79,11 @@ export const ProductCard = styled.View`
 // Transaction Line Items
 
 export const LineItem = styled.View`
-  width: 329px;
+  width: 281px;
   background: ${Colors.lightest};
   border: 1px solid ${Colors.lighter};
   border-left-width: 0px;
   border-right-width: 0px;
-  padding-left: 24px;
-  padding-right: 26px;
   padding: 12px 24px 12px 24px;
 `;
 

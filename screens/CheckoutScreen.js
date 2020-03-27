@@ -1,15 +1,18 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import update from 'react-addons-update';
-import { Alert, AsyncStorage, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, AsyncStorage, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
+
+import Colors from '../assets/Colors';
 import BackButton from '../components/BackButton';
-import { Subhead, Title } from '../components/BaseComponents';
+import { ButtonLabel, FilledButtonContainer, Subhead, Title } from '../components/BaseComponents';
+import SubtotalCard from '../components/SubtotalCard';
+import TotalCard from '../components/TotalCard';
 import { getCustomersById } from '../lib/airtable/request';
 import { addTransaction, displayDollarValue, loadProductsData, updateCustomerPoints } from '../lib/checkoutUtils';
-import { rewardDollarValue } from '../lib/constants';
-import { ProductsContainer, SaleContainer, TopBar } from '../styled/checkout';
-import { TextHeader } from '../styled/shared';
+import { checkoutNumCols, productCardPxHeight, rewardDollarValue } from '../lib/constants';
+import { BottomBar, ProductsContainer, SaleContainer, TabContainer, TopBar } from '../styled/checkout';
 import QuantityModal from './modals/QuantityModal';
 import RewardModal from './modals/RewardModal';
 
@@ -24,6 +27,7 @@ export default class CheckoutScreen extends React.Component {
       // Other state
       totalBalance: 0,
       rewardsApplied: 0,
+      products: [],
       isLoading: true
     };
   }
@@ -41,6 +45,7 @@ export default class CheckoutScreen extends React.Component {
       customer,
       cart: initialCart,
       rewardsAvailable: Math.floor(customer.rewardsAvailable),
+      products,
       isLoading: false
     });
   }
@@ -80,6 +85,11 @@ export default class CheckoutScreen extends React.Component {
         rewardsApplied: prevState.rewardsApplied - rewardsToUndo
       }));
     }
+  };
+
+  cartEmpty = () => {
+    // Should not be able to check out if there isn't anything in the transaction.
+    return Object.values(this.state.cart).reduce((empty, lineItem) => lineItem.quantity === 0 && empty, true);
   };
 
   // Calculates total points earned from transaction
@@ -129,17 +139,7 @@ export default class CheckoutScreen extends React.Component {
 
   // Displays a confirmation alert to the clerk.
   displayConfirmation = transactionInfo => {
-    // Should not be able to check out if there isn't anything in the transaction.
-    if (this.state.cart.length === 0) {
-      Alert.alert('Empty Transaction', 'This transaction is empty. Please add items to the cart.', [
-        {
-          text: 'OK',
-          style: 'cancel'
-        }
-      ]);
-      return;
-    }
-    Alert.alert('Confirm Transaction', this.generateConfirmationMessage(transactionInfo), [
+    Alert.alert('Confirm Sale', this.generateConfirmationMessage(transactionInfo), [
       {
         text: 'Cancel',
         style: 'cancel'
@@ -157,7 +157,7 @@ export default class CheckoutScreen extends React.Component {
   generateConfirmationMessage = transactionInfo => {
     let msg = Object.values(this.state.cart).reduce(
       (msg, lineItem) => (lineItem.quantity > 0 ? msg.concat(`${lineItem.quantity} x ${lineItem.name}\n`) : msg),
-      'Transaction Items:\n\n'
+      'Sale Items:\n\n'
     );
     msg = msg.concat(`\nRewards Redeemed: ${transactionInfo.rewardsApplied}\n`);
     // Adding total price and total points earned to message. Must be called after getPointsEarned() in handleSubmit() for updated amount.
@@ -181,6 +181,45 @@ export default class CheckoutScreen extends React.Component {
     }
   };
 
+  // Returns index of the first product with a name starting with the given letter in products list.
+  // If no product starting with that letter exists, find the next product.
+  getIndexOfFirstProductAtLetter = (startLetter, endLetter) => {
+    const prodList = this.state.products.filter(
+      product =>
+        product.name.charAt(0).toUpperCase() >= startLetter.toUpperCase() &&
+        product.name.charAt(0) < endLetter.toUpperCase()
+    );
+    // There are no products in the letter range.
+    if (prodList.length === 0) {
+      // TODO: Shouldn't error out. Maybe have a nonfunctional button?
+      console.log('No products in range', startLetter, 'to', endLetter);
+      return null;
+    }
+    return this.state.products.indexOf(prodList[0]);
+  };
+
+  // Takes in strings tab label (i.e. "A-K") and starting letter (i.e. "A") and returns a
+  // tab for the bottom alphabetical scroll bar.
+  alphabeticalScrollTab = (startLetter, endLetter) => {
+    return (
+      <TabContainer
+        onPress={() =>
+          this.productScrollView.scrollTo({
+            y:
+              Math.floor(this.getIndexOfFirstProductAtLetter(startLetter, endLetter) / checkoutNumCols) *
+              productCardPxHeight
+          })
+        }>
+        <Title>
+          {startLetter
+            .toUpperCase()
+            .concat(' - ')
+            .concat(endLetter.toUpperCase())}
+        </Title>
+      </TabContainer>
+    );
+  };
+
   render() {
     if (this.state.isLoading) {
       return null;
@@ -188,54 +227,86 @@ export default class CheckoutScreen extends React.Component {
 
     const { cart, customer, totalBalance } = this.state;
     const totalSale = totalBalance > 0 ? totalBalance : 0;
+    const pointsEarned = this.getPointsEarned();
+    const subtotal = totalBalance + this.state.rewardsApplied * rewardDollarValue;
+    const discount = this.state.rewardsApplied * rewardDollarValue;
+    const actualDiscount = totalBalance < 0 ? discount + totalBalance : discount;
+    const cartEmpty = this.cartEmpty();
 
     return (
-      <View>
+      <View style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-around', flex: 1 }}>
         <TopBar>
           <BackButton navigation={this.props.navigation} light={false} style={{ marginTop: 3, marginLeft: 24 }} />
           <Title> {'Customer: '.concat(customer.name)} </Title>
           {/* Duplicate, invisible element to have left-aligned BackButton */}
           <BackButton navigation={this.props.navigation} light={false} style={{ opacity: 0.0, disabled: true }} />
         </TopBar>
-        <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}>
+        <View style={{ display: 'flex', flexDirection: 'row', flex: 1 }}>
           {/* Display products */}
-          <ProductsContainer>
-            {Object.entries(cart).map(([id, product]) => (
-              <QuantityModal key={id} product={product} isLineItem={false} callback={this.updateQuantityCallback} />
-            ))}
-          </ProductsContainer>
+          <View style={{ display: 'flex', flex: 5, flexDirection: 'column' }}>
+            <ProductsContainer
+              ref={scrollView => {
+                this.productScrollView = scrollView;
+              }}>
+              {Object.entries(cart).map(([id, product]) => (
+                <QuantityModal key={id} product={product} isLineItem={false} callback={this.updateQuantityCallback} />
+              ))}
+            </ProductsContainer>
+            <BottomBar style={{ display: 'flex', flexDirection: 'row' }}>
+              {this.alphabeticalScrollTab('A', 'K')}
+              {this.alphabeticalScrollTab('L', 'S')}
+              {this.alphabeticalScrollTab('T', 'Z')}
+            </BottomBar>
+          </View>
           {/* Right column */}
           <SaleContainer>
-            <Subhead>Current Sale</Subhead>
-            {/* Cart container */}
-            <View style={{ height: '40%', paddingBottom: '5%' }}>
-              <ScrollView>
-                {Object.entries(cart).map(([id, product]) => {
-                  return (
-                    product.quantity > 0 && (
-                      <QuantityModal key={id} product={product} isLineItem callback={this.updateQuantityCallback} />
-                    )
-                  );
-                })}
-              </ScrollView>
-            </View>
-            <RewardModal
-              totalBalance={totalBalance}
-              customer={customer}
-              rewardsAvailable={this.state.rewardsAvailable}
-              rewardsApplied={this.state.rewardsApplied}
-              callback={this.applyRewardsCallback}
-            />
-            <Text
+            <View
               style={{
-                fontWeight: 'bold',
-                textAlign: 'center'
+                paddingTop: 13,
+                paddingLeft: 14,
+                paddingRight: 14,
+                paddingBottom: 0,
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                flex: 1
               }}>
-              Order Total ${totalSale.toFixed(2)}
-            </Text>
-            <TouchableOpacity onPress={() => this.handleSubmit()}>
-              <TextHeader style={{ color: '#008550' }}>Checkout</TextHeader>
-            </TouchableOpacity>
+              <View style={{ height: '60%' }}>
+                <Subhead>Current Sale</Subhead>
+                {/* Cart container */}
+                <View style={{ height: '100%', paddingBottom: '5%' }}>
+                  <ScrollView
+                    ref={scrollView => {
+                      this.cartScrollView = scrollView;
+                    }}
+                    onContentSizeChange={() => this.cartScrollView.scrollToEnd({ animated: true })}>
+                    {Object.entries(cart).map(([id, product]) => {
+                      return (
+                        product.quantity > 0 && (
+                          <QuantityModal key={id} product={product} isLineItem callback={this.updateQuantityCallback} />
+                        )
+                      );
+                    })}
+                  </ScrollView>
+                </View>
+              </View>
+              <View>
+                <RewardModal
+                  totalBalance={totalBalance}
+                  customer={customer}
+                  rewardsAvailable={this.state.rewardsAvailable}
+                  rewardsApplied={this.state.rewardsApplied}
+                  callback={this.applyRewardsCallback}
+                />
+                <SubtotalCard subtotalPrice={subtotal} rewardsAmount={actualDiscount} />
+                <TotalCard totalSale={totalSale} totalPoints={pointsEarned} />
+              </View>
+            </View>
+            <FilledButtonContainer
+              disabled={cartEmpty}
+              color={cartEmpty ? Colors.lightestGreen : Colors.primaryGreen}
+              onPress={() => this.handleSubmit()}>
+              <ButtonLabel>Complete Sale</ButtonLabel>
+            </FilledButtonContainer>
           </SaleContainer>
         </View>
       </View>
