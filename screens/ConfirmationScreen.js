@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Body, ButtonLabel, FilledButtonContainer, Title } from '../components/BaseComponents';
+import { Alert, AsyncStorage, Clipboard, TouchableOpacity } from 'react-native';
+
+import { Body, ButtonLabel, FilledButtonContainer, Subhead, Title } from '../components/BaseComponents';
 import { getTransactionsById } from '../lib/airtable/request';
 import { displayDollarValue } from '../lib/checkoutUtils';
 import { ColumnContainer, SpaceBetweenRowContainer } from '../styled/shared';
@@ -17,12 +19,18 @@ export default class ConfirmationScreen extends React.Component {
   async componentDidMount() {
     try {
       // Could have done this by passing all info from CheckoutScreen,
-      // But decided it was better to not silently fail if a transaction didn't make it to AirTable.
-      const { transactionId } = this.props.navigation.state.params;
-      const transaction = await getTransactionsById(transactionId);
+      // But decided it was better to not silently fail if a transaction didn't make it to Airtable.
+      let transaction = null;
+      // Clerk training: use local transaction instead of getting it from Airtable.
+      if (JSON.parse(await AsyncStorage.getItem('trainingMode'))) {
+        transaction = this.props.navigation.state.params;
+      } else {
+        const { transactionId } = this.props.navigation.state.params;
+        transaction = await getTransactionsById(transactionId);
+      }
       this.setState({ transaction, isLoading: false });
     } catch (err) {
-      console.error(err);
+      console.error('Confirmation screen: loading transaction ', err);
     }
   }
 
@@ -30,33 +38,49 @@ export default class ConfirmationScreen extends React.Component {
     this.props.navigation.navigate('CustomerLookup');
   };
 
+  writeToClipboard = copyText => {
+    Clipboard.setString(copyText);
+    Alert.alert('Copied to Clipboard!', copyText);
+  };
+
   render() {
     const { isLoading, transaction } = this.state;
     if (isLoading) {
       return null;
     }
+    // Display last seven letters/digits as transaction code for Clerk to report issues
+    const truncatedId = transaction.id.slice(-7);
 
     return (
       <ColumnContainer style={{ width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
-        <ColumnContainer style={{ width: '33%', justifyContent: 'space-around', margin: 12, paddingBottom: 32 }}>
-          <Title>Purchase Summary</Title>
-          <ColumnContainer style={{ width: '100%%', justifyContent: 'space-around', margin: 12 }}>
+        <ColumnContainer
+          style={{ width: '33%', height: '35%', justifyContent: 'space-around', margin: 12, paddingBottom: 32 }}>
+          <Title>Sale Summary</Title>
+          <SpaceBetweenRowContainer>
+            <Subhead>Transaction ID</Subhead>
+            <TouchableOpacity onLongPress={() => this.writeToClipboard(truncatedId)}>
+              <Subhead style={{ textTransform: 'uppercase' }}>{truncatedId}</Subhead>
+            </TouchableOpacity>
+          </SpaceBetweenRowContainer>
+          <ColumnContainer style={{ width: '100%%', justifyContent: 'space-around' }}>
             <SpaceBetweenRowContainer>
               <Body>Points Earned</Body>
               <Body>{transaction.pointsEarned} pts</Body>
             </SpaceBetweenRowContainer>
-            <SpaceBetweenRowContainer style={{ paddingBottom: 12 }}>
+            <SpaceBetweenRowContainer>
               <Body>Rewards Redeemed</Body>
               <Body>{transaction.rewardsApplied}</Body>
             </SpaceBetweenRowContainer>
+          </ColumnContainer>
+          <ColumnContainer style={{ width: '100%%', justifyContent: 'space-around' }}>
             <SpaceBetweenRowContainer>
               <Body>Subtotal</Body>
-              <Body>{displayDollarValue(transaction.discount)}</Body>
+              <Body>{displayDollarValue(transaction.subtotal)}</Body>
             </SpaceBetweenRowContainer>
             {transaction.rewardsApplied > 0 && (
               <SpaceBetweenRowContainer>
-                <Body>Total Discounts</Body>
-                <Body>{displayDollarValue(transaction.discount)}</Body>
+                <Body>Rewards</Body>
+                <Body>{displayDollarValue(transaction.discount, false)}</Body>
               </SpaceBetweenRowContainer>
             )}
             <SpaceBetweenRowContainer>

@@ -9,6 +9,7 @@ import { status } from '../lib/constants';
 import { lookupClerk } from '../lib/loginUtils';
 import { CheckInContainer, CheckInContentContainer, TextField } from '../styled/checkin';
 import { RowContainer } from '../styled/shared';
+
 // TODO rename this
 const DismissKeyboard = ({ children }) => (
   <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>{children}</TouchableWithoutFeedback>
@@ -25,6 +26,14 @@ export default class ClerkLoginScreen extends React.Component {
     };
   }
 
+  componentDidMount() {
+    this._reset();
+  }
+
+  _reset = () => {
+    this.setState({ password: '', errorMsg: null, loginPermission: false });
+  };
+
   // Set the clerkId and storeId in AsyncStorage
   // Then navigate to the customer lookup screen
   _asyncLoginClerk = async clerkRecord => {
@@ -37,7 +46,7 @@ export default class ClerkLoginScreen extends React.Component {
   loginPermissionHandler = password => {
     let loginPermission = false;
     let errorShown = true;
-    if (password.length > 0) {
+    if (password.length > 0 || password === '') {
       errorShown = false;
     }
     if (password.length === 4) {
@@ -74,6 +83,7 @@ export default class ClerkLoginScreen extends React.Component {
         default:
           return;
       }
+      // TODO reset state using onFocusEffect; this can cause memory leaks
       this.setState({ errorMsg: lookupResult.errorMsg, password: '', errorShown: clerkNotFound });
     } catch (err) {
       console.error('Clerk Login Screen:', err);
@@ -94,12 +104,12 @@ export default class ClerkLoginScreen extends React.Component {
           <CheckInContainer>
             <CheckInContentContainer>
               <Title style={{ marginBottom: 32 }} color={Colors.lightest}>
-                Welcome to {store.storeName}!
+                {`Welcome to ${store.storeName}!`}
               </Title>
               <Title color="#fff">Enter your employee PIN</Title>
               <TextField
                 autoFocus
-                clearButtonMode={'always'}
+                clearButtonMode="always"
                 style={{ marginTop: 32 }}
                 error={this.state.errorShown}
                 selectionColor={Colors.primaryGreen}
@@ -112,7 +122,7 @@ export default class ClerkLoginScreen extends React.Component {
               {this.state.errorShown && (
                 <RowContainer style={{ alignItems: 'center', marginTop: 8 }}>
                   <FontAwesome5 name="exclamation-circle" size={16} color={Colors.error} style={{ marginRight: 8 }} />
-                  <Subhead color={Colors.lightest}>Invalid PIN</Subhead>
+                  <Subhead color={Colors.lightest}>{this.state.errorMsg}</Subhead>
                 </RowContainer>
               )}
               <RoundedButtonContainer
