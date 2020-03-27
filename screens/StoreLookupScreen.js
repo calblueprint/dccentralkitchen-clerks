@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { AsyncStorage, Button, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { AsyncStorage, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import Colors from '../assets/Colors';
 import { Body, ButtonLabel, RoundedButtonContainer, Title } from '../components/BaseComponents';
@@ -132,8 +132,6 @@ export default class StoreLookupScreen extends React.Component {
               </RoundedButtonContainer>
             )}
           </CheckInContentContainer>
-          <Button title="Checkout Bypass" onPress={() => this._devBypass()} />
-          <Button title="Confirmation Bypass" onPress={() => this._devConfirmBypass()} />
         </CheckInContainer>
       </DismissKeyboard>
     );
