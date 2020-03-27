@@ -1,12 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
-import { AppLoading } from 'expo';
-import { ScreenOrientation } from 'expo';
+import { AppLoading, ScreenOrientation } from 'expo';
 import { Asset } from 'expo-asset';
 import * as Font from 'expo-font';
 import React, { useState } from 'react';
 import { Platform, StatusBar, StyleSheet } from 'react-native';
 import AppNavigator from './navigation/AppNavigator';
-import { Container } from './styled/shared.js';
+import { Container } from './styled/shared';
 
 export default function App(props) {
   const [isLoadingComplete, setLoadingComplete] = useState(false);
