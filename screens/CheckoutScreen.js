@@ -15,7 +15,8 @@ import {
   calculateEligibleRewards,
   createFakeTransaction,
   displayDollarValue,
-  loadProductsData
+  loadProductsData,
+  updateCustomerPoints
 } from '../lib/checkoutUtils';
 import { checkoutNumCols, productCardPxHeight, rewardDollarValue } from '../lib/constants';
 import { BottomBar, ProductsContainer, SaleContainer, TabContainer, TopBar } from '../styled/checkout';
