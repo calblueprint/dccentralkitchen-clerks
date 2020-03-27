@@ -13,7 +13,7 @@ import {
   SquareButtonContainer,
   Title
 } from '../../components/BaseComponents';
-import { displayDollarValue } from '../../lib/checkoutUtils';
+import { calculateEligibleRewards, displayDollarValue } from '../../lib/checkoutUtils';
 import { rewardDollarValue } from '../../lib/constants';
 import {
   ModalCenteredOpacityLayer,
@@ -56,18 +56,11 @@ export default class RewardModal extends React.Component {
   }
 
   _updateState = (rewardsAvailable, rewardsApplied, totalBalance) => {
-    // Calculate eligible rewards
-    /* If negative balance exists, no additional rewards allowed!
-      Must take into account the current rewards applied
-     */
-    const additionalRewardsAllowed = totalBalance > 0 ? Math.ceil(totalBalance / rewardDollarValue) : 0;
-    const additionalRewardsAvailable = rewardsAvailable - rewardsApplied;
-    const additionalRewardsEligible = Math.min(additionalRewardsAllowed, additionalRewardsAvailable);
     this.setState({
       rewardsAvailable,
       rewardsApplied,
       totalBalance,
-      rewardsEligible: rewardsApplied + additionalRewardsEligible
+      rewardsEligible: calculateEligibleRewards(rewardsAvailable, rewardsApplied, totalBalance)
     });
   };
 

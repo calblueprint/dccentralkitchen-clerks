@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import update from 'react-addons-update';
 import { Alert, AsyncStorage, View } from 'react-native';
+import AlertAsync from 'react-native-alert-async';
 import { ScrollView } from 'react-native-gesture-handler';
 import Colors from '../assets/Colors';
 import BackButton from '../components/BackButton';
@@ -11,10 +12,10 @@ import TotalCard from '../components/TotalCard';
 import { getCustomersById } from '../lib/airtable/request';
 import {
   addTransaction,
+  calculateEligibleRewards,
   createFakeTransaction,
   displayDollarValue,
-  loadProductsData,
-  updateCustomerPoints
+  loadProductsData
 } from '../lib/checkoutUtils';
 import { checkoutNumCols, productCardPxHeight, rewardDollarValue } from '../lib/constants';
 import { BottomBar, ProductsContainer, SaleContainer, TabContainer, TopBar } from '../styled/checkout';
@@ -144,7 +145,21 @@ export default class CheckoutScreen extends React.Component {
   };
 
   // Displays a confirmation alert to the clerk.
-  displayConfirmation = transaction => {
+  displayConfirmation = async transaction => {
+    // Should not be able to check out if there isn't anything in the transaction.
+    if (this.state.rewardsApplied === 0) {
+      const eligibleRewards = calculateEligibleRewards(
+        this.state.rewardsAvailable,
+        this.state.rewardsApplied,
+        this.state.totalBalance
+      );
+      if (eligibleRewards && transaction.totalSale >= rewardDollarValue) {
+        const continueWithoutRewards = await this.confirmNoRewards(eligibleRewards);
+        if (!continueWithoutRewards) {
+          return;
+        }
+      }
+    }
     Alert.alert('Confirm Sale', this.generateConfirmationMessage(transaction), [
       {
         text: 'Cancel',
@@ -152,6 +167,26 @@ export default class CheckoutScreen extends React.Component {
       },
       { text: 'Confirm', onPress: () => this.confirmTransaction(transaction) }
     ]);
+  };
+
+  confirmNoRewards = async eligibleRewards => {
+    const response = await AlertAsync(
+      'Available rewards were not applied',
+      'This customer could apply up to '.concat(eligibleRewards).concat(' rewards to this sale.'),
+      [
+        {
+          text: 'Go back to apply rewards',
+          style: 'cancel',
+          onPress: () => false
+        },
+        {
+          text: 'Continue without rewards',
+          onPress: () => true,
+          style: 'default'
+        }
+      ]
+    );
+    return response;
   };
 
   generateConfirmationLine = (name, value) => {
