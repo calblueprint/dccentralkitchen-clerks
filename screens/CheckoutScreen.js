@@ -352,6 +352,7 @@ export default class CheckoutScreen extends React.Component {
               </View>
             </View>
             <FilledButtonContainer
+              style={{ paddingTop: 3 }}
               disabled={cartEmpty}
               color={cartEmpty ? Colors.lightestGreen : Colors.primaryGreen}
               onPress={() => this.handleSubmit()}>
