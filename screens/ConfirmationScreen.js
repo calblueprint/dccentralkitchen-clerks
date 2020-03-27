@@ -10,7 +10,7 @@ export default class ConfirmationScreen extends React.Component {
     super(props);
     this.state = {
       transaction: null,
-      isLoading: true
+      isLoading: true,
     };
   }
 
@@ -78,5 +78,5 @@ export default class ConfirmationScreen extends React.Component {
 }
 
 ConfirmationScreen.propTypes = {
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
 };

@@ -22,8 +22,8 @@ export const ProductsContainer = styled.ScrollView.attrs({
     alignItems: 'center',
     display: 'flex',
     flexDirection: 'row',
-    flexWrap: 'wrap'
-  }
+    flexWrap: 'wrap',
+  },
 })`
   background: rgba(235, 235, 235, 0.5);
   flex-wrap: wrap;

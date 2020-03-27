@@ -10,7 +10,7 @@ import {
   CheckInContentContainer,
   SearchBarContainer,
   SearchElement,
-  TextField
+  TextField,
 } from '../styled/checkin';
 
 const DismissKeyboard = ({ children }) => (
@@ -26,7 +26,7 @@ export default class StoreLookupScreen extends React.Component {
       store: {},
       storePermission: false,
       textFieldBlur: true,
-      searchStr: ''
+      searchStr: '',
     };
   }
 
@@ -36,7 +36,7 @@ export default class StoreLookupScreen extends React.Component {
       // Set to first store as default, since the picker also defaults to the top (first in list)
       this.setState({
         stores,
-        filteredStores: stores
+        filteredStores: stores,
       });
     } catch (err) {
       console.error('Store Lookup Screen', err);
@@ -71,7 +71,7 @@ export default class StoreLookupScreen extends React.Component {
 
   handleChangeText = searchStr => {
     this.setState({
-      searchStr
+      searchStr,
     });
     this.updateFilteredStores(searchStr);
   };
@@ -88,7 +88,9 @@ export default class StoreLookupScreen extends React.Component {
 
   updateFilteredStores = searchStr => {
     this.setState({
-      filteredStores: this.state.stores.filter(store => store.storeName.toLowerCase().includes(searchStr.toLowerCase()))
+      filteredStores: this.state.stores.filter(store =>
+        store.storeName.toLowerCase().includes(searchStr.toLowerCase())
+      ),
     });
   };
 
@@ -137,5 +139,5 @@ export default class StoreLookupScreen extends React.Component {
 }
 
 StoreLookupScreen.propTypes = {
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
 };

@@ -24,7 +24,7 @@ export default class CheckoutScreen extends React.Component {
       // Other state
       totalBalance: 0,
       rewardsApplied: 0,
-      isLoading: true
+      isLoading: true,
     };
   }
 
@@ -41,7 +41,7 @@ export default class CheckoutScreen extends React.Component {
       customer,
       cart: initialCart,
       rewardsAvailable: Math.floor(customer.rewardsAvailable),
-      isLoading: false
+      isLoading: false,
     });
   }
 
@@ -61,7 +61,7 @@ export default class CheckoutScreen extends React.Component {
     if (priceDifference >= 0 || this.state.rewardsApplied === 0 || newBalance >= 0) {
       this.setState(prevState => ({
         cart: update(prevState.cart, { [product.id]: { quantity: { $set: quantity } } }),
-        totalBalance: prevState.totalBalance + priceDifference
+        totalBalance: prevState.totalBalance + priceDifference,
       }));
       // Special case: negative balance when rewards have been applied, but need to be restored
       // i.e rewardsValue * rewardsApplied > cartTotal after quantity drops
@@ -77,7 +77,7 @@ export default class CheckoutScreen extends React.Component {
           (prevState.totalBalance + priceDifference) % rewardDollarValue < 0
             ? rewardDollarValue + ((prevState.totalBalance + priceDifference) % rewardDollarValue)
             : (prevState.totalBalance + priceDifference) % rewardDollarValue,
-        rewardsApplied: prevState.rewardsApplied - rewardsToUndo
+        rewardsApplied: prevState.rewardsApplied - rewardsToUndo,
       }));
     }
   };
@@ -122,7 +122,7 @@ export default class CheckoutScreen extends React.Component {
       subtotal,
       totalSale,
       pointsEarned,
-      rewardsApplied // for convenience
+      rewardsApplied, // for convenience
     };
     this.displayConfirmation(transactionInfo);
   };
@@ -134,17 +134,17 @@ export default class CheckoutScreen extends React.Component {
       Alert.alert('Empty Transaction', 'This transaction is empty. Please add items to the cart.', [
         {
           text: 'OK',
-          style: 'cancel'
-        }
+          style: 'cancel',
+        },
       ]);
       return;
     }
     Alert.alert('Confirm Transaction', this.generateConfirmationMessage(transactionInfo), [
       {
         text: 'Cancel',
-        style: 'cancel'
+        style: 'cancel',
       },
-      { text: 'Confirm', onPress: () => this.confirmTransaction(transactionInfo) }
+      { text: 'Confirm', onPress: () => this.confirmTransaction(transactionInfo) },
     ]);
   };
 
@@ -229,7 +229,7 @@ export default class CheckoutScreen extends React.Component {
             <Text
               style={{
                 fontWeight: 'bold',
-                textAlign: 'center'
+                textAlign: 'center',
               }}>
               Order Total ${totalSale.toFixed(2)}
             </Text>
@@ -244,5 +244,5 @@ export default class CheckoutScreen extends React.Component {
 }
 
 CheckoutScreen.propTypes = {
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
 };

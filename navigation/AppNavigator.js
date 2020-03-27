@@ -8,7 +8,7 @@ import StoreLookupScreen from '../screens/StoreLookupScreen';
 const AuthStack = createStackNavigator(
   {
     StoreLookup: StoreLookupScreen,
-    ClerkLogin: ClerkLoginScreen
+    ClerkLogin: ClerkLoginScreen,
   },
   { headerMode: 'none' }
 );
@@ -21,7 +21,7 @@ export default createAppContainer(
       Auth: AuthStack,
       CustomerLookup: { screen: CustomerLookupScreen },
       Checkout: { screen: CheckoutScreen },
-      Confirmation: { screen: ConfirmationScreen }
+      Confirmation: { screen: ConfirmationScreen },
     },
     { headerMode: 'none' }
   )

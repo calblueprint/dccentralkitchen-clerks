@@ -10,7 +10,7 @@ import {
   ModalCenteredOpacityLayer,
   ModalContentContainer,
   ModalCopyContainer,
-  QuantityInput
+  QuantityInput,
 } from '../../styled/modal';
 import { ColumnContainer } from '../../styled/shared';
 
@@ -22,7 +22,7 @@ export default class QuantityModal extends React.Component {
       product: null,
       // Needs to be string type because it's TextInput
       currentQuantity: '',
-      isLoading: true
+      isLoading: true,
     };
   }
 
@@ -31,7 +31,7 @@ export default class QuantityModal extends React.Component {
     this.resetCurrentQuantity();
     this.setState({
       product,
-      isLoading: false
+      isLoading: false,
     });
   }
 
@@ -43,7 +43,7 @@ export default class QuantityModal extends React.Component {
       this.setState(prevState => ({
         ...prevState,
         product: nextProps.product,
-        currentQuantity: newQuantity === 0 ? '' : newQuantity.toString()
+        currentQuantity: newQuantity === 0 ? '' : newQuantity.toString(),
       }));
     }
   }
@@ -105,7 +105,7 @@ export default class QuantityModal extends React.Component {
                   top: 0,
                   left: 0,
                   padding: 20,
-                  paddingBottom: 0
+                  paddingBottom: 0,
                 }}
                 onPress={() => this.setModalVisible(false)}>
                 <FontAwesome5 name="times" size={24} color={Colors.activeText} />
@@ -155,5 +155,5 @@ export default class QuantityModal extends React.Component {
 QuantityModal.propTypes = {
   product: PropTypes.object.isRequired,
   callback: PropTypes.func.isRequired,
-  isLineItem: PropTypes.bool.isRequired
+  isLineItem: PropTypes.bool.isRequired,
 };

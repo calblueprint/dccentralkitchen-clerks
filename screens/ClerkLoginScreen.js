@@ -19,7 +19,7 @@ export default class ClerkLoginScreen extends React.Component {
     this.state = {
       password: '',
       errorMsg: null,
-      loginPermission: false
+      loginPermission: false,
     };
   }
 
@@ -115,5 +115,5 @@ export default class ClerkLoginScreen extends React.Component {
 }
 
 ClerkLoginScreen.propTypes = {
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
 };
