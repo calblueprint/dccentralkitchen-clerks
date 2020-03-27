@@ -3,14 +3,19 @@ import React from 'react';
 import update from 'react-addons-update';
 import { Alert, AsyncStorage, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-
 import Colors from '../assets/Colors';
 import BackButton from '../components/BackButton';
 import { ButtonLabel, FilledButtonContainer, Subhead, Title } from '../components/BaseComponents';
 import SubtotalCard from '../components/SubtotalCard';
 import TotalCard from '../components/TotalCard';
 import { getCustomersById } from '../lib/airtable/request';
-import { addTransaction, displayDollarValue, loadProductsData, updateCustomerPoints } from '../lib/checkoutUtils';
+import {
+  addTransaction,
+  createFakeTransaction,
+  displayDollarValue,
+  loadProductsData,
+  updateCustomerPoints
+} from '../lib/checkoutUtils';
 import { checkoutNumCols, productCardPxHeight, rewardDollarValue } from '../lib/constants';
 import { BottomBar, ProductsContainer, SaleContainer, TabContainer, TopBar } from '../styled/checkout';
 import QuantityModal from './modals/QuantityModal';
@@ -36,16 +41,17 @@ export default class CheckoutScreen extends React.Component {
     const customerId = await AsyncStorage.getItem('customerId');
     const customer = await getCustomersById(customerId);
     const products = await loadProductsData();
-
+    const training = JSON.parse(await AsyncStorage.getItem('trainingMode'));
     // Initialize cart a'la Python dictionary, to make updating quantity cleaner
-    // Cart contains line items, which have all initial product attributes, and a quantity
+    // Cart contains all products as line items, which have all initial product attributes, and a quantity
     const initialCart = products.reduce((cart, product) => ({ ...cart, [product.id]: product }), {});
 
     this.setState({
       customer,
+      products,
       cart: initialCart,
       rewardsAvailable: Math.floor(customer.rewardsAvailable),
-      products,
+      trainingMode: training,
       isLoading: false
     });
   }
@@ -127,24 +133,24 @@ export default class CheckoutScreen extends React.Component {
     const pointsEarned = this.getPointsEarned();
 
     // Passed through displayConfirmation to generateConfirmationMessage and confirmTransaction
-    const transactionInfo = {
+    const transaction = {
       discount: actualDiscount,
       subtotal,
       totalSale,
       pointsEarned,
       rewardsApplied // for convenience
     };
-    this.displayConfirmation(transactionInfo);
+    this.displayConfirmation(transaction);
   };
 
   // Displays a confirmation alert to the clerk.
-  displayConfirmation = transactionInfo => {
-    Alert.alert('Confirm Sale', this.generateConfirmationMessage(transactionInfo), [
+  displayConfirmation = transaction => {
+    Alert.alert('Confirm Sale', this.generateConfirmationMessage(transaction), [
       {
         text: 'Cancel',
         style: 'cancel'
       },
-      { text: 'Confirm', onPress: () => this.confirmTransaction(transactionInfo) }
+      { text: 'Confirm', onPress: () => this.confirmTransaction(transaction) }
     ]);
   };
 
@@ -154,25 +160,30 @@ export default class CheckoutScreen extends React.Component {
 
   // Generates the confirmation message based on items in cart, points earned,
   // and total spent.
-  generateConfirmationMessage = transactionInfo => {
+  generateConfirmationMessage = transaction => {
     let msg = Object.values(this.state.cart).reduce(
       (msg, lineItem) => (lineItem.quantity > 0 ? msg.concat(`${lineItem.quantity} x ${lineItem.name}\n`) : msg),
       'Sale Items:\n\n'
     );
-    msg = msg.concat(`\nRewards Redeemed: ${transactionInfo.rewardsApplied}\n`);
+    msg = msg.concat(`\nRewards Redeemed: ${transaction.rewardsApplied}\n`);
     // Adding total price and total points earned to message. Must be called after getPointsEarned() in handleSubmit() for updated amount.
-    msg = msg.concat(this.generateConfirmationLine('Subtotal', transactionInfo.subtotal));
-    msg = msg.concat(this.generateConfirmationLine('Discount', transactionInfo.discount));
-    msg = msg.concat(this.generateConfirmationLine('Total Sale', transactionInfo.totalSale));
-    msg = msg.concat(`\nTotal Points Earned: ${transactionInfo.pointsEarned}`);
+    msg = msg.concat(this.generateConfirmationLine('Subtotal', transaction.subtotal));
+    msg = msg.concat(this.generateConfirmationLine('Discount', transaction.discount));
+    msg = msg.concat(this.generateConfirmationLine('Total Sale', transaction.totalSale));
+    msg = msg.concat(`\nTotal Points Earned: ${transaction.pointsEarned}`);
     return msg;
   };
 
   // Adds the transaction to the user's account and updates their points.
-  confirmTransaction = async transactionInfo => {
+  confirmTransaction = async transaction => {
+    // Clerk Training: creates a local transaction object instead of creating transaction in Airtable
+    if (JSON.parse(await AsyncStorage.getItem('trainingMode'))) {
+      this.props.navigation.navigate('Confirmation', createFakeTransaction(transaction));
+      return;
+    }
     try {
-      const transactionId = await addTransaction(this.state.customer, this.state.cart, transactionInfo);
-      await updateCustomerPoints(this.state.customer, transactionInfo.pointsEarned, transactionInfo.rewardsApplied);
+      const transactionId = await addTransaction(this.state.customer, this.state.cart, transaction);
+      await updateCustomerPoints(this.state.customer, transaction.pointsEarned, transaction.rewardsApplied);
       this.props.navigation.navigate('Confirmation', { transactionId });
     } catch (err) {
       // TODO better handling - should prompt the user to try again, or at least say something is wrong with the service
@@ -225,7 +236,7 @@ export default class CheckoutScreen extends React.Component {
       return null;
     }
 
-    const { cart, customer, totalBalance } = this.state;
+    const { cart, customer, totalBalance, trainingMode } = this.state;
     const totalSale = totalBalance > 0 ? totalBalance : 0;
     const pointsEarned = this.getPointsEarned();
     const subtotal = totalBalance + this.state.rewardsApplied * rewardDollarValue;
@@ -235,9 +246,13 @@ export default class CheckoutScreen extends React.Component {
 
     return (
       <View style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-around', flex: 1 }}>
-        <TopBar>
+        <TopBar trainingColor={trainingMode}>
           <BackButton navigation={this.props.navigation} light={false} style={{ marginTop: 3, marginLeft: 24 }} />
-          <Title> {'Customer: '.concat(customer.name)} </Title>
+          <Title>
+            {'Customer: '
+              .concat(customer.name)
+              .concat(trainingMode ? '   |   Training Mode (sales will not be saved)' : '')}
+          </Title>
           {/* Duplicate, invisible element to have left-aligned BackButton */}
           <BackButton navigation={this.props.navigation} light={false} style={{ opacity: 0.0, disabled: true }} />
         </TopBar>

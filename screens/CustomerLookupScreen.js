@@ -3,9 +3,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { AsyncStorage, View } from 'react-native';
 import Colors from '../assets/Colors';
-import BackButton from '../components/BackButton';
-import DrawerButton from '../components/DrawerButton';
 import { ButtonLabel, RoundedButtonContainer, Subhead, Title } from '../components/BaseComponents';
+import DrawerButton from '../components/DrawerButton';
 import { status } from '../lib/constants';
 import { lookupCustomer } from '../lib/lookupUtils';
 import { CheckInContainer, CheckInContentContainer, TextField } from '../styled/checkin';
@@ -27,9 +26,18 @@ export default class CustomerLookupScreen extends React.Component {
   // TODO: this is currently not being used
   // Clears error state and phoneNumber entered so far
   async componentDidMount() {
-    const clerkName = await AsyncStorage.getItem('clerkName');
-    this.setState({ clerkName, phoneNumber: '', errorMsg: null });
+    await this._reset();
   }
+
+  _reset = async () => {
+    const clerkName = await AsyncStorage.getItem('clerkName');
+    // Clerk Training: pre-fill customer (Summer Strawberry) phone number
+    if (JSON.parse(await AsyncStorage.getItem('trainingMode'))) {
+      this.setState({ clerkName, phoneNumber: '1112223344', customerPermission: true, errorMsg: null });
+    } else {
+      this.setState({ clerkName, phoneNumber: '', customerPermission: false, errorMsg: null });
+    }
+  };
 
   _asyncCustomerFound = async customerRecord => {
     await AsyncStorage.setItem('customerId', customerRecord.id);
@@ -45,7 +53,7 @@ export default class CustomerLookupScreen extends React.Component {
   customerPermissionHandler = phoneNumber => {
     let customerPermission = false;
     let errorShown = true;
-    if (phoneNumber.length > 0) {
+    if (phoneNumber.length > 0 || phoneNumber === '') {
       errorShown = false;
     }
     if (phoneNumber.length === 10) {
@@ -78,7 +86,11 @@ export default class CustomerLookupScreen extends React.Component {
         default:
           return;
       }
-      this.setState({ errorMsg: lookupResult.errorMsg, phoneNumber: '', errorShown: customerNotFound });
+      if (JSON.parse(await AsyncStorage.getItem('trainingMode'))) {
+        this.setState({ errorMsg: lookupResult.errorMsg, phoneNumber: '1112223344' });
+      } else {
+        this.setState({ errorMsg: lookupResult.errorMsg, phoneNumber: '', errorShown: customerNotFound });
+      }
     } catch (err) {
       console.error('Customer Lookup Screen: ', err);
     }
@@ -106,7 +118,7 @@ export default class CustomerLookupScreen extends React.Component {
           <CheckInContentContainer>
             <Title>Enter customer phone number</Title>
             <TextField
-              clearButtonMode={'always'}
+              clearButtonMode="always"
               selectionColor={Colors.primaryGreen}
               style={{ marginTop: 32 }}
               error={this.state.errorShown}
@@ -119,7 +131,7 @@ export default class CustomerLookupScreen extends React.Component {
             {this.state.errorShown && (
               <RowContainer style={{ alignItems: 'center', marginTop: 8 }}>
                 <FontAwesome5 name="exclamation-circle" size={16} color={Colors.error} style={{ marginRight: 8 }} />
-                <Subhead color={Colors.activeText}>Invalid phone number</Subhead>
+                <Subhead color={Colors.activeText}>{this.state.errorMsg}</Subhead>
               </RowContainer>
             )}
             <RoundedButtonContainer
