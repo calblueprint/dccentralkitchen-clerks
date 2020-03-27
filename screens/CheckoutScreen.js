@@ -3,14 +3,19 @@ import React from 'react';
 import update from 'react-addons-update';
 import { Alert, AsyncStorage, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-
 import Colors from '../assets/Colors';
 import BackButton from '../components/BackButton';
 import { ButtonLabel, FilledButtonContainer, Subhead, Title } from '../components/BaseComponents';
 import SubtotalCard from '../components/SubtotalCard';
 import TotalCard from '../components/TotalCard';
 import { getCustomersById } from '../lib/airtable/request';
-import { addTransaction, displayDollarValue, loadProductsData, updateCustomerPoints } from '../lib/checkoutUtils';
+import {
+  addTransaction,
+  createFakeTransaction,
+  displayDollarValue,
+  loadProductsData,
+  updateCustomerPoints
+} from '../lib/checkoutUtils';
 import { checkoutNumCols, productCardPxHeight, rewardDollarValue } from '../lib/constants';
 import { BottomBar, ProductsContainer, SaleContainer, TabContainer, TopBar } from '../styled/checkout';
 import QuantityModal from './modals/QuantityModal';
