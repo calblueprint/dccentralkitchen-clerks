@@ -10,7 +10,14 @@ import { ButtonLabel, FilledButtonContainer, Subhead, Title } from '../component
 import SubtotalCard from '../components/SubtotalCard';
 import TotalCard from '../components/TotalCard';
 import { getCustomersById } from '../lib/airtable/request';
-import { addTransaction, createFakeTransaction, displayDollarValue, loadProductsData } from '../lib/checkoutUtils';
+import {
+  addTransaction,
+  calculateEligibleRewards,
+  createFakeTransaction,
+  displayDollarValue,
+  loadProductsData,
+  updateCustomerPoints,
+} from '../lib/checkoutUtils';
 import { checkoutNumCols, productCardPxHeight, rewardDollarValue } from '../lib/constants';
 import { BottomBar, ProductsContainer, SaleContainer, TabContainer, TopBar } from '../styled/checkout';
 import QuantityModal from './modals/QuantityModal';

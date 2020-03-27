@@ -1,12 +1,11 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Alert, AsyncStorage, Clipboard, TouchableOpacity } from 'react-native';
-
+import { Alert, AsyncStorage, Clipboard, TouchableOpacity, View } from 'react-native';
 import { Body, ButtonLabel, FilledButtonContainer, Subhead, Title } from '../components/BaseComponents';
+import DrawerButton from '../components/DrawerButton';
 import { getTransactionsById } from '../lib/airtable/request';
 import { displayDollarValue } from '../lib/checkoutUtils';
-import { ColumnContainer, SpaceBetweenRowContainer } from '../styled/shared';
-
+import { ColumnContainer, RowContainer, SpaceBetweenRowContainer } from '../styled/shared';
 export default class ConfirmationScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -52,51 +51,67 @@ export default class ConfirmationScreen extends React.Component {
     const truncatedId = transaction.id.slice(-7);
 
     return (
-      <ColumnContainer style={{ width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
-        <ColumnContainer
-          style={{ width: '33%', height: '35%', justifyContent: 'space-around', margin: 12, paddingBottom: 32 }}>
-          <Title>Sale Summary</Title>
-          <SpaceBetweenRowContainer>
-            <Subhead>Transaction ID</Subhead>
-            <TouchableOpacity onLongPress={() => this.writeToClipboard(truncatedId)}>
-              <Subhead style={{ textTransform: 'uppercase' }}>{truncatedId}</Subhead>
-            </TouchableOpacity>
-          </SpaceBetweenRowContainer>
-          <ColumnContainer style={{ width: '100%%', justifyContent: 'space-around' }}>
+      <View>
+        <RowContainer
+          style={{
+            zIndex: 1,
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            marginTop: 33,
+            marginLeft: 29,
+            justifyContent: 'flex-start',
+            alignItems: 'center',
+          }}>
+          <DrawerButton navigation={this.props.navigation} light={false} />
+          <Title style={{ marginLeft: 16 }}>{this.state.clerkName}</Title>
+        </RowContainer>
+        <ColumnContainer style={{ width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
+          <ColumnContainer
+            style={{ width: '33%', height: '35%', justifyContent: 'space-around', margin: 12, paddingBottom: 32 }}>
+            <Title>Sale Summary</Title>
             <SpaceBetweenRowContainer>
-              <Body>Points Earned</Body>
-              <Body>{transaction.pointsEarned} pts</Body>
+              <Subhead>Transaction ID</Subhead>
+              <TouchableOpacity onLongPress={() => this.writeToClipboard(truncatedId)}>
+                <Subhead style={{ textTransform: 'uppercase' }}>{truncatedId}</Subhead>
+              </TouchableOpacity>
             </SpaceBetweenRowContainer>
-            <SpaceBetweenRowContainer>
-              <Body>Rewards Redeemed</Body>
-              <Body>{transaction.rewardsApplied}</Body>
-            </SpaceBetweenRowContainer>
-          </ColumnContainer>
-          <ColumnContainer style={{ width: '100%%', justifyContent: 'space-around' }}>
-            <SpaceBetweenRowContainer>
-              <Body>Subtotal</Body>
-              <Body>{displayDollarValue(transaction.subtotal)}</Body>
-            </SpaceBetweenRowContainer>
-            {transaction.rewardsApplied > 0 && (
+            <ColumnContainer style={{ width: '100%%', justifyContent: 'space-around' }}>
               <SpaceBetweenRowContainer>
-                <Body>Rewards</Body>
-                <Body>{displayDollarValue(transaction.discount, false)}</Body>
+                <Body>Points Earned</Body>
+                <Body>{transaction.pointsEarned} pts</Body>
               </SpaceBetweenRowContainer>
-            )}
-            <SpaceBetweenRowContainer>
-              <Body>Total Sale</Body>
-              <Body>{displayDollarValue(transaction.totalPrice)}</Body>
-            </SpaceBetweenRowContainer>
+              <SpaceBetweenRowContainer>
+                <Body>Rewards Redeemed</Body>
+                <Body>{transaction.rewardsApplied}</Body>
+              </SpaceBetweenRowContainer>
+            </ColumnContainer>
+            <ColumnContainer style={{ width: '100%%', justifyContent: 'space-around' }}>
+              <SpaceBetweenRowContainer>
+                <Body>Subtotal</Body>
+                <Body>{displayDollarValue(transaction.subtotal)}</Body>
+              </SpaceBetweenRowContainer>
+              {transaction.rewardsApplied > 0 && (
+                <SpaceBetweenRowContainer>
+                  <Body>Rewards</Body>
+                  <Body>{displayDollarValue(transaction.discount, false)}</Body>
+                </SpaceBetweenRowContainer>
+              )}
+              <SpaceBetweenRowContainer>
+                <Body>Total Sale</Body>
+                <Body>{displayDollarValue(transaction.totalPrice)}</Body>
+              </SpaceBetweenRowContainer>
+            </ColumnContainer>
           </ColumnContainer>
+          <FilledButtonContainer
+            onPress={() => this.handleSubmit()}
+            width="33%"
+            height="40px"
+            style={{ borderRadius: 20 }}>
+            <ButtonLabel>Next Customer</ButtonLabel>
+          </FilledButtonContainer>
         </ColumnContainer>
-        <FilledButtonContainer
-          onPress={() => this.handleSubmit()}
-          width="33%"
-          height="40px"
-          style={{ borderRadius: 20 }}>
-          <ButtonLabel>Next Customer</ButtonLabel>
-        </FilledButtonContainer>
-      </ColumnContainer>
+      </View>
     );
   }
 }

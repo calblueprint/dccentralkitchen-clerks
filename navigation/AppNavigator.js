@@ -67,10 +67,18 @@ export class DrawerContent extends React.Component {
           }}>
           <Title style={{ color: 'white' }}>{this.state.clerkName}</Title>
         </View>
+        <TouchableOpacity
+          style={{ padding: 16, paddingTop: 32 }}
+          onPress={() => Linking.openURL('http://tiny.cc/RegisterACustomer')}>
+          <Title>Register Customer</Title>
+        </TouchableOpacity>
+        <TouchableOpacity style={{ padding: 16 }} onPress={() => Linking.openURL('http://tiny.cc/ClerkGuide')}>
+          <Title>Clerk Guide</Title>
+        </TouchableOpacity>
         <TouchableOpacity style={{ padding: 16 }} onPress={() => Linking.openURL('http://tiny.cc/SubmitFeedbackClerk')}>
           <Title>Feedback</Title>
         </TouchableOpacity>
-        <TouchableOpacity style={{ paddingLeft: 16 }} onPress={() => Linking.openURL('http://tiny.cc/ClerkFeedback')}>
+        <TouchableOpacity style={{ padding: 16 }} onPress={() => Linking.openURL('http://tiny.cc/ClerkFeedback')}>
           <Title>Report Issue</Title>
         </TouchableOpacity>
 
