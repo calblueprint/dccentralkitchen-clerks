@@ -2,7 +2,6 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Modal, TouchableOpacity, View } from 'react-native';
-import Colors from '../../assets/Colors';
 import {
   BigTitle,
   BigTitleLabel,
@@ -12,6 +11,7 @@ import {
   SquareButtonContainer,
   Title,
 } from '../../components/BaseComponents';
+import Colors from '../../constants/Colors';
 import { calculateEligibleRewards, displayDollarValue } from '../../lib/checkoutUtils';
 import { rewardDollarValue } from '../../lib/constants';
 import {

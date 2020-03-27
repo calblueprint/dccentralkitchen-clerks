@@ -1,7 +1,6 @@
 import styled from 'styled-components/native';
-
-import Colors from '../assets/Colors';
 import { FilledButtonContainer } from '../components/BaseComponents';
+import Colors from '../constants/Colors';
 import { ColumnContainer, RowContainer } from './shared';
 
 // Customer Name Top Bar

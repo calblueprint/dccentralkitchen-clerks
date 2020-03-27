@@ -1,6 +1,6 @@
 import React from 'react';
 import { Image } from 'react-native';
-import Colors from '../assets/Colors';
+import Colors from '../constants/Colors';
 import { ProductCard } from '../styled/checkout';
 import { Body, Caption } from './BaseComponents';
 

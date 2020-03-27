@@ -2,10 +2,10 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Modal, TouchableOpacity, View } from 'react-native';
-import Colors from '../../assets/Colors';
 import { Body, ButtonLabel, RoundedButtonContainer, Title } from '../../components/BaseComponents';
 import LineItemCard from '../../components/LineItemCard';
 import ProductDisplayCard from '../../components/ProductDisplayCard';
+import Colors from '../../constants/Colors';
 import {
   ModalCenteredOpacityLayer,
   ModalContentContainer,

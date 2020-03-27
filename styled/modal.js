@@ -1,6 +1,6 @@
 import styled from 'styled-components/native';
-import Colors from '../assets/Colors';
 import { Subhead } from '../components/BaseComponents';
+import Colors from '../constants/Colors';
 import { ColumnContainer, RowContainer } from './shared';
 
 // Modals in CheckoutScreen.js

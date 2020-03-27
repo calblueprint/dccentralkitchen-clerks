@@ -4,11 +4,11 @@ import update from 'react-addons-update';
 import { Alert, AsyncStorage, View } from 'react-native';
 import AlertAsync from 'react-native-alert-async';
 import { ScrollView } from 'react-native-gesture-handler';
-import Colors from '../assets/Colors';
 import BackButton from '../components/BackButton';
 import { ButtonLabel, FilledButtonContainer, Subhead, Title } from '../components/BaseComponents';
 import SubtotalCard from '../components/SubtotalCard';
 import TotalCard from '../components/TotalCard';
+import Colors from '../constants/Colors';
 import { getCustomersById } from '../lib/airtable/request';
 import {
   addTransaction,
