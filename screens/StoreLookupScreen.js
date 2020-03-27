@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { AsyncStorage, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
+
 import Colors from '../assets/Colors';
 import { Body, ButtonLabel, RoundedButtonContainer, Title } from '../components/BaseComponents';
 import { loadStoreData } from '../lib/loginUtils';
@@ -50,6 +51,7 @@ export default class StoreLookupScreen extends React.Component {
     await AsyncStorage.setItem('clerkName', 'Jeffry Poa');
     await AsyncStorage.setItem('storeId', 'recw49LpAOInqvX3e');
     await AsyncStorage.setItem('customerId', 'recqx32YmmACiRWMq');
+    await AsyncStorage.setItem('trainingMode', JSON.stringify(false));
     this.props.navigation.navigate('Checkout');
   };
 
@@ -83,7 +85,13 @@ export default class StoreLookupScreen extends React.Component {
     Keyboard.dismiss();
   };
 
-  handleNavigate = () => {
+  handleNavigate = async () => {
+    // Clerk training: set `trainingMode` to "true" in AsyncStorage
+    if (this.state.store.storeName === 'CLERK TRAINING') {
+      await AsyncStorage.setItem('trainingMode', JSON.stringify(true));
+    } else {
+      await AsyncStorage.setItem('trainingMode', JSON.stringify(false));
+    }
     this.props.navigation.navigate('ClerkLogin', { store: this.state.store, storeName: this.state.store.storeName });
   };
 
