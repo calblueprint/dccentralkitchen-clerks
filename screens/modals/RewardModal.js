@@ -2,6 +2,7 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Modal, TouchableOpacity, View } from 'react-native';
+
 import Colors from '../../assets/Colors';
 import {
   BigTitle,
@@ -145,9 +146,7 @@ export default class RewardModal extends React.Component {
               <View style={{ padding: 8 }}>{null}</View>
               <ModalCopyContainer style={{ marginLeft: '15%', alignSelf: 'flex-start' }}>
                 <Title>Apply rewards</Title>
-                <Body color={Colors.secondaryText}>
-                  {customer.name} has{rewardsAvailable} reward(s)
-                </Body>
+                <Body color={Colors.secondaryText}>{`${customer.name} has ${rewardsAvailable} reward(s)`}</Body>
               </ModalCopyContainer>
               <ColumnContainer style={{ width: '40%', margin: 16 }}>
                 <SpaceBetweenRowContainer>
