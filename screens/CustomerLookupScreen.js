@@ -53,7 +53,7 @@ export default class CustomerLookupScreen extends React.Component {
   customerPermissionHandler = phoneNumber => {
     let customerPermission = false;
     let errorShown = true;
-    if (phoneNumber.length > 0) {
+    if (phoneNumber.length > 0 || phoneNumber === '') {
       errorShown = false;
     }
     if (phoneNumber.length === 10) {
@@ -86,11 +86,11 @@ export default class CustomerLookupScreen extends React.Component {
         default:
           return;
       }
-      if (JSON.parse(await AsyncStorage.getItem('trainingMode'))) {
-        this.setState({ errorMsg: lookupResult.errorMsg, phoneNumber: '1112223344' });
-      } else {
-        this.setState({ errorMsg: lookupResult.errorMsg, phoneNumber: '', errorShown: customerNotFound });
-      }
+      // if (JSON.parse(await AsyncStorage.getItem('trainingMode'))) {
+      //   this.setState({ errorMsg: lookupResult.errorMsg, phoneNumber: '1112223344' });
+      // } else {
+      //   this.setState({ errorMsg: lookupResult.errorMsg, phoneNumber: '', errorShown: customerNotFound });
+      // }
     } catch (err) {
       console.error('Customer Lookup Screen: ', err);
     }
@@ -131,7 +131,7 @@ export default class CustomerLookupScreen extends React.Component {
             {this.state.errorShown && (
               <RowContainer style={{ alignItems: 'center', marginTop: 8 }}>
                 <FontAwesome5 name="exclamation-circle" size={16} color={Colors.error} style={{ marginRight: 8 }} />
-                <Subhead color={Colors.activeText}>Invalid phone number</Subhead>
+                <Subhead color={Colors.activeText}>{this.state.errorMsg}</Subhead>
               </RowContainer>
             )}
             <RoundedButtonContainer

@@ -46,7 +46,7 @@ export default class ClerkLoginScreen extends React.Component {
   loginPermissionHandler = password => {
     let loginPermission = false;
     let errorShown = true;
-    if (password.length > 0) {
+    if (password.length > 0 || password === '') {
       errorShown = false;
     }
     if (password.length === 4) {
@@ -83,7 +83,7 @@ export default class ClerkLoginScreen extends React.Component {
         default:
           return;
       }
-      this.setState({ errorMsg: lookupResult.errorMsg, password: '', errorShown: clerkNotFound });
+      // this.setState({ errorMsg: lookupResult.errorMsg, password: '', errorShown: clerkNotFound });
     } catch (err) {
       console.error('Clerk Login Screen:', err);
     }
@@ -103,7 +103,7 @@ export default class ClerkLoginScreen extends React.Component {
           <CheckInContainer>
             <CheckInContentContainer>
               <Title style={{ marginBottom: 32 }} color={Colors.lightest}>
-                Welcome to {store.storeName}!
+                {`Welcome to ${store.storeName}!`}
               </Title>
               <Title color="#fff">Enter your employee PIN</Title>
               <TextField
@@ -121,7 +121,7 @@ export default class ClerkLoginScreen extends React.Component {
               {this.state.errorShown && (
                 <RowContainer style={{ alignItems: 'center', marginTop: 8 }}>
                   <FontAwesome5 name="exclamation-circle" size={16} color={Colors.error} style={{ marginRight: 8 }} />
-                  <Subhead color={Colors.lightest}>Invalid PIN</Subhead>
+                  <Subhead color={Colors.lightest}>{this.state.errorMsg}</Subhead>
                 </RowContainer>
               )}
               <RoundedButtonContainer
