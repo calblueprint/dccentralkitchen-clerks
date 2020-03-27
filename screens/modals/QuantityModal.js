@@ -119,7 +119,12 @@ export default class QuantityModal extends React.Component {
                   <Body>OR press the top left X to exit.</Body>
                 </ColumnContainer>
               </ModalCopyContainer>
-              <QuantityInput placeholder="Quantity" onChangeText={this.updateQuantity} value={currentQuantity} />
+              <QuantityInput
+                autoFocus
+                placeholder="Quantity"
+                onChangeText={this.updateQuantity}
+                value={currentQuantity}
+              />
               <RoundedButtonContainer
                 color={currentQuantity === '' ? Colors.lightestGreen : Colors.primaryGreen}
                 disabled={currentQuantity === ''}

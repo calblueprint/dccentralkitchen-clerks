@@ -26,8 +26,8 @@ export const TextField = styled.TextInput`
   width: 253px;
   height: 51px;
   background-color: #fff;
-  border-color: ${Colors.base};
-  border-width: 1px;
+  border-color: ${props => (props.error ? Colors.error : Colors.base)};
+  border-width: 2px;
   padding-left: 14px;
   font-family: poppins-regular;
 `;

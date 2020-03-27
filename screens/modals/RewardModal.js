@@ -12,7 +12,7 @@ import {
   SquareButtonContainer,
   Title,
 } from '../../components/BaseComponents';
-import { displayDollarValue } from '../../lib/checkoutUtils';
+import { calculateEligibleRewards, displayDollarValue } from '../../lib/checkoutUtils';
 import { rewardDollarValue } from '../../lib/constants';
 import {
   ModalCenteredOpacityLayer,
@@ -55,18 +55,11 @@ export default class RewardModal extends React.Component {
   }
 
   _updateState = (rewardsAvailable, rewardsApplied, totalBalance) => {
-    // Calculate eligible rewards
-    /* If negative balance exists, no additional rewards allowed!
-      Must take into account the current rewards applied
-     */
-    const additionalRewardsAllowed = totalBalance > 0 ? Math.ceil(totalBalance / rewardDollarValue) : 0;
-    const additionalRewardsAvailable = rewardsAvailable - rewardsApplied;
-    const additionalRewardsEligible = Math.min(additionalRewardsAllowed, additionalRewardsAvailable);
     this.setState({
       rewardsAvailable,
       rewardsApplied,
       totalBalance,
-      rewardsEligible: rewardsApplied + additionalRewardsEligible,
+      rewardsEligible: calculateEligibleRewards(rewardsAvailable, rewardsApplied, totalBalance),
     });
   };
 
@@ -115,6 +108,8 @@ export default class RewardModal extends React.Component {
     const max = rewardsApplied === rewardsEligible;
     const discount = rewardDollarValue * rewardsApplied;
     const totalSale = totalBalance >= 0 ? totalBalance : 0;
+    const actualDiscount = totalBalance < 0 ? discount + totalBalance : discount;
+
     return (
       <RowContainer style={{ width: '100%', justifyContent: 'center', alignItems: 'center' }}>
         <Modal
@@ -143,9 +138,7 @@ export default class RewardModal extends React.Component {
               <View style={{ padding: 8 }}>{null}</View>
               <ModalCopyContainer style={{ marginLeft: '15%', alignSelf: 'flex-start' }}>
                 <Title>Apply rewards</Title>
-                <Body color={Colors.secondaryText}>
-                  {customer.name} has {rewardsAvailable} reward(s)
-                </Body>
+                <Body color={Colors.secondaryText}>{`${customer.name} has ${rewardsAvailable} reward(s)`}</Body>
               </ModalCopyContainer>
               <ColumnContainer style={{ width: '40%', margin: 16 }}>
                 <SpaceBetweenRowContainer>
@@ -171,7 +164,7 @@ export default class RewardModal extends React.Component {
                   </Body>
                 )}
               </ColumnContainer>
-              <ModalCopyContainer alignItems={'center'} style={{ width: '40%', margin: 16 }}>
+              <ModalCopyContainer alignItems="center" style={{ width: '40%', margin: 16 }}>
                 {/* TODO make a component for this; pattern is in ConfirmationScreen too */}
                 <SpaceBetweenRowContainer>
                   <SubheadSecondary style={{ alignSelf: 'flex-start' }}>Subtotal</SubheadSecondary>
@@ -181,7 +174,7 @@ export default class RewardModal extends React.Component {
                 </SpaceBetweenRowContainer>
                 <SpaceBetweenRowContainer>
                   <SubheadSecondary>Rewards</SubheadSecondary>
-                  <SubheadSecondary>{displayDollarValue(discount, false)}</SubheadSecondary>
+                  <SubheadSecondary>{displayDollarValue(actualDiscount, false)}</SubheadSecondary>
                 </SpaceBetweenRowContainer>
                 <SpaceBetweenRowContainer>
                   <SubheadActive>Total Sale</SubheadActive>

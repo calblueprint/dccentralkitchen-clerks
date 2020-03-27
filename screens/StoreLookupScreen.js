@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { AsyncStorage, Button, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
+
 import Colors from '../assets/Colors';
 import { Body, ButtonLabel, RoundedButtonContainer, Title } from '../components/BaseComponents';
 import { loadStoreData } from '../lib/loginUtils';
@@ -50,6 +51,7 @@ export default class StoreLookupScreen extends React.Component {
     await AsyncStorage.setItem('clerkName', 'Jeffry Poa');
     await AsyncStorage.setItem('storeId', 'recw49LpAOInqvX3e');
     await AsyncStorage.setItem('customerId', 'recqx32YmmACiRWMq');
+    await AsyncStorage.setItem('trainingMode', JSON.stringify(false));
     this.props.navigation.navigate('Checkout');
   };
 
@@ -80,9 +82,16 @@ export default class StoreLookupScreen extends React.Component {
     this.setState({ searchStr: store.storeName, store, textFieldBlur: true });
     this.storePermissionHandler(store);
     this.updateFilteredStores(store.storeName);
+    Keyboard.dismiss();
   };
 
-  handleNavigate = () => {
+  handleNavigate = async () => {
+    // Clerk training: set `trainingMode` to "true" in AsyncStorage
+    if (this.state.store.storeName === 'CLERK TRAINING') {
+      await AsyncStorage.setItem('trainingMode', JSON.stringify(true));
+    } else {
+      await AsyncStorage.setItem('trainingMode', JSON.stringify(false));
+    }
     this.props.navigation.navigate('ClerkLogin', { store: this.state.store, storeName: this.state.store.storeName });
   };
 
@@ -101,15 +110,18 @@ export default class StoreLookupScreen extends React.Component {
           <CheckInContentContainer>
             <Title color={Colors.lightest}>Enter store name</Title>
             <TextField
+              clearButtonMode={'always'}
+              selectionColor={Colors.primaryGreen}
               style={{ marginTop: 32 }}
               placeholder="ex: Healthy Corner Store"
               onChangeText={text => this.handleChangeText(text)}
               value={this.state.searchStr}
               onFocus={() => this.onFocus()}
+              autoCorrect={false}
             />
             {!this.state.textFieldBlur && (
               <SearchBarContainer>
-                <ScrollView showsVerticalScrollIndicator={false}>
+                <ScrollView bounces={false} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
                   {this.state.filteredStores.map(store => (
                     <SearchElement key={store.id} onPress={() => this.onSearchElementPress(store)}>
                       <Body>{store.storeName}</Body>
@@ -122,7 +134,7 @@ export default class StoreLookupScreen extends React.Component {
               <RoundedButtonContainer
                 style={{ marginTop: 32 }}
                 color={this.state.storePermission ? Colors.primaryGreen : Colors.lightestGreen}
-                width="253px"
+                width="100%"
                 height="40px"
                 onPress={() => this.handleNavigate()}
                 disabled={!this.state.storePermission}>

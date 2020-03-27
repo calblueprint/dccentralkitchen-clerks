@@ -1,15 +1,18 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import update from 'react-addons-update';
-import { Alert, AsyncStorage, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, AsyncStorage, View } from 'react-native';
+import AlertAsync from 'react-native-alert-async';
 import { ScrollView } from 'react-native-gesture-handler';
+import Colors from '../assets/Colors';
 import BackButton from '../components/BackButton';
-import { Subhead, Title } from '../components/BaseComponents';
+import { ButtonLabel, FilledButtonContainer, Subhead, Title } from '../components/BaseComponents';
+import SubtotalCard from '../components/SubtotalCard';
+import TotalCard from '../components/TotalCard';
 import { getCustomersById } from '../lib/airtable/request';
-import { addTransaction, displayDollarValue, loadProductsData, updateCustomerPoints } from '../lib/checkoutUtils';
-import { rewardDollarValue } from '../lib/constants';
-import { ProductsContainer, SaleContainer, TopBar } from '../styled/checkout';
-import { TextHeader } from '../styled/shared';
+import { addTransaction, createFakeTransaction, displayDollarValue, loadProductsData } from '../lib/checkoutUtils';
+import { checkoutNumCols, productCardPxHeight, rewardDollarValue } from '../lib/constants';
+import { BottomBar, ProductsContainer, SaleContainer, TabContainer, TopBar } from '../styled/checkout';
 import QuantityModal from './modals/QuantityModal';
 import RewardModal from './modals/RewardModal';
 
@@ -24,6 +27,7 @@ export default class CheckoutScreen extends React.Component {
       // Other state
       totalBalance: 0,
       rewardsApplied: 0,
+      products: [],
       isLoading: true,
     };
   }
@@ -32,15 +36,17 @@ export default class CheckoutScreen extends React.Component {
     const customerId = await AsyncStorage.getItem('customerId');
     const customer = await getCustomersById(customerId);
     const products = await loadProductsData();
-
+    const training = JSON.parse(await AsyncStorage.getItem('trainingMode'));
     // Initialize cart a'la Python dictionary, to make updating quantity cleaner
-    // Cart contains line items, which have all initial product attributes, and a quantity
+    // Cart contains all products as line items, which have all initial product attributes, and a quantity
     const initialCart = products.reduce((cart, product) => ({ ...cart, [product.id]: product }), {});
 
     this.setState({
       customer,
+      products,
       cart: initialCart,
       rewardsAvailable: Math.floor(customer.rewardsAvailable),
+      trainingMode: training,
       isLoading: false,
     });
   }
@@ -82,6 +88,11 @@ export default class CheckoutScreen extends React.Component {
     }
   };
 
+  cartEmpty = () => {
+    // Should not be able to check out if there isn't anything in the transaction.
+    return Object.values(this.state.cart).reduce((empty, lineItem) => lineItem.quantity === 0 && empty, true);
+  };
+
   // Calculates total points earned from transaction
   // Accounts for lineItem individual point values and not allowing points to be earned with rewards daollrs
   getPointsEarned = () => {
@@ -117,35 +128,59 @@ export default class CheckoutScreen extends React.Component {
     const pointsEarned = this.getPointsEarned();
 
     // Passed through displayConfirmation to generateConfirmationMessage and confirmTransaction
-    const transactionInfo = {
+    const transaction = {
       discount: actualDiscount,
       subtotal,
       totalSale,
       pointsEarned,
       rewardsApplied, // for convenience
     };
-    this.displayConfirmation(transactionInfo);
+    this.displayConfirmation(transaction);
   };
 
   // Displays a confirmation alert to the clerk.
-  displayConfirmation = transactionInfo => {
+  displayConfirmation = async transaction => {
     // Should not be able to check out if there isn't anything in the transaction.
-    if (this.state.cart.length === 0) {
-      Alert.alert('Empty Transaction', 'This transaction is empty. Please add items to the cart.', [
-        {
-          text: 'OK',
-          style: 'cancel',
-        },
-      ]);
-      return;
+    if (this.state.rewardsApplied === 0) {
+      const eligibleRewards = calculateEligibleRewards(
+        this.state.rewardsAvailable,
+        this.state.rewardsApplied,
+        this.state.totalBalance
+      );
+      if (eligibleRewards && transaction.totalSale >= rewardDollarValue) {
+        const continueWithoutRewards = await this.confirmNoRewards(eligibleRewards);
+        if (!continueWithoutRewards) {
+          return;
+        }
+      }
     }
-    Alert.alert('Confirm Transaction', this.generateConfirmationMessage(transactionInfo), [
+    Alert.alert('Confirm Sale', this.generateConfirmationMessage(transaction), [
       {
         text: 'Cancel',
         style: 'cancel',
       },
-      { text: 'Confirm', onPress: () => this.confirmTransaction(transactionInfo) },
+      { text: 'Confirm', onPress: () => this.confirmTransaction(transaction) },
     ]);
+  };
+
+  confirmNoRewards = async eligibleRewards => {
+    const response = await AlertAsync(
+      'Available rewards were not applied',
+      'This customer could apply up to '.concat(eligibleRewards).concat(' rewards to this sale.'),
+      [
+        {
+          text: 'Go back to apply rewards',
+          style: 'cancel',
+          onPress: () => false,
+        },
+        {
+          text: 'Continue without rewards',
+          onPress: () => true,
+          style: 'default',
+        },
+      ]
+    );
+    return response;
   };
 
   generateConfirmationLine = (name, value) => {
@@ -154,25 +189,30 @@ export default class CheckoutScreen extends React.Component {
 
   // Generates the confirmation message based on items in cart, points earned,
   // and total spent.
-  generateConfirmationMessage = transactionInfo => {
+  generateConfirmationMessage = transaction => {
     let msg = Object.values(this.state.cart).reduce(
       (msg, lineItem) => (lineItem.quantity > 0 ? msg.concat(`${lineItem.quantity} x ${lineItem.name}\n`) : msg),
-      'Transaction Items:\n\n'
+      'Sale Items:\n\n'
     );
-    msg = msg.concat(`\nRewards Redeemed: ${transactionInfo.rewardsApplied}\n`);
+    msg = msg.concat(`\nRewards Redeemed: ${transaction.rewardsApplied}\n`);
     // Adding total price and total points earned to message. Must be called after getPointsEarned() in handleSubmit() for updated amount.
-    msg = msg.concat(this.generateConfirmationLine('Subtotal', transactionInfo.subtotal));
-    msg = msg.concat(this.generateConfirmationLine('Discount', transactionInfo.discount));
-    msg = msg.concat(this.generateConfirmationLine('Total Sale', transactionInfo.totalSale));
-    msg = msg.concat(`\nTotal Points Earned: ${transactionInfo.pointsEarned}`);
+    msg = msg.concat(this.generateConfirmationLine('Subtotal', transaction.subtotal));
+    msg = msg.concat(this.generateConfirmationLine('Discount', transaction.discount));
+    msg = msg.concat(this.generateConfirmationLine('Total Sale', transaction.totalSale));
+    msg = msg.concat(`\nTotal Points Earned: ${transaction.pointsEarned}`);
     return msg;
   };
 
   // Adds the transaction to the user's account and updates their points.
-  confirmTransaction = async transactionInfo => {
+  confirmTransaction = async transaction => {
+    // Clerk Training: creates a local transaction object instead of creating transaction in Airtable
+    if (JSON.parse(await AsyncStorage.getItem('trainingMode'))) {
+      this.props.navigation.navigate('Confirmation', createFakeTransaction(transaction));
+      return;
+    }
     try {
-      const transactionId = await addTransaction(this.state.customer, this.state.cart, transactionInfo);
-      await updateCustomerPoints(this.state.customer, transactionInfo.pointsEarned, transactionInfo.rewardsApplied);
+      const transactionId = await addTransaction(this.state.customer, this.state.cart, transaction);
+      await updateCustomerPoints(this.state.customer, transaction.pointsEarned, transaction.rewardsApplied);
       this.props.navigation.navigate('Confirmation', { transactionId });
     } catch (err) {
       // TODO better handling - should prompt the user to try again, or at least say something is wrong with the service
@@ -181,61 +221,137 @@ export default class CheckoutScreen extends React.Component {
     }
   };
 
+  // Returns index of the first product with a name starting with the given letter in products list.
+  // If no product starting with that letter exists, find the next product.
+  getIndexOfFirstProductAtLetter = (startLetter, endLetter) => {
+    const prodList = this.state.products.filter(
+      product =>
+        product.name.charAt(0).toUpperCase() >= startLetter.toUpperCase() &&
+        product.name.charAt(0) < endLetter.toUpperCase()
+    );
+    // There are no products in the letter range.
+    if (prodList.length === 0) {
+      // TODO: Shouldn't error out. Maybe have a nonfunctional button?
+      console.log('No products in range', startLetter, 'to', endLetter);
+      return null;
+    }
+    return this.state.products.indexOf(prodList[0]);
+  };
+
+  // Takes in strings tab label (i.e. "A-K") and starting letter (i.e. "A") and returns a
+  // tab for the bottom alphabetical scroll bar.
+  alphabeticalScrollTab = (startLetter, endLetter) => {
+    return (
+      <TabContainer
+        onPress={() =>
+          this.productScrollView.scrollTo({
+            y:
+              Math.floor(this.getIndexOfFirstProductAtLetter(startLetter, endLetter) / checkoutNumCols) *
+              productCardPxHeight,
+          })
+        }>
+        <Title>
+          {startLetter
+            .toUpperCase()
+            .concat(' - ')
+            .concat(endLetter.toUpperCase())}
+        </Title>
+      </TabContainer>
+    );
+  };
+
   render() {
     if (this.state.isLoading) {
       return null;
     }
 
-    const { cart, customer, totalBalance } = this.state;
+    const { cart, customer, totalBalance, trainingMode } = this.state;
     const totalSale = totalBalance > 0 ? totalBalance : 0;
+    const pointsEarned = this.getPointsEarned();
+    const subtotal = totalBalance + this.state.rewardsApplied * rewardDollarValue;
+    const discount = this.state.rewardsApplied * rewardDollarValue;
+    const actualDiscount = totalBalance < 0 ? discount + totalBalance : discount;
+    const cartEmpty = this.cartEmpty();
 
     return (
-      <View>
-        <TopBar>
+      <View style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-around', flex: 1 }}>
+        <TopBar trainingColor={trainingMode}>
           <BackButton navigation={this.props.navigation} light={false} style={{ marginTop: 3, marginLeft: 24 }} />
-          <Title> {'Customer: '.concat(customer.name)} </Title>
+          <Title>
+            {'Customer: '
+              .concat(customer.name)
+              .concat(trainingMode ? '   |   Training Mode (sales will not be saved)' : '')}
+          </Title>
           {/* Duplicate, invisible element to have left-aligned BackButton */}
           <BackButton navigation={this.props.navigation} light={false} style={{ opacity: 0.0, disabled: true }} />
         </TopBar>
-        <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}>
+        <View style={{ display: 'flex', flexDirection: 'row', flex: 1 }}>
           {/* Display products */}
-          <ProductsContainer>
-            {Object.entries(cart).map(([id, product]) => (
-              <QuantityModal key={id} product={product} isLineItem={false} callback={this.updateQuantityCallback} />
-            ))}
-          </ProductsContainer>
+          <View style={{ display: 'flex', flex: 5, flexDirection: 'column' }}>
+            <ProductsContainer
+              ref={scrollView => {
+                this.productScrollView = scrollView;
+              }}>
+              {Object.entries(cart).map(([id, product]) => (
+                <QuantityModal key={id} product={product} isLineItem={false} callback={this.updateQuantityCallback} />
+              ))}
+            </ProductsContainer>
+            <BottomBar style={{ display: 'flex', flexDirection: 'row' }}>
+              {this.alphabeticalScrollTab('A', 'K')}
+              {this.alphabeticalScrollTab('L', 'S')}
+              {this.alphabeticalScrollTab('T', 'Z')}
+            </BottomBar>
+          </View>
           {/* Right column */}
           <SaleContainer>
-            <Subhead>Current Sale</Subhead>
-            {/* Cart container */}
-            <View style={{ height: '40%', paddingBottom: '5%' }}>
-              <ScrollView>
-                {Object.entries(cart).map(([id, product]) => {
-                  return (
-                    product.quantity > 0 && (
-                      <QuantityModal key={id} product={product} isLineItem callback={this.updateQuantityCallback} />
-                    )
-                  );
-                })}
-              </ScrollView>
-            </View>
-            <RewardModal
-              totalBalance={totalBalance}
-              customer={customer}
-              rewardsAvailable={this.state.rewardsAvailable}
-              rewardsApplied={this.state.rewardsApplied}
-              callback={this.applyRewardsCallback}
-            />
-            <Text
+            <View
               style={{
-                fontWeight: 'bold',
-                textAlign: 'center',
+                paddingTop: 13,
+                paddingLeft: 14,
+                paddingRight: 14,
+                paddingBottom: 0,
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                flex: 1,
               }}>
-              Order Total ${totalSale.toFixed(2)}
-            </Text>
-            <TouchableOpacity onPress={() => this.handleSubmit()}>
-              <TextHeader style={{ color: '#008550' }}>Checkout</TextHeader>
-            </TouchableOpacity>
+              <View style={{ height: '60%' }}>
+                <Subhead>Current Sale</Subhead>
+                {/* Cart container */}
+                <View style={{ height: '100%', paddingBottom: '5%' }}>
+                  <ScrollView
+                    ref={scrollView => {
+                      this.cartScrollView = scrollView;
+                    }}
+                    onContentSizeChange={() => this.cartScrollView.scrollToEnd({ animated: true })}>
+                    {Object.entries(cart).map(([id, product]) => {
+                      return (
+                        product.quantity > 0 && (
+                          <QuantityModal key={id} product={product} isLineItem callback={this.updateQuantityCallback} />
+                        )
+                      );
+                    })}
+                  </ScrollView>
+                </View>
+              </View>
+              <View>
+                <RewardModal
+                  totalBalance={totalBalance}
+                  customer={customer}
+                  rewardsAvailable={this.state.rewardsAvailable}
+                  rewardsApplied={this.state.rewardsApplied}
+                  callback={this.applyRewardsCallback}
+                />
+                <SubtotalCard subtotalPrice={subtotal} rewardsAmount={actualDiscount} />
+                <TotalCard totalSale={totalSale} totalPoints={pointsEarned} />
+              </View>
+            </View>
+            <FilledButtonContainer
+              style={{ paddingTop: 3 }}
+              disabled={cartEmpty}
+              color={cartEmpty ? Colors.lightestGreen : Colors.primaryGreen}
+              onPress={() => this.handleSubmit()}>
+              <ButtonLabel>Complete Sale</ButtonLabel>
+            </FilledButtonContainer>
           </SaleContainer>
         </View>
       </View>
