@@ -1,10 +1,12 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Alert, AsyncStorage, Clipboard, TouchableOpacity } from 'react-native';
+
 import { Body, ButtonLabel, FilledButtonContainer, Subhead, Title } from '../components/BaseComponents';
 import { getTransactionsById } from '../lib/airtable/request';
 import { displayDollarValue } from '../lib/checkoutUtils';
 import { ColumnContainer, SpaceBetweenRowContainer } from '../styled/shared';
+
 export default class ConfirmationScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -17,8 +19,9 @@ export default class ConfirmationScreen extends React.Component {
   async componentDidMount() {
     try {
       // Could have done this by passing all info from CheckoutScreen,
-      // But decided it was better to not silently fail if a transaction didn't make it to AirTable.
+      // But decided it was better to not silently fail if a transaction didn't make it to Airtable.
       let transaction = null;
+      // Clerk training: use local transaction instead of getting it from Airtable.
       if (JSON.parse(await AsyncStorage.getItem('trainingMode'))) {
         transaction = this.props.navigation.state.params;
       } else {

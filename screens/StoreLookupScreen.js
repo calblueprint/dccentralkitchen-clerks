@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { AsyncStorage, Button, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
+
 import Colors from '../assets/Colors';
 import { Body, ButtonLabel, RoundedButtonContainer, Title } from '../components/BaseComponents';
 import { loadStoreData } from '../lib/loginUtils';
@@ -84,6 +85,7 @@ export default class StoreLookupScreen extends React.Component {
   };
 
   handleNavigate = async () => {
+    // Clerk training: set `trainingMode` to "true" in AsyncStorage
     if (this.state.store.storeName === 'CLERK TRAINING') {
       await AsyncStorage.setItem('trainingMode', JSON.stringify(true));
     } else {

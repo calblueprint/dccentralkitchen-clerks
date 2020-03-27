@@ -3,6 +3,7 @@ import React from 'react';
 import update from 'react-addons-update';
 import { Alert, AsyncStorage, Text, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
+
 import BackButton from '../components/BackButton';
 import { Subhead, Title } from '../components/BaseComponents';
 import { getCustomersById } from '../lib/airtable/request';
@@ -18,6 +19,7 @@ import { ProductsContainer, SaleContainer, TopBar } from '../styled/checkout';
 import { TextHeader } from '../styled/shared';
 import QuantityModal from './modals/QuantityModal';
 import RewardModal from './modals/RewardModal';
+
 export default class CheckoutScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -39,7 +41,7 @@ export default class CheckoutScreen extends React.Component {
     const products = await loadProductsData();
     const training = JSON.parse(await AsyncStorage.getItem('trainingMode'));
     // Initialize cart a'la Python dictionary, to make updating quantity cleaner
-    // Cart contains line items, which have all initial product attributes, and a quantity
+    // Cart contains all products as line items, which have all initial product attributes, and a quantity
     const initialCart = products.reduce((cart, product) => ({ ...cart, [product.id]: product }), {});
 
     this.setState({
@@ -176,10 +178,7 @@ export default class CheckoutScreen extends React.Component {
 
   // Adds the transaction to the user's account and updates their points.
   confirmTransaction = async transaction => {
-    // Clerk Training: if storeId is "Clerk Training"'s ID
-    // do not create the transaction or update points
-    // Navigate to Confirmation Screen with a pre-filed transaction ID
-    const storeId = await AsyncStorage.getItem('storeId');
+    // Clerk Training: creates a local transaction object instead of creating transaction in Airtable
     if (JSON.parse(await AsyncStorage.getItem('trainingMode'))) {
       this.props.navigation.navigate('Confirmation', createFakeTransaction(transaction));
       return;

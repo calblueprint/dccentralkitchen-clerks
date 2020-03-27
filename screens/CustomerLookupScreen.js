@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { AsyncStorage, View } from 'react-native';
+
 import Colors from '../assets/Colors';
 import BackButton from '../components/BackButton';
 import { ButtonLabel, RoundedButtonContainer, Title } from '../components/BaseComponents';
@@ -17,8 +18,7 @@ export default class CustomerLookupScreen extends React.Component {
       clerkName: '',
       phoneNumber: '',
       errorMsg: '',
-      customerPermission: false,
-      loading: true
+      customerPermission: false
     };
   }
 
@@ -26,7 +26,6 @@ export default class CustomerLookupScreen extends React.Component {
   // Clears error state and phoneNumber entered so far
   async componentDidMount() {
     await this._reset();
-    this.setState({ loading: false });
   }
 
   _reset = async () => {
