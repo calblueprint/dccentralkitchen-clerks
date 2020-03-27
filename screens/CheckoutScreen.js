@@ -3,6 +3,8 @@ import React from 'react';
 import update from 'react-addons-update';
 import { Alert, AsyncStorage, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
+
+import Colors from '../assets/Colors';
 import BackButton from '../components/BackButton';
 import { ButtonLabel, FilledButtonContainer, Subhead, Title } from '../components/BaseComponents';
 import SubtotalCard from '../components/SubtotalCard';
@@ -85,6 +87,11 @@ export default class CheckoutScreen extends React.Component {
     }
   };
 
+  cartEmpty = () => {
+    // Should not be able to check out if there isn't anything in the transaction.
+    return Object.values(this.state.cart).reduce((empty, lineItem) => lineItem.quantity === 0 && empty, true);
+  };
+
   // Calculates total points earned from transaction
   // Accounts for lineItem individual point values and not allowing points to be earned with rewards daollrs
   getPointsEarned = () => {
@@ -132,20 +139,6 @@ export default class CheckoutScreen extends React.Component {
 
   // Displays a confirmation alert to the clerk.
   displayConfirmation = transactionInfo => {
-    // Should not be able to check out if there isn't anything in the transaction.
-    const emptyCart = Object.values(this.state.cart).reduce(
-      (empty, lineItem) => lineItem.quantity === 0 && empty,
-      true
-    );
-    if (emptyCart) {
-      Alert.alert('Empty Sale', 'This sale is empty. Please add items to the cart.', [
-        {
-          text: 'OK',
-          style: 'cancel'
-        }
-      ]);
-      return;
-    }
     Alert.alert('Confirm Sale', this.generateConfirmationMessage(transactionInfo), [
       {
         text: 'Cancel',
@@ -191,7 +184,7 @@ export default class CheckoutScreen extends React.Component {
   // Returns index of the first product with a name starting with the given letter in products list.
   // If no product starting with that letter exists, find the next product.
   getIndexOfFirstProductAtLetter = (startLetter, endLetter) => {
-    let prodList = this.state.products.filter(
+    const prodList = this.state.products.filter(
       product =>
         product.name.charAt(0).toUpperCase() >= startLetter.toUpperCase() &&
         product.name.charAt(0) < endLetter.toUpperCase()
@@ -236,6 +229,9 @@ export default class CheckoutScreen extends React.Component {
     const totalSale = totalBalance > 0 ? totalBalance : 0;
     const pointsEarned = this.getPointsEarned();
     const subtotal = totalBalance + this.state.rewardsApplied * rewardDollarValue;
+    const discount = this.state.rewardsApplied * rewardDollarValue;
+    const actualDiscount = totalBalance < 0 ? discount + totalBalance : discount;
+    const cartEmpty = this.cartEmpty();
 
     return (
       <View style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-around', flex: 1 }}>
@@ -301,13 +297,14 @@ export default class CheckoutScreen extends React.Component {
                   rewardsApplied={this.state.rewardsApplied}
                   callback={this.applyRewardsCallback}
                 />
-                {/* When different types of rewards are created, we can add rewards amount to state. For now, rewards
-              amount is equal to rewardsApplied * rewardDollarValue. */}
-                <SubtotalCard subtotalPrice={subtotal} rewardsAmount={this.state.rewardsApplied * rewardDollarValue} />
+                <SubtotalCard subtotalPrice={subtotal} rewardsAmount={actualDiscount} />
                 <TotalCard totalSale={totalSale} totalPoints={pointsEarned} />
               </View>
             </View>
-            <FilledButtonContainer onPress={() => this.handleSubmit()}>
+            <FilledButtonContainer
+              disabled={cartEmpty}
+              color={cartEmpty ? Colors.lightestGreen : Colors.primaryGreen}
+              onPress={() => this.handleSubmit()}>
               <ButtonLabel>Complete Sale</ButtonLabel>
             </FilledButtonContainer>
           </SaleContainer>
