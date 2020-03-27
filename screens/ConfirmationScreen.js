@@ -55,7 +55,7 @@ export default class ConfirmationScreen extends React.Component {
       <ColumnContainer style={{ width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
         <ColumnContainer
           style={{ width: '33%', height: '35%', justifyContent: 'space-around', margin: 12, paddingBottom: 32 }}>
-          <Title>Purchase Summary</Title>
+          <Title>Sale Summary</Title>
           <SpaceBetweenRowContainer>
             <Subhead>Transaction ID</Subhead>
             <TouchableOpacity onLongPress={() => this.writeToClipboard(truncatedId)}>
