@@ -44,7 +44,6 @@
     "@expo/vector-icons": "^10.0.3",
     "@react-native-community/masked-view": "^0.1.7",
     "@react-navigation/core": "^3.0.0-alpha.13",
-    "@react-navigation/stack": "^5.2.4",
     "@react-navigation/web": "^1.0.0-alpha.9",
     "airtable": "^0.7.2",
     "babel-plugin-inline-dotenv": "^1.5.0",
@@ -65,7 +64,9 @@
     "react-native-safe-area-context": "~0.3.6",
     "react-native-screens": "~1.0.0-alpha.23",
     "react-native-web": "^0.11.7",
-    "react-navigation": "^3.12.0",
+    "react-navigation": "^4.0.10",
+    "react-navigation-drawer": "2.3.3",
+    "react-navigation-stack": "^1.10.3",
     "styled-components": "^4.4.1"
   },
   "devDependencies": {
