@@ -1,4 +1,6 @@
 {
+  "workbench.iconTheme": "eq-material-theme-icons-light",
+  "workbench.colorTheme": "Tomorrow Night Blue",
   "files.associations": {
     "*.js": "javascriptreact"
   },
