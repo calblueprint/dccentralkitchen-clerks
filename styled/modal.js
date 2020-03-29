@@ -40,7 +40,7 @@ export const SubheadActive = styled(Subhead)`
 // Quantity
 export const QuantityInput = styled.TextInput.attrs({
   keyboardType: 'numeric',
-  maxLength: 3
+  maxLength: 3,
 })`
   border-width: 1px;
   border-color: ${Colors.activeText};

@@ -4,7 +4,7 @@ import Colors from '../assets/Colors';
 
 export const CheckInContainer = styled.KeyboardAvoidingView.attrs({
   behavior: Platform.OS === 'ios' ? 'position' : null,
-  keyboardVerticalOffset: -200
+  keyboardVerticalOffset: -200,
 })`
   background-color: ${props => props.color || Colors.activeText};
   width: 100%;

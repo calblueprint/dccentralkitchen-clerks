@@ -24,5 +24,5 @@ export default TotalCard;
 
 TotalCard.propTypes = {
   totalSale: PropTypes.number.isRequired,
-  totalPoints: PropTypes.number.isRequired
+  totalPoints: PropTypes.number.isRequired,
 };
