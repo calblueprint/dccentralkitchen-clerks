@@ -224,6 +224,11 @@ export default class CheckoutScreen extends React.Component {
     } catch (err) {
       // TODO better handling - should prompt the user to try again, or at least say something is wrong with the service
       // Technically the only thing that could happen is a network failure, but likely indicates a change in column schema etc
+      Alert.alert(
+        'Error creating transaction',
+        'We were unable to create a transaction in Airtable. Please let an administrator know ASAP so they can fix this issue.',
+        [{ text: 'OK' }]
+      );
       console.log('Error creating transaction in Airtable', err);
     }
   };
