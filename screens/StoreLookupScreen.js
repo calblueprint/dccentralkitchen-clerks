@@ -109,7 +109,7 @@ export default class StoreLookupScreen extends React.Component {
           <CheckInContentContainer>
             <Title color={Colors.lightest}>Enter store name</Title>
             <TextField
-              clearButtonMode={'always'}
+              clearButtonMode="always"
               selectionColor={Colors.primaryGreen}
               style={{ marginTop: 32 }}
               placeholder="ex: Healthy Corner Store"
@@ -133,7 +133,7 @@ export default class StoreLookupScreen extends React.Component {
               <RoundedButtonContainer
                 style={{ marginTop: 32 }}
                 color={this.state.storePermission ? Colors.primaryGreen : Colors.lightestGreen}
-                width="100%"
+                width="253px"
                 height="40px"
                 onPress={() => this.handleNavigate()}
                 disabled={!this.state.storePermission}>

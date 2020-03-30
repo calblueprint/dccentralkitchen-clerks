@@ -1,20 +1,21 @@
+import { Platform } from 'react-native';
 import styled from 'styled-components/native';
 import { FilledButtonContainer } from '../components/BaseComponents';
 import Colors from '../constants/Colors';
 import { ColumnContainer, RowContainer } from './shared';
 
 // Customer Name Top Bar
-
+// Adjusts spacing for Android devices with status bars.
 export const TopBar = styled.View`
-  height: 68px;
+  height: ${Platform.OS === 'android' ? '80px' : '60px'};
+  align-items: ${Platform.OS === 'android' ? 'flex-end' : 'center'};
+  padding-bottom: ${Platform.OS === 'android' ? '16px' : '0px'};
   width: 100%;
   background: ${props => (props.trainingColor ? Colors.trainingMode : Colors.base)};
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  align-items: center;
 `;
-
 // Alphabetical Tab Bottom Bar
 
 export const BottomBar = styled.View`
