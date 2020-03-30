@@ -24,5 +24,5 @@ export default SubtotalCard;
 
 SubtotalCard.propTypes = {
   subtotalPrice: PropTypes.number.isRequired,
-  rewardsAmount: PropTypes.number.isRequired
+  rewardsAmount: PropTypes.number.isRequired,
 };

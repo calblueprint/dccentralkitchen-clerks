@@ -15,11 +15,11 @@ function DrawerButton({ navigation, light, style }) {
 DrawerButton.propTypes = {
   navigation: PropTypes.object.isRequired,
   light: PropTypes.bool.isRequired,
-  style: PropTypes.object
+  style: PropTypes.object,
 };
 
 DrawerButton.defaultProps = {
-  style: {}
+  style: {},
 };
 
 export default DrawerButton;

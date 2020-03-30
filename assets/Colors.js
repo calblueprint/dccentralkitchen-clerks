@@ -14,7 +14,7 @@ const Colors = {
   lighter: '#EBEBEB',
   lightest: '#FFFFFF',
   black: '#000000',
-  trainingMode: '#FFC300'
+  trainingMode: '#FFC300',
 };
 
 export default Colors;

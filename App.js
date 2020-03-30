@@ -41,8 +41,8 @@ async function loadResourcesAsync() {
       'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf'),
       'poppins-regular': require('./assets/fonts/Poppins-Regular.ttf'),
       'poppins-semibold': require('./assets/fonts/Poppins-SemiBold.ttf'),
-      'poppins-medium': require('./assets/fonts/Poppins-Medium.ttf')
-    })
+      'poppins-medium': require('./assets/fonts/Poppins-Medium.ttf'),
+    }),
   ]);
 }
 
@@ -59,6 +59,6 @@ function handleFinishLoading(setLoadingComplete) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff'
-  }
+    backgroundColor: '#fff',
+  },
 });
