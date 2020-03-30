@@ -98,7 +98,7 @@ export default class QuantityModal extends React.Component {
           }}>
           {/* Opacity layer */}
           <ModalCenteredOpacityLayer>
-            <ModalContentContainer style={{ top: -200 }}>
+            <ModalContentContainer>
               <TouchableOpacity
                 style={{
                   position: 'absolute',
