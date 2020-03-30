@@ -1,7 +1,7 @@
 import { FontAwesome5 } from '@expo/vector-icons';
 import PropTypes from 'prop-types';
 import React from 'react';
-import Colors from '../assets/Colors';
+import Colors from '../constants/Colors';
 import { ButtonContainer } from './BaseComponents';
 
 function DrawerButton({ navigation, light, style }) {

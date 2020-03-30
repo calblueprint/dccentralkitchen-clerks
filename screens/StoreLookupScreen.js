@@ -2,8 +2,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { AsyncStorage, Button, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import Colors from '../assets/Colors';
 import { Body, ButtonLabel, RoundedButtonContainer, Title } from '../components/BaseComponents';
+import Colors from '../constants/Colors';
 import { loadStoreData } from '../lib/loginUtils';
 import {
   CheckInContainer,

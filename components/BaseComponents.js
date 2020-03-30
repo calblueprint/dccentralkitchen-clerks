@@ -1,5 +1,5 @@
 import styled from 'styled-components/native';
-import Colors from '../assets/Colors';
+import Colors from '../constants/Colors';
 
 // Text Components
 export const BigTitle = styled.Text`

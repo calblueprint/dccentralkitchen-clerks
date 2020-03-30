@@ -1,5 +1,5 @@
 import React from 'react';
-import Colors from '../assets/Colors';
+import Colors from '../constants/Colors';
 import { calculateLineItemPrice, displayDollarValue } from '../lib/checkoutUtils';
 import { LineItem, LineItemRow } from '../styled/checkout';
 import { Body, Subhead } from './BaseComponents';
