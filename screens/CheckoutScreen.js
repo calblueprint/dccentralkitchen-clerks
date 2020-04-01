@@ -4,11 +4,11 @@ import update from 'react-addons-update';
 import { Alert, AsyncStorage, View } from 'react-native';
 import AlertAsync from 'react-native-alert-async';
 import { ScrollView } from 'react-native-gesture-handler';
-import Colors from '../assets/Colors';
 import BackButton from '../components/BackButton';
 import { ButtonLabel, FilledButtonContainer, Subhead, Title } from '../components/BaseComponents';
 import SubtotalCard from '../components/SubtotalCard';
 import TotalCard from '../components/TotalCard';
+import Colors from '../constants/Colors';
 import { getCustomersById } from '../lib/airtable/request';
 import {
   addTransaction,
@@ -16,7 +16,7 @@ import {
   createFakeTransaction,
   displayDollarValue,
   loadProductsData,
-  updateCustomerPoints
+  updateCustomerPoints,
 } from '../lib/checkoutUtils';
 import { checkoutNumCols, productCardPxHeight, rewardDollarValue } from '../lib/constants';
 import { BottomBar, ProductsContainer, SaleContainer, TabContainer, TopBar } from '../styled/checkout';
@@ -35,7 +35,7 @@ export default class CheckoutScreen extends React.Component {
       totalBalance: 0,
       rewardsApplied: 0,
       products: [],
-      isLoading: true
+      isLoading: true,
     };
   }
 
@@ -54,7 +54,7 @@ export default class CheckoutScreen extends React.Component {
       cart: initialCart,
       rewardsAvailable: Math.floor(customer.rewardsAvailable),
       trainingMode: training,
-      isLoading: false
+      isLoading: false,
     });
   }
 
@@ -74,7 +74,7 @@ export default class CheckoutScreen extends React.Component {
     if (priceDifference >= 0 || this.state.rewardsApplied === 0 || newBalance >= 0) {
       this.setState(prevState => ({
         cart: update(prevState.cart, { [product.id]: { quantity: { $set: quantity } } }),
-        totalBalance: prevState.totalBalance + priceDifference
+        totalBalance: prevState.totalBalance + priceDifference,
       }));
       // Special case: negative balance when rewards have been applied, but need to be restored
       // i.e rewardsValue * rewardsApplied > cartTotal after quantity drops
@@ -90,7 +90,7 @@ export default class CheckoutScreen extends React.Component {
           (prevState.totalBalance + priceDifference) % rewardDollarValue < 0
             ? rewardDollarValue + ((prevState.totalBalance + priceDifference) % rewardDollarValue)
             : (prevState.totalBalance + priceDifference) % rewardDollarValue,
-        rewardsApplied: prevState.rewardsApplied - rewardsToUndo
+        rewardsApplied: prevState.rewardsApplied - rewardsToUndo,
       }));
     }
   };
@@ -140,7 +140,7 @@ export default class CheckoutScreen extends React.Component {
       subtotal,
       totalSale,
       pointsEarned,
-      rewardsApplied // for convenience
+      rewardsApplied, // for convenience
     };
     this.displayConfirmation(transaction);
   };
@@ -164,9 +164,9 @@ export default class CheckoutScreen extends React.Component {
     Alert.alert('Confirm Sale', this.generateConfirmationMessage(transaction), [
       {
         text: 'Cancel',
-        style: 'cancel'
+        style: 'cancel',
       },
-      { text: 'Confirm', onPress: () => this.confirmTransaction(transaction) }
+      { text: 'Confirm', onPress: () => this.confirmTransaction(transaction) },
     ]);
   };
 
@@ -178,13 +178,13 @@ export default class CheckoutScreen extends React.Component {
         {
           text: 'Go back to apply rewards',
           style: 'cancel',
-          onPress: () => false
+          onPress: () => false,
         },
         {
           text: 'Continue without rewards',
           onPress: () => true,
-          style: 'default'
-        }
+          style: 'default',
+        },
       ]
     );
     return response;
@@ -254,7 +254,7 @@ export default class CheckoutScreen extends React.Component {
           this.productScrollView.scrollTo({
             y:
               Math.floor(this.getIndexOfFirstProductAtLetter(startLetter, endLetter) / checkoutNumCols) *
-              productCardPxHeight
+              productCardPxHeight,
           })
         }>
         <Title>
@@ -319,7 +319,7 @@ export default class CheckoutScreen extends React.Component {
                 paddingBottom: 0,
                 flexDirection: 'column',
                 justifyContent: 'space-between',
-                flex: 1
+                flex: 1,
               }}>
               <View style={{ height: '60%' }}>
                 <Subhead>Current Sale</Subhead>
@@ -367,5 +367,5 @@ export default class CheckoutScreen extends React.Component {
 }
 
 CheckoutScreen.propTypes = {
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
 };

@@ -2,9 +2,9 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { AsyncStorage, Keyboard, TouchableWithoutFeedback, View } from 'react-native';
-import Colors from '../assets/Colors';
 import BackButton from '../components/BackButton';
 import { ButtonLabel, RoundedButtonContainer, Subhead, Title } from '../components/BaseComponents';
+import Colors from '../constants/Colors';
 import { status } from '../lib/constants';
 import { lookupClerk } from '../lib/loginUtils';
 import { CheckInContainer, CheckInContentContainer, TextField } from '../styled/checkin';
@@ -22,7 +22,7 @@ export default class ClerkLoginScreen extends React.Component {
       password: '',
       errorMsg: null,
       errorShown: false,
-      loginPermission: false
+      loginPermission: false,
     };
   }
 
@@ -146,5 +146,5 @@ export default class ClerkLoginScreen extends React.Component {
 }
 
 ClerkLoginScreen.propTypes = {
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
 };

@@ -2,9 +2,9 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { AsyncStorage, View } from 'react-native';
-import Colors from '../assets/Colors';
 import { ButtonLabel, RoundedButtonContainer, Subhead, Title } from '../components/BaseComponents';
 import DrawerButton from '../components/DrawerButton';
+import Colors from '../constants/Colors';
 import { status } from '../lib/constants';
 import { lookupCustomer } from '../lib/lookupUtils';
 import { CheckInContainer, CheckInContentContainer, TextField } from '../styled/checkin';
@@ -19,7 +19,7 @@ export default class CustomerLookupScreen extends React.Component {
       phoneNumber: '',
       errorMsg: '',
       errorShown: false,
-      customerPermission: false
+      customerPermission: false,
     };
   }
 
@@ -108,7 +108,7 @@ export default class CustomerLookupScreen extends React.Component {
             marginTop: 33,
             marginLeft: 29,
             justifyContent: 'flex-start',
-            alignItems: 'center'
+            alignItems: 'center',
           }}>
           <DrawerButton navigation={this.props.navigation} light={false} />
           <Title style={{ marginLeft: 16 }}>{this.state.clerkName}</Title>
@@ -153,5 +153,5 @@ export default class CustomerLookupScreen extends React.Component {
 }
 
 CustomerLookupScreen.propTypes = {
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
 };

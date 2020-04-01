@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import Colors from '../assets/Colors';
+import Colors from '../constants/Colors';
 import { displayDollarValue } from '../lib/checkoutUtils';
 import { LineItem, LineItemRow } from '../styled/checkout';
 import { Body, Subhead } from './BaseComponents';
@@ -24,5 +24,5 @@ export default TotalCard;
 
 TotalCard.propTypes = {
   totalSale: PropTypes.number.isRequired,
-  totalPoints: PropTypes.number.isRequired
+  totalPoints: PropTypes.number.isRequired,
 };

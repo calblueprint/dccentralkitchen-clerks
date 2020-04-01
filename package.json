@@ -7,11 +7,12 @@
     "web": "expo start --web",
     "eject": "expo eject",
     "test": "jest --watchAll",
-    "lint:js": "eslint . --ext  .jsx,.js ./screens ./components",
-    "lint:js:fix": "yarn run lint:js --fix",
-    "lint:js:quiet": "eslint . --ext .jsx,.js --quiet ./screens ./components",
-    "lint:js:quiet:fix": "yarn run lint:js:quiet --fix",
-    "pretty": "prettier --config prettier.config.js --write \"./{screens,components,styles}/**/*.js\" \"./{screens,components,styles}/*.js\"",
+    "lint-all": "eslint . --ext  .jsx,.js",
+    "lint-all:fix": "yarn run lint-all --fix",
+    "lint-all:quiet": "eslint . --ext .jsx,.js --quiet",
+    "lint-all:quiet:fix": "yarn run lint-all:quiet --fix",
+    "pretty": "prettier --config .prettierrc --write",
+    "pretty-all": "prettier --config .prettierrc --write \"./{components,constants,lib,navigation,screens,styled}/**/*.js\" \"./{components,constants,lib,navigation,screens,styled}/*.js\"",
     "generate-schema": "generate-airtable-schema"
   },
   "airtable-schema-generator": {
@@ -26,7 +27,7 @@
   },
   "lint-staged": {
     "*.{js,jsx}": [
-      "prettier --config prettier.config.js --write"
+      "prettier --config .prettierrc --write"
     ]
   },
   "husky": {
@@ -41,19 +42,16 @@
     "@babel/core": "^7.0.0",
     "@expo/samples": "~3.0.3",
     "@expo/vector-icons": "^10.0.3",
+    "@react-native-community/masked-view": "^0.1.1",
     "@react-navigation/core": "^3.0.0-alpha.13",
-    "@react-navigation/stack": "^5.2.4",
     "@react-navigation/web": "^1.0.0-alpha.9",
     "airtable": "^0.7.2",
-    "airtable-schema-generator": "^1.2.9",
     "babel-plugin-inline-dotenv": "^1.5.0",
     "expo": "^35.0.0",
     "expo-asset": "^7.0.0",
     "expo-constants": "^7.0.0",
     "expo-font": "^7.0.0",
     "expo-web-browser": "^7.0.0",
-    "husky": "^4.2.3",
-    "lint-staged": "^10.0.8",
     "mem": "^4.0.0",
     "prop-types": "^15.7.2",
     "react": "16.8.3",
@@ -62,13 +60,17 @@
     "react-native": "https://github.com/expo/react-native/archive/sdk-35.0.0.tar.gz",
     "react-native-alert-async": "^1.0.5",
     "react-native-gesture-handler": "~1.3.0",
+    "react-native-reanimated": "~1.2.0",
+    "react-native-safe-area-context": "^0.6.0",
     "react-native-screens": "^1.0.0-alpha.23",
     "react-native-web": "^0.11.7",
-    "react-navigation": "^3.12.0",
-    "styled-components": "^4.4.1",
-    "yarnhook": "^0.4.3"
+    "react-navigation": "^4.1.1",
+    "react-navigation-drawer": "^2.3.3",
+    "react-navigation-stack": "^1.10.3",
+    "styled-components": "^4.4.1"
   },
   "devDependencies": {
+    "airtable-schema-generator": "^1.2.9",
     "babel-eslint": "^10.1.0",
     "babel-preset-expo": "^7.0.0",
     "eslint": "^5.16.0",
@@ -80,8 +82,11 @@
     "eslint-plugin-react": "^7.14.3",
     "eslint-plugin-react-hooks": "^1.7.0",
     "eslint-plugin-react-native": "^3.8.1",
+    "husky": "^4.2.3",
     "jest-expo": "^35.0.0",
-    "prettier": "^1.19.1"
+    "lint-staged": "^10.0.8",
+    "prettier": "^1.19.1",
+    "yarnhook": "^0.4.3"
   },
   "private": true
 }

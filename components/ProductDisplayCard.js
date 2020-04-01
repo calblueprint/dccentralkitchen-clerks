@@ -1,6 +1,6 @@
 import React from 'react';
 import { Image } from 'react-native';
-import Colors from '../assets/Colors';
+import Colors from '../constants/Colors';
 import { ProductCard } from '../styled/checkout';
 import { Body, Caption } from './BaseComponents';
 
@@ -15,12 +15,12 @@ function ProductDisplayCard({ product }) {
       <Image
         source={{
           uri: product.imageUrl,
-          scale: 0.1
+          scale: 0.1,
         }}
         style={{
           width: 113,
           height: 87,
-          marginBottom: 8
+          marginBottom: 8,
         }}
         borderRadius={4}
       />

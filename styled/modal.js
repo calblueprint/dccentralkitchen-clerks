@@ -1,14 +1,13 @@
 import styled from 'styled-components/native';
-import Colors from '../assets/Colors';
 import { Subhead } from '../components/BaseComponents';
+import Colors from '../constants/Colors';
 import { ColumnContainer, RowContainer } from './shared';
 
 // Modals in CheckoutScreen.js
 
-// top: -200px is temp fix for avoiding the keyboard
 export const ModalContentContainer = styled(ColumnContainer)`
   width: ${props => props.width || '45%'};
-  height: ${props => props.height || '40%'};
+  height: ${props => props.height || '330px'};
   margin: auto;
   justify-content: space-around;
   align-items: center;
@@ -40,11 +39,10 @@ export const SubheadActive = styled(Subhead)`
 // Quantity
 export const QuantityInput = styled.TextInput.attrs({
   keyboardType: 'numeric',
-  maxLength: 3
+  maxLength: 3,
 })`
   border-width: 1px;
   border-color: ${Colors.activeText};
-  height: 40px;
   width: 200px;
   color: ${Colors.activeText};
   font-family: 'poppins-regular';

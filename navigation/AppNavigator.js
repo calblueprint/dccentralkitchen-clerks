@@ -3,8 +3,8 @@ import { AsyncStorage, Linking, TouchableOpacity, View } from 'react-native';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createDrawerNavigator } from 'react-navigation-drawer';
 import { createStackNavigator } from 'react-navigation-stack';
-import Colors from '../assets/Colors';
 import { Title } from '../components/BaseComponents';
+import Colors from '../constants/Colors';
 import CheckoutScreen from '../screens/CheckoutScreen';
 import ClerkLoginScreen from '../screens/ClerkLoginScreen';
 import ConfirmationScreen from '../screens/ConfirmationScreen';
@@ -14,7 +14,7 @@ import StoreLookupScreen from '../screens/StoreLookupScreen';
 export const AuthStack = createStackNavigator(
   {
     StoreLookup: StoreLookupScreen,
-    ClerkLogin: ClerkLoginScreen
+    ClerkLogin: ClerkLoginScreen,
   },
   { headerMode: 'none', navigationOptions: { header: null } }
 );
@@ -23,18 +23,18 @@ export const AppStack = createStackNavigator({
   Auth: AuthStack,
   CustomerLookup: { screen: CustomerLookupScreen, navigationOptions: { header: null } },
   Checkout: { screen: CheckoutScreen, navigationOptions: { header: null } },
-  Confirmation: { screen: ConfirmationScreen, navigationOptions: { header: null } }
+  Confirmation: { screen: ConfirmationScreen, navigationOptions: { header: null } },
 });
 
 AppStack.navigationOptions = {
-  drawerLabel: 'App'
+  drawerLabel: 'App',
 };
 
 export class DrawerContent extends React.Component {
   constructor() {
     super();
     this.state = {
-      clerkName: ''
+      clerkName: '',
     };
   }
 
@@ -54,7 +54,7 @@ export class DrawerContent extends React.Component {
         style={{
           display: 'flex',
           flex: 1,
-          flexDirection: 'column'
+          flexDirection: 'column',
         }}>
         <View
           style={{
@@ -63,7 +63,7 @@ export class DrawerContent extends React.Component {
             display: 'flex',
             flexDirection: 'row',
             alignItems: 'flex-end',
-            padding: 16
+            padding: 16,
           }}>
           <Title style={{ color: 'white' }}>{this.state.clerkName}</Title>
         </View>
@@ -87,7 +87,7 @@ export class DrawerContent extends React.Component {
             flex: 1,
             flexDirection: 'column',
             justifyContent: 'flex-end',
-            verticalAlign: 'bottom'
+            verticalAlign: 'bottom',
           }}>
           <TouchableOpacity style={{ paddingLeft: 16, paddingBottom: 21 }} onPress={() => this._logout()}>
             <Title>Logout</Title>
@@ -103,13 +103,13 @@ export const MyDrawerNavigator = createDrawerNavigator(
     App: {
       screen: AppStack,
       navigationOptions: () => ({
-        title: 'App'
-      })
-    }
+        title: 'App',
+      }),
+    },
   },
   {
     drawerWidth: 343,
-    contentComponent: DrawerContent
+    contentComponent: DrawerContent,
   }
 );
 
@@ -121,11 +121,11 @@ export default createAppContainer(
       Auth: AuthStack,
       App: {
         screen: MyDrawerNavigator,
-        navigationOptions: { header: null }
-      }
+        navigationOptions: { header: null },
+      },
     },
     {
-      initialRouteName: 'Auth'
+      initialRouteName: 'Auth',
     }
   )
 );

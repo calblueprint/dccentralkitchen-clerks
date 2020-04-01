@@ -11,7 +11,7 @@ export default class ConfirmationScreen extends React.Component {
     super(props);
     this.state = {
       transaction: null,
-      isLoading: true
+      isLoading: true,
     };
   }
 
@@ -61,7 +61,7 @@ export default class ConfirmationScreen extends React.Component {
             marginTop: 33,
             marginLeft: 29,
             justifyContent: 'flex-start',
-            alignItems: 'center'
+            alignItems: 'center',
           }}>
           <DrawerButton navigation={this.props.navigation} light={false} />
           <Title style={{ marginLeft: 16 }}>{this.state.clerkName}</Title>
@@ -76,7 +76,7 @@ export default class ConfirmationScreen extends React.Component {
                 <Subhead style={{ textTransform: 'uppercase' }}>{truncatedId}</Subhead>
               </TouchableOpacity>
             </SpaceBetweenRowContainer>
-            <ColumnContainer style={{ width: '100%%', justifyContent: 'space-around' }}>
+            <ColumnContainer style={{ width: '100%', justifyContent: 'space-around' }}>
               <SpaceBetweenRowContainer>
                 <Body>Points Earned</Body>
                 <Body>{transaction.pointsEarned} pts</Body>
@@ -86,7 +86,7 @@ export default class ConfirmationScreen extends React.Component {
                 <Body>{transaction.rewardsApplied}</Body>
               </SpaceBetweenRowContainer>
             </ColumnContainer>
-            <ColumnContainer style={{ width: '100%%', justifyContent: 'space-around' }}>
+            <ColumnContainer style={{ width: '100%', justifyContent: 'space-around' }}>
               <SpaceBetweenRowContainer>
                 <Body>Subtotal</Body>
                 <Body>{displayDollarValue(transaction.subtotal)}</Body>
@@ -117,5 +117,5 @@ export default class ConfirmationScreen extends React.Component {
 }
 
 ConfirmationScreen.propTypes = {
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
 };

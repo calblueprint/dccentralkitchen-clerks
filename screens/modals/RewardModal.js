@@ -2,8 +2,6 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Modal, TouchableOpacity, View } from 'react-native';
-
-import Colors from '../../assets/Colors';
 import {
   BigTitle,
   BigTitleLabel,
@@ -11,8 +9,9 @@ import {
   ButtonLabel,
   RoundedButtonContainer,
   SquareButtonContainer,
-  Title
+  Title,
 } from '../../components/BaseComponents';
+import Colors from '../../constants/Colors';
 import { calculateEligibleRewards, displayDollarValue } from '../../lib/checkoutUtils';
 import { rewardDollarValue } from '../../lib/constants';
 import {
@@ -20,7 +19,7 @@ import {
   ModalContentContainer,
   ModalCopyContainer,
   SubheadActive,
-  SubheadSecondary
+  SubheadSecondary,
 } from '../../styled/modal';
 import { ColumnContainer, RowContainer, SpaceBetweenRowContainer } from '../../styled/shared';
 
@@ -35,7 +34,7 @@ export default class RewardModal extends React.Component {
       totalBalance: 0,
       rewardsEligible: 0,
       errorShown: false,
-      isLoading: true
+      isLoading: true,
     };
   }
 
@@ -60,7 +59,7 @@ export default class RewardModal extends React.Component {
       rewardsAvailable,
       rewardsApplied,
       totalBalance,
-      rewardsEligible: calculateEligibleRewards(rewardsAvailable, rewardsApplied, totalBalance)
+      rewardsEligible: calculateEligibleRewards(rewardsAvailable, rewardsApplied, totalBalance),
     });
   };
 
@@ -88,13 +87,13 @@ export default class RewardModal extends React.Component {
     if (addToApplied) {
       this.setState(prevState => ({
         rewardsApplied: prevState.rewardsApplied + 1,
-        totalBalance: prevState.totalBalance - rewardDollarValue
+        totalBalance: prevState.totalBalance - rewardDollarValue,
       }));
     } else {
       this.setState(prevState => ({
         rewardsApplied: prevState.rewardsApplied - 1,
         totalBalance: prevState.totalBalance + rewardDollarValue,
-        errorShown: false
+        errorShown: false,
       }));
     }
   };
@@ -129,7 +128,7 @@ export default class RewardModal extends React.Component {
                   top: 0,
                   left: 0,
                   padding: 20,
-                  paddingBottom: 0
+                  paddingBottom: 0,
                 }}
                 onPress={() => this.setModalVisible(false)}>
                 <FontAwesome5 name="times" size={24} color={Colors.activeText} />
@@ -206,5 +205,5 @@ RewardModal.propTypes = {
   rewardsAvailable: PropTypes.number.isRequired,
   rewardsApplied: PropTypes.number.isRequired,
   totalBalance: PropTypes.number.isRequired,
-  callback: PropTypes.func.isRequired
+  callback: PropTypes.func.isRequired,
 };

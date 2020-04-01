@@ -1,7 +1,7 @@
 import { FontAwesome5 } from '@expo/vector-icons';
 import PropTypes from 'prop-types';
 import React from 'react';
-import Colors from '../assets/Colors';
+import Colors from '../constants/Colors';
 import { ButtonContainer } from './BaseComponents';
 
 function DrawerButton({ navigation, light, style }) {
@@ -15,11 +15,11 @@ function DrawerButton({ navigation, light, style }) {
 DrawerButton.propTypes = {
   navigation: PropTypes.object.isRequired,
   light: PropTypes.bool.isRequired,
-  style: PropTypes.object
+  style: PropTypes.object,
 };
 
 DrawerButton.defaultProps = {
-  style: {}
+  style: {},
 };
 
 export default DrawerButton;
