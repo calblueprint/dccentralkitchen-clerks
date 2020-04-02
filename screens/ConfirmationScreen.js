@@ -6,6 +6,7 @@ import DrawerButton from '../components/DrawerButton';
 import { getTransactionsById } from '../lib/airtable/request';
 import { displayDollarValue } from '../lib/checkoutUtils';
 import { ColumnContainer, RowContainer, SpaceBetweenRowContainer } from '../styled/shared';
+
 export default class ConfirmationScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -79,7 +80,7 @@ export default class ConfirmationScreen extends React.Component {
             <ColumnContainer style={{ width: '100%', justifyContent: 'space-around' }}>
               <SpaceBetweenRowContainer>
                 <Body>Points Earned</Body>
-                <Body>{transaction.pointsEarned} pts</Body>
+                <Body>{`${transaction.pointsEarned} pts`}</Body>
               </SpaceBetweenRowContainer>
               <SpaceBetweenRowContainer>
                 <Body>Rewards Redeemed</Body>
@@ -99,7 +100,7 @@ export default class ConfirmationScreen extends React.Component {
               )}
               <SpaceBetweenRowContainer>
                 <Body>Total Sale</Body>
-                <Body>{displayDollarValue(transaction.totalPrice)}</Body>
+                <Body>{displayDollarValue(transaction.totalSale)}</Body>
               </SpaceBetweenRowContainer>
             </ColumnContainer>
           </ColumnContainer>

@@ -46,16 +46,16 @@ export default class StoreLookupScreen extends React.Component {
   // Purely to bypass the flow for development -- go straight to Checkout.
   // Configures to use Jeffry Poa & Robin Hood
   _devBypass = async () => {
-    await AsyncStorage.setItem('clerkId', 'recgq59j7Cx9zsSYE');
+    await AsyncStorage.setItem('clerkId', 'recuK1PmynsN0Mpbu');
     await AsyncStorage.setItem('clerkName', 'Jeffry Poa');
-    await AsyncStorage.setItem('storeId', 'recw49LpAOInqvX3e');
-    await AsyncStorage.setItem('customerId', 'recqx32YmmACiRWMq');
+    await AsyncStorage.setItem('storeId', 'recq488vtYG0KUhk6');
+    await AsyncStorage.setItem('customerId', 'recimV9zs2StWB2Mj');
     await AsyncStorage.setItem('trainingMode', JSON.stringify(false));
     this.props.navigation.navigate('Checkout');
   };
 
   _devConfirmBypass = async () => {
-    this.props.navigation.navigate('Confirmation', { transactionId: 'recyzi65efXqsviZb' });
+    this.props.navigation.navigate('Confirmation', { transactionId: 'recS2pXktslghQzQ9' });
   };
 
   onFocus = () => {

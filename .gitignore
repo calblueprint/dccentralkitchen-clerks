@@ -1,5 +1,9 @@
 # Deprecated env file
 environment.js
+.airtable-schema-generator.env
+
+# Ignore schemaRaw.json (only used for manual mode)
+schemaRaw.json
 
 # env files
 .env.development
