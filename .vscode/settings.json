@@ -1,6 +1,4 @@
 {
-  "workbench.iconTheme": "eq-material-theme-icons-light",
-  "workbench.colorTheme": "Monokai One Dark Vivid",
   "files.associations": {
     "*.js": "javascriptreact"
   },

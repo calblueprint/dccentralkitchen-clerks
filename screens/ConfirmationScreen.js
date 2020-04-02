@@ -77,7 +77,7 @@ export default class ConfirmationScreen extends React.Component {
                 <Subhead style={{ textTransform: 'uppercase' }}>{truncatedId}</Subhead>
               </TouchableOpacity>
             </SpaceBetweenRowContainer>
-            <ColumnContainer style={{ width: '100%%', justifyContent: 'space-around' }}>
+            <ColumnContainer style={{ width: '100%', justifyContent: 'space-around' }}>
               <SpaceBetweenRowContainer>
                 <Body>Points Earned</Body>
                 <Body>{`${transaction.pointsEarned} pts`}</Body>
@@ -87,7 +87,7 @@ export default class ConfirmationScreen extends React.Component {
                 <Body>{transaction.rewardsApplied}</Body>
               </SpaceBetweenRowContainer>
             </ColumnContainer>
-            <ColumnContainer style={{ width: '100%%', justifyContent: 'space-around' }}>
+            <ColumnContainer style={{ width: '100%', justifyContent: 'space-around' }}>
               <SpaceBetweenRowContainer>
                 <Body>Subtotal</Body>
                 <Body>{displayDollarValue(transaction.subtotal)}</Body>
