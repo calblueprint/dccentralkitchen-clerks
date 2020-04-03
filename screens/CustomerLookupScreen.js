@@ -19,7 +19,6 @@ export default class CustomerLookupScreen extends React.Component {
       phoneNumber: '',
       errorMsg: '',
       errorShown: false,
-      customerPermission: false,
     };
   }
 
@@ -33,9 +32,9 @@ export default class CustomerLookupScreen extends React.Component {
     const clerkName = await AsyncStorage.getItem('clerkName');
     // Clerk Training: pre-fill customer (Summer Strawberry) phone number
     if (JSON.parse(await AsyncStorage.getItem('trainingMode'))) {
-      this.setState({ clerkName, phoneNumber: '1112223344', customerPermission: true, errorMsg: null });
+      this.setState({ clerkName, phoneNumber: '1112223344', errorMsg: null });
     } else {
-      this.setState({ clerkName, phoneNumber: '', customerPermission: false, errorMsg: null });
+      this.setState({ clerkName, phoneNumber: '', errorMsg: null });
     }
   };
 
@@ -50,17 +49,17 @@ export default class CustomerLookupScreen extends React.Component {
     return formatted;
   };
 
-  customerPermissionHandler = phoneNumber => {
-    let customerPermission = false;
-    let errorShown = true;
-    if (phoneNumber.length > 0 || phoneNumber === '') {
-      errorShown = false;
-    }
-    if (phoneNumber.length === 10) {
-      customerPermission = true;
-    }
-    this.setState({ phoneNumber, customerPermission, errorShown });
-  };
+  // customerPermissionHandler = phoneNumber => {
+  //   let customerPermission = false;
+  //   let errorShown = true;
+  //   if (phoneNumber.length > 0 || phoneNumber === '') {
+  //     errorShown = false;
+  //   }
+  //   if (phoneNumber.length === 10) {
+  //     customerPermission = true;
+  //   }
+  //   this.setState({ phoneNumber, customerPermission, errorShown });
+  // };
 
   handleSubmit = async () => {
     const formattedPhoneNumber = this._formatPhoneNumber(this.state.phoneNumber);
@@ -97,6 +96,7 @@ export default class CustomerLookupScreen extends React.Component {
   };
 
   render() {
+    const customerPermission = this.state.phoneNumber.length === 10;
     return (
       <View>
         <RowContainer
@@ -125,7 +125,7 @@ export default class CustomerLookupScreen extends React.Component {
               placeholder="ex. 1234567890"
               keyboardType="number-pad"
               maxLength={10}
-              onChangeText={text => this.customerPermissionHandler(text)}
+              onChangeText={text => this.setState({ phoneNumber: text, errorShown: false })}
               value={this.state.phoneNumber}
             />
             {this.state.errorShown ? (
@@ -138,11 +138,11 @@ export default class CustomerLookupScreen extends React.Component {
             )}
             <RoundedButtonContainer
               style={{ marginTop: 32 }}
-              color={this.state.customerPermission ? Colors.primaryGreen : Colors.lightestGreen}
+              color={customerPermission ? Colors.primaryGreen : Colors.lightestGreen}
               width="253px"
               height="40px"
               onPress={() => this.handleSubmit()}
-              disabled={!this.state.customerPermission}>
+              disabled={!customerPermission}>
               <ButtonLabel color="white">Next</ButtonLabel>
             </RoundedButtonContainer>
           </CheckInContentContainer>

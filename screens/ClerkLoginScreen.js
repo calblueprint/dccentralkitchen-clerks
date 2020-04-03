@@ -22,7 +22,6 @@ export default class ClerkLoginScreen extends React.Component {
       password: '',
       errorMsg: null,
       errorShown: false,
-      loginPermission: false,
     };
   }
 
@@ -41,18 +40,6 @@ export default class ClerkLoginScreen extends React.Component {
     await AsyncStorage.setItem('clerkName', clerkRecord.clerkName);
     await AsyncStorage.setItem('storeId', this.props.navigation.state.params.store.id);
     this.props.navigation.navigate('CustomerLookup');
-  };
-
-  loginPermissionHandler = password => {
-    let loginPermission = false;
-    let errorShown = true;
-    if (password.length > 0 || password === '') {
-      errorShown = false;
-    }
-    if (password.length === 4) {
-      loginPermission = true;
-    }
-    this.setState({ password, loginPermission, errorShown });
   };
 
   // This function will sign the user in if the clerk is found.
@@ -92,6 +79,7 @@ export default class ClerkLoginScreen extends React.Component {
 
   render() {
     const { store } = this.props.navigation.state.params;
+    const loginPermission = this.state.password.length === 4;
     return (
       <DismissKeyboard>
         <View>
@@ -106,7 +94,7 @@ export default class ClerkLoginScreen extends React.Component {
               <Title style={{ marginBottom: 32 }} color={Colors.lightest}>
                 {`Welcome to ${store.storeName}!`}
               </Title>
-              <Title color="#fff">Enter your employee PIN</Title>
+              <Title color={Colors.lightest}>Enter your employee PIN</Title>
               <TextField
                 autoFocus
                 clearButtonMode="always"
@@ -116,7 +104,7 @@ export default class ClerkLoginScreen extends React.Component {
                 placeholder="ex. 1234"
                 keyboardType="number-pad"
                 maxLength={4}
-                onChangeText={text => this.loginPermissionHandler(text)}
+                onChangeText={text => this.setState({ password: text, errorShown: false })}
                 value={this.state.password}
               />
               {/* Display error message or empty row to maintain consistent spacing. */}
@@ -130,11 +118,11 @@ export default class ClerkLoginScreen extends React.Component {
               )}
               <RoundedButtonContainer
                 style={{ marginTop: 32 }}
-                color={this.state.loginPermission ? Colors.primaryGreen : Colors.lightestGreen}
+                color={loginPermission ? Colors.primaryGreen : Colors.lightestGreen}
                 width="253px"
                 height="40px"
                 onPress={() => this.handleSubmit()}
-                disabled={!this.state.loginPermission}>
+                disabled={!loginPermission}>
                 <ButtonLabel color={Colors.lightest}>Next</ButtonLabel>
               </RoundedButtonContainer>
             </CheckInContentContainer>
