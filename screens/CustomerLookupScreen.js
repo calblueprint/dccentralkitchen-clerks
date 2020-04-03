@@ -49,18 +49,6 @@ export default class CustomerLookupScreen extends React.Component {
     return formatted;
   };
 
-  // customerPermissionHandler = phoneNumber => {
-  //   let customerPermission = false;
-  //   let errorShown = true;
-  //   if (phoneNumber.length > 0 || phoneNumber === '') {
-  //     errorShown = false;
-  //   }
-  //   if (phoneNumber.length === 10) {
-  //     customerPermission = true;
-  //   }
-  //   this.setState({ phoneNumber, customerPermission, errorShown });
-  // };
-
   handleSubmit = async () => {
     const formattedPhoneNumber = this._formatPhoneNumber(this.state.phoneNumber);
 
