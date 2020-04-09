@@ -23,9 +23,9 @@ export default class ConfirmationScreen extends React.Component {
       let transaction = null;
       // Clerk training: use local transaction instead of getting it from Airtable.
       if (JSON.parse(await AsyncStorage.getItem('trainingMode'))) {
-        transaction = this.props.navigation.state.params;
+        transaction = this.props.route.params;
       } else {
-        const { transactionId } = this.props.navigation.state.params;
+        const { transactionId } = this.props.route.params;
         transaction = await getTransactionsById(transactionId);
       }
       this.setState({ transaction, isLoading: false });

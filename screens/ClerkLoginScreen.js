@@ -38,15 +38,15 @@ export default class ClerkLoginScreen extends React.Component {
   _asyncLoginClerk = async clerkRecord => {
     await AsyncStorage.setItem('clerkId', clerkRecord.id);
     await AsyncStorage.setItem('clerkName', clerkRecord.clerkName);
-    await AsyncStorage.setItem('storeId', this.props.navigation.state.params.store.id);
-    this.props.navigation.navigate('CustomerLookup');
+    await AsyncStorage.setItem('storeId', this.props.route.params.store.id);
+    this.props.navigation.navigate('App');
   };
 
   // This function will sign the user in if the clerk is found.
   handleSubmit = async () => {
     try {
       // Uses the `Store ID` lookup in AirTable
-      const lookupResult = await lookupClerk(this.props.navigation.state.params.store.id, this.state.password);
+      const lookupResult = await lookupClerk(this.props.route.params.store.id, this.state.password);
 
       let clerkRecord = null;
       let clerkNotFound = true;
@@ -55,7 +55,7 @@ export default class ClerkLoginScreen extends React.Component {
           clerkNotFound = false;
           clerkRecord = lookupResult.record;
           await this._asyncLoginClerk(clerkRecord);
-          this.props.navigation.navigate('CustomerLookup');
+          this.props.navigation.navigate('App');
           break;
         // TODO for production, we should have some sort of logging mechanism (i.e replacing console logs)
         case status.FOUND:
@@ -78,7 +78,7 @@ export default class ClerkLoginScreen extends React.Component {
   };
 
   render() {
-    const { store } = this.props.navigation.state.params;
+    const { store } = this.props.route.params;
     const loginPermission = this.state.password.length === 4;
     return (
       <DismissKeyboard>
