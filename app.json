@@ -14,7 +14,7 @@
     "orientation": "landscape",
     "icon": "./assets/images/hc_clerk_icon.png",
     "splash": {
-      "image": "./assets/images/splash.png",
+      "image": "./assets/images/hc_splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
