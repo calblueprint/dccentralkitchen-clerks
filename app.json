@@ -7,10 +7,10 @@
     "platforms": ["ios", "android", "web"],
     "android": {
       "package": "org.calblueprint.HealthyCornersClerk",
-      "versionCode": 2,
+      "versionCode": 3,
       "permissions": []
     },
-    "version": "1.1.0",
+    "version": "1.1.1",
     "orientation": "landscape",
     "icon": "./assets/images/hc_clerk_icon.png",
     "splash": {
