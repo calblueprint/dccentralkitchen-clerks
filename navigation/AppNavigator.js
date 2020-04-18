@@ -24,7 +24,7 @@ export default function createAppContainer() {
     <NavigationContainer>
       <AppContainerStack.Navigator
         initialRouteName="Auth"
-        screenOptions={{ headerShown: false, cardStyle: { backgroundColor: Colors.lightest } }}>
+        screenOptions={{ headerShown: false, cardStyle: { backgroundColor: Colors.lightest }, gestureEnabled: false }}>
         <AppContainerStack.Screen name="App" component={DrawerNavigator} />
         <AppContainerStack.Screen name="Auth" component={AuthStackNavigator} />
       </AppContainerStack.Navigator>
