@@ -10,7 +10,7 @@ import { Container } from './styled/shared';
 
 Sentry.init({
   dsn: 'https://9b39ef5b02394775a6e939254ed55a0e@o306199.ingest.sentry.io/4525076',
-  enableInExpoDevelopment: false,
+  enableInExpoDevelopment: true,
   release: 'v1.1.0',
   debug: true,
   environment: 'development',
