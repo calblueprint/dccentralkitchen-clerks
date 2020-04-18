@@ -98,7 +98,7 @@ export default class QuantityModal extends React.Component {
           }}>
           {/* Opacity layer */}
           <ModalCenteredOpacityLayer>
-            <ModalContentContainer>
+            <ModalContentContainer style={{ marginTop: 10 }}>
               <TouchableOpacity
                 style={{
                   position: 'absolute',
@@ -113,7 +113,10 @@ export default class QuantityModal extends React.Component {
               {/* Invisible element used to trick flexbox into spacin correctly with 'space-around' even though 'cancel' button is pinned using position: absolute */}
               <View>{null}</View>
               <ModalCopyContainer>
-                <Title>Quantity of {product.fullName}</Title>
+                <Title>
+                  Quantity of
+                  {product.fullName}
+                </Title>
                 <ColumnContainer>
                   <Body>Key in the quantity and tap UPDATE QUANTITY</Body>
                   <Body>OR press the top left X to exit.</Body>
