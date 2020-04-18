@@ -52,37 +52,24 @@ export default class ClerkLoginScreen extends React.Component {
 
       let clerkRecord = null;
       let clerkNotFound = true;
-      let errMsg = '';
-      switch (lookupResult.status) {
-        case status.MATCH:
-          clerkNotFound = false;
-          clerkRecord = lookupResult.record;
-          await this._asyncLoginClerk(clerkRecord);
-          this.props.navigation.navigate('App');
-          break;
-        // TODO for production, we should have some sort of logging mechanism (i.e replacing console logs)
-        case status.FOUND:
-          errMsg = 'Incorrect password';
-          break;
-        case status.NOT_FOUND:
-          errMsg = 'No clerk found at this store';
-          break;
-        case status.DUPLICATE:
-          errMsg = 'Database malformed! Two users found';
-          break;
-        default:
-          return;
+
+      if (lookupResult.status === status.MATCH) {
+        clerkNotFound = false;
+        clerkRecord = lookupResult.record;
+        await this._asyncLoginClerk(clerkRecord);
+        this.props.navigation.navigate('App');
       }
 
+      // Check for errors to log to Sentry; otherwise, register the user for further Sentry logging
       if (lookupResult.errorMsg !== '') {
         logAuthErrorToSentry({
           screen: 'ClerkLoginScreen',
           action: 'handleSubmit',
           attemptedStoreName: lookupResult.storeName,
           attemptedPin: this.state.password,
-          error: errMsg,
+          error: lookupResult.errorMsg,
         });
-        console.log(errMsg);
+        console.log(lookupResult.errorMsg);
       } else {
         Sentry.configureScope((scope) => {
           scope.setUser({
