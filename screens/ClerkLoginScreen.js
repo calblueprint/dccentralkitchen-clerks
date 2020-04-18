@@ -78,7 +78,7 @@ export default class ClerkLoginScreen extends React.Component {
         logAuthErrorToSentry({
           screen: 'ClerkLoginScreen',
           action: 'handleSubmit',
-          attemptedStoreID: this.props.route.params.store.id,
+          attemptedStoreName: lookupResult.storeName,
           attemptedPin: this.state.password,
           error: errMsg,
         });
