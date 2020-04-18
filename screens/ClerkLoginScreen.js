@@ -78,14 +78,16 @@ export default class ClerkLoginScreen extends React.Component {
         logAuthErrorToSentry({
           screen: 'ClerkLoginScreen',
           action: 'handleSubmit',
-          attemptedPin: '',
+          attemptedStoreID: this.props.route.params.store.id,
+          attemptedPin: this.state.password,
           error: errMsg,
         });
         console.log(errMsg);
       } else {
         Sentry.configureScope((scope) => {
           scope.setUser({
-            id: clerkRecord,
+            id: clerkRecord.id,
+            username: clerkRecord.clerkName,
           });
         });
       }

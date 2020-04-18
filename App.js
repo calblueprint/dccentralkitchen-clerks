@@ -10,10 +10,10 @@ import { Container } from './styled/shared';
 
 Sentry.init({
   dsn: 'https://9b39ef5b02394775a6e939254ed55a0e@o306199.ingest.sentry.io/4525076',
-  enableInExpoDevelopment: true,
-  release: 'v1.1.0',
+  enableInExpoDevelopment: false,
+  release: 'v1.1.1',
   debug: true,
-  environment: 'development',
+  environment: process.env.NODE_ENV,
 });
 
 export default function App(props) {
