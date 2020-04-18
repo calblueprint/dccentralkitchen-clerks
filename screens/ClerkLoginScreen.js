@@ -2,11 +2,13 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { AsyncStorage, Keyboard, TouchableWithoutFeedback, View } from 'react-native';
+import * as Sentry from 'sentry-expo';
 import BackButton from '../components/BackButton';
 import { ButtonLabel, RoundedButtonContainer, Subhead, Title } from '../components/BaseComponents';
 import Colors from '../constants/Colors';
 import { status } from '../lib/constants';
 import { lookupClerk } from '../lib/loginUtils';
+import { logAuthErrorToSentry } from '../lib/logUtils';
 import { CheckInContainer, CheckInContentContainer, TextField } from '../styled/checkin';
 import { RowContainer } from '../styled/shared';
 
@@ -35,7 +37,7 @@ export default class ClerkLoginScreen extends React.Component {
 
   // Set the clerkId and storeId in AsyncStorage
   // Then navigate to the customer lookup screen
-  _asyncLoginClerk = async clerkRecord => {
+  _asyncLoginClerk = async (clerkRecord) => {
     await AsyncStorage.setItem('clerkId', clerkRecord.id);
     await AsyncStorage.setItem('clerkName', clerkRecord.clerkName);
     await AsyncStorage.setItem('storeId', this.props.route.params.store.id);
@@ -50,6 +52,7 @@ export default class ClerkLoginScreen extends React.Component {
 
       let clerkRecord = null;
       let clerkNotFound = true;
+      let errMsg = '';
       switch (lookupResult.status) {
         case status.MATCH:
           clerkNotFound = false;
@@ -59,17 +62,36 @@ export default class ClerkLoginScreen extends React.Component {
           break;
         // TODO for production, we should have some sort of logging mechanism (i.e replacing console logs)
         case status.FOUND:
-          console.log('Incorrect password');
+          errMsg = 'Incorrect password';
           break;
         case status.NOT_FOUND:
-          console.log('No clerk found at this store');
+          errMsg = 'No clerk found at this store';
           break;
         case status.DUPLICATE:
-          console.log('Database malformed! Two users found');
+          errMsg = 'Database malformed! Two users found';
           break;
         default:
           return;
       }
+
+      if (lookupResult.errorMsg !== '') {
+        logAuthErrorToSentry({
+          screen: 'ClerkLoginScreen',
+          action: 'handleSubmit',
+          attemptedStoreID: this.props.route.params.store.id,
+          attemptedPin: this.state.password,
+          error: errMsg,
+        });
+        console.log(errMsg);
+      } else {
+        Sentry.configureScope((scope) => {
+          scope.setUser({
+            id: clerkRecord.id,
+            username: clerkRecord.clerkName,
+          });
+        });
+      }
+
       // TODO reset state using onFocusEffect; this can cause memory leaks
       this.setState({ errorMsg: lookupResult.errorMsg, password: '', errorShown: clerkNotFound });
     } catch (err) {
@@ -104,7 +126,7 @@ export default class ClerkLoginScreen extends React.Component {
                 placeholder="ex. 1234"
                 keyboardType="number-pad"
                 maxLength={4}
-                onChangeText={text => this.setState({ password: text, errorShown: false })}
+                onChangeText={(text) => this.setState({ password: text, errorShown: false })}
                 value={this.state.password}
               />
               {/* Display error message or empty row to maintain consistent spacing. */}

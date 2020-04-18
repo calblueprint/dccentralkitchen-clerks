@@ -4,8 +4,17 @@ import { Asset } from 'expo-asset';
 import * as Font from 'expo-font';
 import React, { useState } from 'react';
 import { Platform, StatusBar, StyleSheet } from 'react-native';
+import * as Sentry from 'sentry-expo';
 import AppNavigator from './navigation/AppNavigator';
 import { Container } from './styled/shared';
+
+Sentry.init({
+  dsn: 'https://9b39ef5b02394775a6e939254ed55a0e@o306199.ingest.sentry.io/4525076',
+  enableInExpoDevelopment: false,
+  release: 'v1.1.1',
+  debug: true,
+  environment: process.env.NODE_ENV,
+});
 
 export default function App(props) {
   const [isLoadingComplete, setLoadingComplete] = useState(false);
@@ -19,14 +28,13 @@ export default function App(props) {
         onFinish={() => handleFinishLoading(setLoadingComplete)}
       />
     );
-  } else {
-    return (
-      <Container>
-        {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-        <AppNavigator />
-      </Container>
-    );
   }
+  return (
+    <Container>
+      {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
+      <AppNavigator />
+    </Container>
+  );
 }
 
 async function loadResourcesAsync() {
