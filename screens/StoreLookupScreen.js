@@ -7,13 +7,7 @@ import Colors from '../constants/Colors';
 import RecordIds from '../constants/RecordIds';
 import { env } from '../environment';
 import { loadStoreData } from '../lib/loginUtils';
-import {
-  CheckInContainer,
-  CheckInContentContainer,
-  SearchBarContainer,
-  SearchElement,
-  TextField,
-} from '../styled/checkin';
+import { CheckInContainer, CheckInContentContainer, SearchBarContainer, SearchElement, TextField } from '../styled/checkin';
 
 const DismissKeyboard = ({ children }) => (
   <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>{children}</TouchableWithoutFeedback>
@@ -67,7 +61,7 @@ export default class StoreLookupScreen extends React.Component {
     this.setState({ textFieldBlur: false });
   };
 
-  storePermissionHandler = (store) => {
+  storePermissionHandler = store => {
     let storePermission = false;
     if (store) {
       storePermission = true;
@@ -75,14 +69,14 @@ export default class StoreLookupScreen extends React.Component {
     this.setState({ store, storePermission });
   };
 
-  handleChangeText = (searchStr) => {
+  handleChangeText = searchStr => {
     this.setState({
       searchStr,
     });
     this.updateFilteredStores(searchStr);
   };
 
-  onSearchElementPress = (store) => {
+  onSearchElementPress = store => {
     this.setState({ searchStr: store.storeName, store, textFieldBlur: true });
     this.storePermissionHandler(store);
     this.updateFilteredStores(store.storeName);
@@ -99,9 +93,9 @@ export default class StoreLookupScreen extends React.Component {
     this.props.navigation.navigate('ClerkLogin', { store: this.state.store, storeName: this.state.store.storeName });
   };
 
-  updateFilteredStores = (searchStr) => {
+  updateFilteredStores = searchStr => {
     this.setState({
-      filteredStores: this.state.stores.filter((store) =>
+      filteredStores: this.state.stores.filter(store =>
         store.storeName.toLowerCase().includes(searchStr.toLowerCase())
       ),
     });
@@ -118,7 +112,7 @@ export default class StoreLookupScreen extends React.Component {
               selectionColor={Colors.primaryGreen}
               style={{ marginTop: 32 }}
               placeholder="ex: Healthy Corner Store"
-              onChangeText={(text) => this.handleChangeText(text)}
+              onChangeText={text => this.handleChangeText(text)}
               value={this.state.searchStr}
               onFocus={() => this.onFocus()}
               autoCorrect={false}
@@ -126,7 +120,7 @@ export default class StoreLookupScreen extends React.Component {
             {!this.state.textFieldBlur && (
               <SearchBarContainer>
                 <ScrollView bounces={false} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
-                  {this.state.filteredStores.map((store) => (
+                  {this.state.filteredStores.map(store => (
                     <SearchElement key={store.id} onPress={() => this.onSearchElementPress(store)}>
                       <Body>{store.storeName}</Body>
                     </SearchElement>
@@ -141,7 +135,8 @@ export default class StoreLookupScreen extends React.Component {
                 width="253px"
                 height="40px"
                 onPress={() => this.handleNavigate()}
-                disabled={!this.state.storePermission}>
+                disabled={!this.state.storePermission}
+              >
                 <ButtonLabel color={Colors.lightest}>Next</ButtonLabel>
               </RoundedButtonContainer>
             )}
