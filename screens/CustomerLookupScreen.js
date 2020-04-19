@@ -1,7 +1,7 @@
 import { FontAwesome5 } from '@expo/vector-icons';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { AsyncStorage, View } from 'react-native';
+import { AsyncStorage, Keyboard, TouchableWithoutFeedback, View } from 'react-native';
 import { ButtonLabel, RoundedButtonContainer, Subhead, Title } from '../components/BaseComponents';
 import DrawerButton from '../components/DrawerButton';
 import Colors from '../constants/Colors';
@@ -9,6 +9,10 @@ import { status } from '../lib/constants';
 import { lookupCustomer } from '../lib/lookupUtils';
 import { CheckInContainer, CheckInContentContainer, TextField } from '../styled/checkin';
 import { RowContainer } from '../styled/shared';
+
+const DismissKeyboard = ({ children }) => (
+  <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>{children}</TouchableWithoutFeedback>
+);
 
 export default class CustomerLookupScreen extends React.Component {
   constructor(props) {
@@ -38,12 +42,12 @@ export default class CustomerLookupScreen extends React.Component {
     }
   };
 
-  _asyncCustomerFound = async customerRecord => {
+  _asyncCustomerFound = async (customerRecord) => {
     await AsyncStorage.setItem('customerId', customerRecord.id);
     this.props.navigation.navigate('Checkout');
   };
 
-  _formatPhoneNumber = phoneNumber => {
+  _formatPhoneNumber = (phoneNumber) => {
     const onlyNumeric = phoneNumber.replace('[^0-9]', '');
     const formatted = `(${onlyNumeric.slice(0, 3)}) ${onlyNumeric.slice(3, 6)}-${onlyNumeric.slice(6, 10)}`;
     return formatted;
@@ -86,56 +90,58 @@ export default class CustomerLookupScreen extends React.Component {
   render() {
     const customerPermission = this.state.phoneNumber.length === 10;
     return (
-      <View>
-        <RowContainer
-          style={{
-            zIndex: 1,
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            marginTop: 33,
-            marginLeft: 29,
-            justifyContent: 'flex-start',
-            alignItems: 'center',
-          }}>
-          <DrawerButton navigation={this.props.navigation} light={false} />
-          <Title style={{ marginLeft: 16 }}>{this.state.clerkName}</Title>
-        </RowContainer>
+      <DismissKeyboard>
+        <View>
+          <RowContainer
+            style={{
+              zIndex: 1,
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              marginTop: 33,
+              marginLeft: 29,
+              justifyContent: 'flex-start',
+              alignItems: 'center',
+            }}>
+            <DrawerButton navigation={this.props.navigation} light={false} />
+            <Title style={{ marginLeft: 16 }}>{this.state.clerkName}</Title>
+          </RowContainer>
 
-        <CheckInContainer color={Colors.lightest}>
-          <CheckInContentContainer>
-            <Title>Enter customer phone number</Title>
-            <TextField
-              clearButtonMode="always"
-              selectionColor={Colors.primaryGreen}
-              style={{ marginTop: 32 }}
-              error={this.state.errorShown}
-              placeholder="ex. 1234567890"
-              keyboardType="number-pad"
-              maxLength={10}
-              onChangeText={text => this.setState({ phoneNumber: text, errorShown: false })}
-              value={this.state.phoneNumber}
-            />
-            {this.state.errorShown ? (
-              <RowContainer style={{ alignItems: 'center', marginTop: 8, height: 28 }}>
-                <FontAwesome5 name="exclamation-circle" size={16} color={Colors.error} style={{ marginRight: 8 }} />
-                <Subhead color={Colors.activeText}>{this.state.errorMsg}</Subhead>
-              </RowContainer>
-            ) : (
-              <RowContainer style={{ marginTop: 8, height: 28 }} />
-            )}
-            <RoundedButtonContainer
-              style={{ marginTop: 32 }}
-              color={customerPermission ? Colors.primaryGreen : Colors.lightestGreen}
-              width="253px"
-              height="40px"
-              onPress={() => this.handleSubmit()}
-              disabled={!customerPermission}>
-              <ButtonLabel color="white">Next</ButtonLabel>
-            </RoundedButtonContainer>
-          </CheckInContentContainer>
-        </CheckInContainer>
-      </View>
+          <CheckInContainer color={Colors.lightest}>
+            <CheckInContentContainer>
+              <Title>Enter customer phone number</Title>
+              <TextField
+                clearButtonMode="always"
+                selectionColor={Colors.primaryGreen}
+                style={{ marginTop: 32 }}
+                error={this.state.errorShown}
+                placeholder="ex. 1234567890"
+                keyboardType="number-pad"
+                maxLength={10}
+                onChangeText={(text) => this.setState({ phoneNumber: text, errorShown: false })}
+                value={this.state.phoneNumber}
+              />
+              {this.state.errorShown ? (
+                <RowContainer style={{ alignItems: 'center', marginTop: 8, height: 28 }}>
+                  <FontAwesome5 name="exclamation-circle" size={16} color={Colors.error} style={{ marginRight: 8 }} />
+                  <Subhead color={Colors.activeText}>{this.state.errorMsg}</Subhead>
+                </RowContainer>
+              ) : (
+                <RowContainer style={{ marginTop: 8, height: 28 }} />
+              )}
+              <RoundedButtonContainer
+                style={{ marginTop: 32 }}
+                color={customerPermission ? Colors.primaryGreen : Colors.lightestGreen}
+                width="253px"
+                height="40px"
+                onPress={() => this.handleSubmit()}
+                disabled={!customerPermission}>
+                <ButtonLabel color="white">Next</ButtonLabel>
+              </RoundedButtonContainer>
+            </CheckInContentContainer>
+          </CheckInContainer>
+        </View>
+      </DismissKeyboard>
     );
   }
 }
