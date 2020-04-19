@@ -23,7 +23,7 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "bundleIdentifier": "org.calblueprint.HealthyCornersRewards",
+      "bundleIdentifier": "org.calblueprint.HealthyCornersClerk",
       "buildNumber": "1.1.1",
       "supportsTablet": true
     },
