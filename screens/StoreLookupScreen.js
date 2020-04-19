@@ -7,7 +7,13 @@ import Colors from '../constants/Colors';
 import RecordIds from '../constants/RecordIds';
 import { env } from '../environment';
 import { loadStoreData } from '../lib/loginUtils';
-import { CheckInContainer, CheckInContentContainer, SearchBarContainer, SearchElement, TextField } from '../styled/checkin';
+import {
+  CheckInContainer,
+  CheckInContentContainer,
+  SearchBarContainer,
+  SearchElement,
+  TextField,
+} from '../styled/checkin';
 
 const DismissKeyboard = ({ children }) => (
   <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>{children}</TouchableWithoutFeedback>
@@ -18,9 +24,7 @@ export default class StoreLookupScreen extends React.Component {
     super(props);
     this.state = {
       stores: [],
-      filteredStores: [],
-      store: {},
-      storePermission: false,
+      store: null,
       textFieldBlur: true,
       searchStr: '',
     };
@@ -32,7 +36,6 @@ export default class StoreLookupScreen extends React.Component {
       // Set to first store as default, since the picker also defaults to the top (first in list)
       this.setState({
         stores,
-        filteredStores: stores,
       });
     } catch (err) {
       console.error('Store Lookup Screen', err);
@@ -61,25 +64,8 @@ export default class StoreLookupScreen extends React.Component {
     this.setState({ textFieldBlur: false });
   };
 
-  storePermissionHandler = store => {
-    let storePermission = false;
-    if (store) {
-      storePermission = true;
-    }
-    this.setState({ store, storePermission });
-  };
-
-  handleChangeText = searchStr => {
-    this.setState({
-      searchStr,
-    });
-    this.updateFilteredStores(searchStr);
-  };
-
-  onSearchElementPress = store => {
+  onSearchElementPress = (store) => {
     this.setState({ searchStr: store.storeName, store, textFieldBlur: true });
-    this.storePermissionHandler(store);
-    this.updateFilteredStores(store.storeName);
     Keyboard.dismiss();
   };
 
@@ -93,15 +79,10 @@ export default class StoreLookupScreen extends React.Component {
     this.props.navigation.navigate('ClerkLogin', { store: this.state.store, storeName: this.state.store.storeName });
   };
 
-  updateFilteredStores = searchStr => {
-    this.setState({
-      filteredStores: this.state.stores.filter(store =>
-        store.storeName.toLowerCase().includes(searchStr.toLowerCase())
-      ),
-    });
-  };
-
   render() {
+    const { store, stores, searchStr } = this.state;
+    const filteredStores = stores.filter((_store) => _store.storeName.toLowerCase().includes(searchStr.toLowerCase()));
+    const storePermission = store !== null;
     return (
       <DismissKeyboard>
         <CheckInContainer behavior="position" keyboardVerticalOffset="-200">
@@ -112,7 +93,11 @@ export default class StoreLookupScreen extends React.Component {
               selectionColor={Colors.primaryGreen}
               style={{ marginTop: 32 }}
               placeholder="ex: Healthy Corner Store"
-              onChangeText={text => this.handleChangeText(text)}
+              onChangeText={(text) =>
+                this.setState({
+                  searchStr: text,
+                })
+              }
               value={this.state.searchStr}
               onFocus={() => this.onFocus()}
               autoCorrect={false}
@@ -120,9 +105,9 @@ export default class StoreLookupScreen extends React.Component {
             {!this.state.textFieldBlur && (
               <SearchBarContainer>
                 <ScrollView bounces={false} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
-                  {this.state.filteredStores.map(store => (
-                    <SearchElement key={store.id} onPress={() => this.onSearchElementPress(store)}>
-                      <Body>{store.storeName}</Body>
+                  {filteredStores.map((_store) => (
+                    <SearchElement key={_store.id} onPress={() => this.onSearchElementPress(_store)}>
+                      <Body>{_store.storeName}</Body>
                     </SearchElement>
                   ))}
                 </ScrollView>
@@ -131,12 +116,11 @@ export default class StoreLookupScreen extends React.Component {
             {this.state.textFieldBlur && (
               <RoundedButtonContainer
                 style={{ marginTop: 32 }}
-                color={this.state.storePermission ? Colors.primaryGreen : Colors.lightestGreen}
+                color={storePermission ? Colors.primaryGreen : Colors.lightestGreen}
                 width="253px"
                 height="40px"
                 onPress={() => this.handleNavigate()}
-                disabled={!this.state.storePermission}
-              >
+                disabled={!storePermission}>
                 <ButtonLabel color={Colors.lightest}>Next</ButtonLabel>
               </RoundedButtonContainer>
             )}

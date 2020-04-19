@@ -32,7 +32,7 @@ export default class ClerkLoginScreen extends React.Component {
   }
 
   _reset = () => {
-    this.setState({ password: '', errorMsg: null, loginPermission: false });
+    this.setState({ password: '', errorMsg: null });
   };
 
   // Set the clerkId and storeId in AsyncStorage
@@ -85,7 +85,7 @@ export default class ClerkLoginScreen extends React.Component {
         });
         console.log(errMsg);
       } else {
-        Sentry.configureScope((scope) => {
+        Sentry.configureScope(scope => {
           scope.setUser({
             id: clerkRecord.id,
             username: clerkRecord.clerkName,
@@ -158,4 +158,5 @@ export default class ClerkLoginScreen extends React.Component {
 
 ClerkLoginScreen.propTypes = {
   navigation: PropTypes.object.isRequired,
+  route: PropTypes.object.isRequired,
 };

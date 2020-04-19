@@ -120,4 +120,5 @@ export default class ConfirmationScreen extends React.Component {
 
 ConfirmationScreen.propTypes = {
   navigation: PropTypes.object.isRequired,
+  route: PropTypes.object.isRequired,
 };

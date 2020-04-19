@@ -110,10 +110,10 @@ export default class QuantityModal extends React.Component {
                 onPress={() => this.setModalVisible(false)}>
                 <FontAwesome5 name="times" size={24} color={Colors.activeText} />
               </TouchableOpacity>
-              {/* Invisible element used to trick flexbox into spacin correctly with 'space-around' even though 'cancel' button is pinned using position: absolute */}
+              {/* Invisible element used to trick flexbox into spacing correctly with 'space-around' even though 'cancel' button is pinned using position: absolute */}
               <View>{null}</View>
               <ModalCopyContainer>
-                <Title>Quantity of {product.fullName}</Title>
+                <Title>{`Quantity of ${product.fullName}`}</Title>
                 <ColumnContainer>
                   <Body>Key in the quantity and tap UPDATE QUANTITY</Body>
                   <Body>OR press the top left X to exit.</Body>
