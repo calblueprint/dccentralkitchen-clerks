@@ -25,7 +25,8 @@
     "ios": {
       "bundleIdentifier": "org.calblueprint.HealthyCornersClerk",
       "buildNumber": "1.1.1",
-      "supportsTablet": true
+      "supportsTablet": true,
+      "requireFullScreen": true
     },
     "hooks": {
       "postPublish": [
