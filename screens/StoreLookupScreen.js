@@ -1,9 +1,11 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { AsyncStorage, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { AsyncStorage, Button, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Body, ButtonLabel, RoundedButtonContainer, Title } from '../components/BaseComponents';
 import Colors from '../constants/Colors';
+import RecordIds from '../constants/RecordIds';
+import { env } from '../environment';
 import { loadStoreData } from '../lib/loginUtils';
 import {
   CheckInContainer,
@@ -46,16 +48,16 @@ export default class StoreLookupScreen extends React.Component {
   // Purely to bypass the flow for development -- go straight to Checkout.
   // Configures to use Jeffry Poa & Robin Hood
   _devBypass = async () => {
-    await AsyncStorage.setItem('clerkId', 'recuK1PmynsN0Mpbu');
     await AsyncStorage.setItem('clerkName', 'Jeffry Poa');
-    await AsyncStorage.setItem('storeId', 'recq488vtYG0KUhk6');
-    await AsyncStorage.setItem('customerId', 'recimV9zs2StWB2Mj');
+    await AsyncStorage.setItem('clerkId', RecordIds.testClerkId);
+    await AsyncStorage.setItem('storeId', RecordIds.testStoreId);
+    await AsyncStorage.setItem('customerId', RecordIds.testCustomerId);
     await AsyncStorage.setItem('trainingMode', JSON.stringify(false));
     this.props.navigation.navigate('Checkout');
   };
 
   _devConfirmBypass = async () => {
-    this.props.navigation.navigate('Confirmation', { transactionId: 'recS2pXktslghQzQ9' });
+    this.props.navigation.navigate('Confirmation', { transactionId: RecordIds.testTransationId });
   };
 
   onFocus = () => {
@@ -141,8 +143,8 @@ export default class StoreLookupScreen extends React.Component {
               </RoundedButtonContainer>
             )}
           </CheckInContentContainer>
-          {/* <Button title="Checkout Bypass" onPress={() => this._devBypass()} />
-          <Button title="Confirmation Bypass" onPress={() => this._devConfirmBypass()} /> */}
+          {env === 'dev' && <Button title="Checkout Bypass" onPress={() => this._devBypass()} />}
+          {env === 'dev' && <Button title="Confirmation Bypass" onPress={() => this._devConfirmBypass()} />}
         </CheckInContainer>
       </DismissKeyboard>
     );

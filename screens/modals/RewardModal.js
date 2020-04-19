@@ -12,8 +12,8 @@ import {
   Title,
 } from '../../components/BaseComponents';
 import Colors from '../../constants/Colors';
+import { rewardDollarValue } from '../../constants/Rewards';
 import { calculateEligibleRewards, displayDollarValue } from '../../lib/checkoutUtils';
-import { rewardDollarValue } from '../../lib/constants';
 import {
   ModalCenteredOpacityLayer,
   ModalContentContainer,
