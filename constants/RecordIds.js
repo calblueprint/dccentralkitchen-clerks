@@ -9,8 +9,6 @@ const RecordIds = {
   testTransactionId: null,
 };
 
-// Default store is 'Dollar Plus Howard'
-
 // IDs from DEV base
 if (env === 'dev') {
   RecordIds.testCustomerId = 'reckx2p4fwyfCgg3i';
