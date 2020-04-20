@@ -38,10 +38,11 @@ export default class ClerkLoginScreen extends React.Component {
   // Set the clerkId and storeId in AsyncStorage
   // Then navigate to the customer lookup screen
   _asyncLoginClerk = async (clerkRecord) => {
+    const { navigation } = this.props;
     await AsyncStorage.setItem('clerkId', clerkRecord.id);
     await AsyncStorage.setItem('clerkName', clerkRecord.clerkName);
     await AsyncStorage.setItem('storeId', this.props.route.params.store.id);
-    this.props.navigation.navigate('App');
+    navigation.navigate('App');
   };
 
   // This function will sign the user in if the clerk is found.

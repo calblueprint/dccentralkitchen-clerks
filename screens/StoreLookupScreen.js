@@ -1,9 +1,11 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { AsyncStorage, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { AsyncStorage, Button, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Body, ButtonLabel, RoundedButtonContainer, Title } from '../components/BaseComponents';
 import Colors from '../constants/Colors';
+import RecordIds from '../constants/RecordIds';
+import { env } from '../environment';
 import { loadStoreData } from '../lib/loginUtils';
 import {
   CheckInContainer,
@@ -46,23 +48,26 @@ export default class StoreLookupScreen extends React.Component {
   // Purely to bypass the flow for development -- go straight to Checkout.
   // Configures to use Jeffry Poa & Robin Hood
   _devBypass = async () => {
-    await AsyncStorage.setItem('clerkId', 'recuK1PmynsN0Mpbu');
     await AsyncStorage.setItem('clerkName', 'Jeffry Poa');
-    await AsyncStorage.setItem('storeId', 'recq488vtYG0KUhk6');
-    await AsyncStorage.setItem('customerId', 'recimV9zs2StWB2Mj');
+    await AsyncStorage.setItem('clerkId', RecordIds.testClerkId);
+    await AsyncStorage.setItem('storeId', RecordIds.testStoreId);
+    await AsyncStorage.setItem('customerId', RecordIds.testCustomerId);
     await AsyncStorage.setItem('trainingMode', JSON.stringify(false));
-    this.props.navigation.navigate('Checkout');
+    this.props.navigation.navigate('App', { screen: 'App', params: { screen: 'Checkout' } });
   };
 
   _devConfirmBypass = async () => {
-    this.props.navigation.navigate('Confirmation', { transactionId: 'recS2pXktslghQzQ9' });
+    this.props.navigation.navigate('App', {
+      screen: 'App',
+      params: { screen: 'Confirmation', params: { transactionId: RecordIds.testTransactionId } },
+    });
   };
 
   onFocus = () => {
     this.setState({ textFieldBlur: false });
   };
 
-  storePermissionHandler = store => {
+  storePermissionHandler = (store) => {
     let storePermission = false;
     if (store) {
       storePermission = true;
@@ -70,14 +75,14 @@ export default class StoreLookupScreen extends React.Component {
     this.setState({ store, storePermission });
   };
 
-  handleChangeText = searchStr => {
+  handleChangeText = (searchStr) => {
     this.setState({
       searchStr,
     });
     this.updateFilteredStores(searchStr);
   };
 
-  onSearchElementPress = store => {
+  onSearchElementPress = (store) => {
     this.setState({ searchStr: store.storeName, store, textFieldBlur: true });
     this.storePermissionHandler(store);
     this.updateFilteredStores(store.storeName);
@@ -94,9 +99,9 @@ export default class StoreLookupScreen extends React.Component {
     this.props.navigation.navigate('ClerkLogin', { store: this.state.store, storeName: this.state.store.storeName });
   };
 
-  updateFilteredStores = searchStr => {
+  updateFilteredStores = (searchStr) => {
     this.setState({
-      filteredStores: this.state.stores.filter(store =>
+      filteredStores: this.state.stores.filter((store) =>
         store.storeName.toLowerCase().includes(searchStr.toLowerCase())
       ),
     });
@@ -113,7 +118,7 @@ export default class StoreLookupScreen extends React.Component {
               selectionColor={Colors.primaryGreen}
               style={{ marginTop: 32 }}
               placeholder="ex: Healthy Corner Store"
-              onChangeText={text => this.handleChangeText(text)}
+              onChangeText={(text) => this.handleChangeText(text)}
               value={this.state.searchStr}
               onFocus={() => this.onFocus()}
               autoCorrect={false}
@@ -121,7 +126,7 @@ export default class StoreLookupScreen extends React.Component {
             {!this.state.textFieldBlur && (
               <SearchBarContainer>
                 <ScrollView bounces={false} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
-                  {this.state.filteredStores.map(store => (
+                  {this.state.filteredStores.map((store) => (
                     <SearchElement key={store.id} onPress={() => this.onSearchElementPress(store)}>
                       <Body>{store.storeName}</Body>
                     </SearchElement>
@@ -141,8 +146,8 @@ export default class StoreLookupScreen extends React.Component {
               </RoundedButtonContainer>
             )}
           </CheckInContentContainer>
-          {/* <Button title="Checkout Bypass" onPress={() => this._devBypass()} />
-          <Button title="Confirmation Bypass" onPress={() => this._devConfirmBypass()} /> */}
+          {env === 'dev' && <Button title="Checkout Bypass" onPress={() => this._devBypass()} />}
+          {env === 'dev' && <Button title="Confirmation Bypass" onPress={() => this._devConfirmBypass()} />}
         </CheckInContainer>
       </DismissKeyboard>
     );
