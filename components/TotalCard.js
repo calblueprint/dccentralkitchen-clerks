@@ -14,7 +14,7 @@ function TotalCard({ totalSale, totalPoints }) {
       </LineItemRow>
       <LineItemRow>
         <Body color={Colors.secondaryText}>Points Earned</Body>
-        <Body color={Colors.secondaryText}>{totalPoints} pts</Body>
+        <Body color={Colors.secondaryText}>{`${totalPoints} pts`}</Body>
       </LineItemRow>
     </LineItem>
   );

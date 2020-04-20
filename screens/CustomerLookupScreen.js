@@ -38,12 +38,12 @@ export default class CustomerLookupScreen extends React.Component {
     }
   };
 
-  _asyncCustomerFound = async customerRecord => {
+  _asyncCustomerFound = async (customerRecord) => {
     await AsyncStorage.setItem('customerId', customerRecord.id);
     this.props.navigation.navigate('Checkout');
   };
 
-  _formatPhoneNumber = phoneNumber => {
+  _formatPhoneNumber = (phoneNumber) => {
     const onlyNumeric = phoneNumber.replace('[^0-9]', '');
     const formatted = `(${onlyNumeric.slice(0, 3)}) ${onlyNumeric.slice(3, 6)}-${onlyNumeric.slice(6, 10)}`;
     return formatted;
@@ -113,7 +113,7 @@ export default class CustomerLookupScreen extends React.Component {
               placeholder="ex. 1234567890"
               keyboardType="number-pad"
               maxLength={10}
-              onChangeText={text => this.setState({ phoneNumber: text, errorShown: false })}
+              onChangeText={(text) => this.setState({ phoneNumber: text, errorShown: false })}
               value={this.state.phoneNumber}
             />
             {this.state.errorShown ? (

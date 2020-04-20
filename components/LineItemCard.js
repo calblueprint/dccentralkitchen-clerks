@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import Colors from '../constants/Colors';
 import { calculateLineItemPrice, displayDollarValue } from '../lib/checkoutUtils';
@@ -6,7 +7,7 @@ import { Body, Subhead } from './BaseComponents';
 
 /**
  * @prop
- **/
+ * */
 
 function LineItemCard({ product }) {
   return (
@@ -17,13 +18,22 @@ function LineItemCard({ product }) {
       </LineItemRow>
       <LineItemRow>
         <Body color={Colors.secondaryText}>{product.detail}</Body>
-        <Body color={Colors.secondaryText}>{product.points * product.quantity} pts</Body>
+        <Body color={Colors.secondaryText}>{`${product.points * product.quantity} pts`}</Body>
       </LineItemRow>
       <LineItemRow>
-        <Body color={Colors.secondaryText}>Qty: {product.quantity}</Body>
+        <Body color={Colors.secondaryText}>{`Qty: ${product.quantity}`}</Body>
       </LineItemRow>
     </LineItem>
   );
 }
+
+LineItemCard.propTypes = {
+  product: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    detail: PropTypes.string.isRequired,
+    points: PropTypes.number.isRequired,
+    quantity: PropTypes.number.isRequired,
+  }).isRequired,
+};
 
 export default LineItemCard;

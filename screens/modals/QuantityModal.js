@@ -40,7 +40,7 @@ export default class QuantityModal extends React.Component {
   componentWillReceiveProps(nextProps) {
     const newQuantity = nextProps.product.quantity;
     if (this.state.currentQuantity !== newQuantity) {
-      this.setState(prevState => ({
+      this.setState((prevState) => ({
         ...prevState,
         product: nextProps.product,
         currentQuantity: newQuantity === 0 ? '' : newQuantity.toString(),
@@ -54,7 +54,7 @@ export default class QuantityModal extends React.Component {
     this.setState({ currentQuantity: quantityInt === 0 ? '' : quantityInt.toString() });
   };
 
-  setModalVisible = visible => {
+  setModalVisible = (visible) => {
     // Reset state every time modal is re-opened
     if (visible) {
       this.resetCurrentQuantity();
@@ -72,7 +72,7 @@ export default class QuantityModal extends React.Component {
   };
 
   // Update quantity (string)
-  updateQuantity = quantity => {
+  updateQuantity = (quantity) => {
     // Only allow blank or integer input (no punctuation)
     if (!Number.isInteger(parseInt(quantity, 10)) && quantity !== '') {
       return;

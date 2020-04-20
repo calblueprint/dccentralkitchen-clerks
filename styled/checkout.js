@@ -11,7 +11,7 @@ export const TopBar = styled.View`
   align-items: ${Platform.OS === 'android' ? 'flex-end' : 'center'};
   padding-bottom: ${Platform.OS === 'android' ? '16px' : '0px'};
   width: 100%;
-  background: ${props => (props.trainingColor ? Colors.trainingMode : Colors.base)};
+  background: ${(props) => (props.trainingColor ? Colors.trainingMode : Colors.base)};
   display: flex;
   flex-direction: row;
   justify-content: space-between;

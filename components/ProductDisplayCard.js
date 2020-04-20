@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { Image } from 'react-native';
 import Colors from '../constants/Colors';
@@ -6,7 +7,7 @@ import { Body, Caption } from './BaseComponents';
 
 /**
  * @prop
- **/
+ * */
 
 // TODO @tommypoa to use styled-components
 function ProductDisplayCard({ product }) {
@@ -29,5 +30,13 @@ function ProductDisplayCard({ product }) {
     </ProductCard>
   );
 }
+
+ProductDisplayCard.propTypes = {
+  product: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    detail: PropTypes.string.isRequired,
+    imageUrl: PropTypes.string.isRequired,
+  }).isRequired,
+};
 
 export default ProductDisplayCard;

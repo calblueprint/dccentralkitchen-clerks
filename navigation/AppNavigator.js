@@ -11,7 +11,8 @@ const Drawer = createDrawerNavigator();
 
 function DrawerNavigator() {
   return (
-    <Drawer.Navigator drawerContent={props => <DrawerContent {...props} />} drawerStyle={{ width: 343 }}>
+    // eslint-disable-next-line react/jsx-props-no-spreading
+    <Drawer.Navigator drawerContent={(props) => <DrawerContent {...props} />} drawerStyle={{ width: 343 }}>
       <Drawer.Screen name="App" component={AppStackNavigator} />
     </Drawer.Navigator>
   );

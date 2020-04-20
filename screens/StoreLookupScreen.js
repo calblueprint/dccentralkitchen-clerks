@@ -1,8 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { AsyncStorage, Button, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { AsyncStorage, Button, Keyboard } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Body, ButtonLabel, RoundedButtonContainer, Title } from '../components/BaseComponents';
+import DismissKeyboard from '../components/DismissKeyboard';
 import Colors from '../constants/Colors';
 import RecordIds from '../constants/RecordIds';
 import { env } from '../environment';
@@ -14,10 +15,6 @@ import {
   SearchElement,
   TextField,
 } from '../styled/checkin';
-
-const DismissKeyboard = ({ children }) => (
-  <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>{children}</TouchableWithoutFeedback>
-);
 
 export default class StoreLookupScreen extends React.Component {
   constructor(props) {

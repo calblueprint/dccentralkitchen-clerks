@@ -63,7 +63,7 @@ export default class RewardModal extends React.Component {
     });
   };
 
-  setModalVisible = visible => {
+  setModalVisible = (visible) => {
     // Reset state every time modal is re-opened
     const { rewardsAvailable, rewardsApplied, totalBalance } = this.props;
     if (visible) {
@@ -72,7 +72,7 @@ export default class RewardModal extends React.Component {
     this.setState({ modalVisible: visible });
   };
 
-  showError = show => {
+  showError = (show) => {
     // Sets a 2s timeout for the showError
     this.setState({ errorShown: show }, () => setTimeout(() => this.setState({ errorShown: false }), 2000));
   };
@@ -83,14 +83,14 @@ export default class RewardModal extends React.Component {
     this.setModalVisible(!this.state.modalVisible);
   };
 
-  updateRewardsApplied = addToApplied => {
+  updateRewardsApplied = (addToApplied) => {
     if (addToApplied) {
-      this.setState(prevState => ({
+      this.setState((prevState) => ({
         rewardsApplied: prevState.rewardsApplied + 1,
         totalBalance: prevState.totalBalance - rewardDollarValue,
       }));
     } else {
-      this.setState(prevState => ({
+      this.setState((prevState) => ({
         rewardsApplied: prevState.rewardsApplied - 1,
         totalBalance: prevState.totalBalance + rewardDollarValue,
         errorShown: false,
