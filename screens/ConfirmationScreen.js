@@ -25,6 +25,7 @@ export default class ConfirmationScreen extends React.Component {
       if (JSON.parse(await AsyncStorage.getItem('trainingMode'))) {
         transaction = this.props.route.params;
       } else {
+        console.log(this.props);
         const { transactionId } = this.props.route.params;
         transaction = await getTransactionsById(transactionId);
       }
@@ -38,7 +39,7 @@ export default class ConfirmationScreen extends React.Component {
     this.props.navigation.navigate('CustomerLookup');
   };
 
-  writeToClipboard = copyText => {
+  writeToClipboard = (copyText) => {
     Clipboard.setString(copyText);
     Alert.alert('Copied to Clipboard!', copyText);
   };
