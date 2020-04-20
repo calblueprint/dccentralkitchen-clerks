@@ -9,6 +9,7 @@ import { ButtonLabel, FilledButtonContainer, Subhead, Title } from '../component
 import SubtotalCard from '../components/SubtotalCard';
 import TotalCard from '../components/TotalCard';
 import Colors from '../constants/Colors';
+import { rewardDollarValue } from '../constants/Rewards';
 import { getCustomersById } from '../lib/airtable/request';
 import {
   addTransaction,
@@ -18,7 +19,7 @@ import {
   loadProductsData,
   updateCustomerPoints,
 } from '../lib/checkoutUtils';
-import { checkoutNumCols, productCardPxHeight, rewardDollarValue } from '../lib/constants';
+import { checkoutNumCols, productCardPxHeight } from '../lib/constants';
 import { BottomBar, ProductsContainer, SaleContainer, TabContainer, TopBar } from '../styled/checkout';
 import QuantityModal from './modals/QuantityModal';
 import RewardModal from './modals/RewardModal';
@@ -72,7 +73,7 @@ export default class CheckoutScreen extends React.Component {
       3) The new balance is non-negative
       No special handling */
     if (priceDifference >= 0 || this.state.rewardsApplied === 0 || newBalance >= 0) {
-      this.setState(prevState => ({
+      this.setState((prevState) => ({
         cart: update(prevState.cart, { [product.id]: { quantity: { $set: quantity } } }),
         totalBalance: prevState.totalBalance + priceDifference,
       }));
@@ -83,7 +84,7 @@ export default class CheckoutScreen extends React.Component {
       const rewardsToUndo = Math.ceil(Math.abs(newBalance) / rewardDollarValue);
       // This keeps the "extra" reward UNAPPLIED by default. To swap it, take the remainder instead
       // updatedBalance: rewardDollarValue + (- remainder) = "unapplying" an extra reward
-      this.setState(prevState => ({
+      this.setState((prevState) => ({
         cart: update(prevState.cart, { [product.id]: { quantity: { $set: quantity } } }),
         totalBalance:
           // If the remainder is less than 0, updatedBalance = rewardDollarValue + (negative) remainder
@@ -146,7 +147,7 @@ export default class CheckoutScreen extends React.Component {
   };
 
   // Displays a confirmation alert to the clerk.
-  displayConfirmation = async transaction => {
+  displayConfirmation = async (transaction) => {
     // Should not be able to check out if there isn't anything in the transaction.
     if (this.state.rewardsApplied === 0) {
       const eligibleRewards = calculateEligibleRewards(
@@ -170,7 +171,7 @@ export default class CheckoutScreen extends React.Component {
     ]);
   };
 
-  confirmNoRewards = async eligibleRewards => {
+  confirmNoRewards = async (eligibleRewards) => {
     const response = await AlertAsync(
       'Available rewards were not applied',
       'This customer could apply up to '.concat(eligibleRewards).concat(' rewards to this sale.'),
@@ -196,7 +197,7 @@ export default class CheckoutScreen extends React.Component {
 
   // Generates the confirmation message based on items in cart, points earned,
   // and total spent.
-  generateConfirmationMessage = transaction => {
+  generateConfirmationMessage = (transaction) => {
     let msg = Object.values(this.state.cart).reduce(
       (msg, lineItem) => (lineItem.quantity > 0 ? msg.concat(`${lineItem.quantity} x ${lineItem.name}\n`) : msg),
       'Sale Items:\n\n'
@@ -211,7 +212,7 @@ export default class CheckoutScreen extends React.Component {
   };
 
   // Adds the transaction to the user's account and updates their points.
-  confirmTransaction = async transaction => {
+  confirmTransaction = async (transaction) => {
     // Clerk Training: creates a local transaction object instead of creating transaction in Airtable
     if (JSON.parse(await AsyncStorage.getItem('trainingMode'))) {
       this.props.navigation.navigate('Confirmation', createFakeTransaction(transaction));
@@ -237,7 +238,7 @@ export default class CheckoutScreen extends React.Component {
   // If no product starting with that letter exists, find the next product.
   getIndexOfFirstProductAtLetter = (startLetter, endLetter) => {
     const prodList = this.state.products.filter(
-      product =>
+      (product) =>
         product.name.charAt(0).toUpperCase() >= startLetter.toUpperCase() &&
         product.name.charAt(0) < endLetter.toUpperCase()
     );
@@ -262,12 +263,7 @@ export default class CheckoutScreen extends React.Component {
               productCardPxHeight,
           })
         }>
-        <Title>
-          {startLetter
-            .toUpperCase()
-            .concat(' - ')
-            .concat(endLetter.toUpperCase())}
-        </Title>
+        <Title>{startLetter.toUpperCase().concat(' - ').concat(endLetter.toUpperCase())}</Title>
       </TabContainer>
     );
   };
@@ -301,7 +297,7 @@ export default class CheckoutScreen extends React.Component {
           {/* Display products */}
           <View style={{ display: 'flex', flex: 5, flexDirection: 'column' }}>
             <ProductsContainer
-              ref={scrollView => {
+              ref={(scrollView) => {
                 this.productScrollView = scrollView;
               }}>
               {Object.entries(cart).map(([id, product]) => (
@@ -331,7 +327,7 @@ export default class CheckoutScreen extends React.Component {
                 {/* Cart container */}
                 <View style={{ height: '100%', paddingBottom: '5%' }}>
                   <ScrollView
-                    ref={scrollView => {
+                    ref={(scrollView) => {
                       this.cartScrollView = scrollView;
                     }}
                     onContentSizeChange={() => this.cartScrollView.scrollToEnd({ animated: true })}>

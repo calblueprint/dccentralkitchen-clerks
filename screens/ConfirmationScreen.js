@@ -38,7 +38,7 @@ export default class ConfirmationScreen extends React.Component {
     this.props.navigation.navigate('CustomerLookup');
   };
 
-  writeToClipboard = copyText => {
+  writeToClipboard = (copyText) => {
     Clipboard.setString(copyText);
     Alert.alert('Copied to Clipboard!', copyText);
   };
