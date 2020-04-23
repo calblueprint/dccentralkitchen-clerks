@@ -1,11 +1,11 @@
+import { Platform } from 'react-native';
 import styled from 'styled-components/native';
 import Colors from '../constants/Colors';
 
 export const CheckInContainer = styled.KeyboardAvoidingView.attrs({
-  behavior: 'position',
-  keyboardVerticalOffset: -200,
+  behavior: Platform.OS === 'ios' ? 'padding' : null,
 })`
-  background-color: ${props => props.color || Colors.activeText};
+  background-color: ${(props) => props.color || Colors.activeText};
   width: 100%;
   height: 100%;
   display: flex;
@@ -25,7 +25,7 @@ export const TextField = styled.TextInput`
   width: 253px;
   height: 51px;
   background-color: #fff;
-  border-color: ${props => (props.error ? Colors.error : Colors.base)};
+  border-color: ${(props) => (props.error ? Colors.error : Colors.base)};
   border-width: 2px;
   padding-left: 14px;
   font-family: poppins-regular;
