@@ -1,18 +1,15 @@
 import { FontAwesome5 } from '@expo/vector-icons';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { AsyncStorage, Keyboard, TouchableWithoutFeedback, View } from 'react-native';
+import { AsyncStorage, View } from 'react-native';
 import { ButtonLabel, RoundedButtonContainer, Subhead, Title } from '../components/BaseComponents';
+import DismissKeyboard from '../components/DismissKeyboard';
 import DrawerButton from '../components/DrawerButton';
 import Colors from '../constants/Colors';
 import { status } from '../lib/constants';
 import { lookupCustomer } from '../lib/lookupUtils';
 import { CheckInContainer, CheckInContentContainer, TextField } from '../styled/checkin';
 import { RowContainer } from '../styled/shared';
-
-const DismissKeyboard = ({ children }) => (
-  <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>{children}</TouchableWithoutFeedback>
-);
 
 export default class CustomerLookupScreen extends React.Component {
   constructor(props) {

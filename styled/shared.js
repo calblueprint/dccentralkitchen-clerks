@@ -58,6 +58,6 @@ export const SpaceBetweenRowContainer = styled(RowContainer)`
 export const RoundedButtonContainer = styled(FilledButtonContainer)`
   border-radius: 20px;
   margin: 12px;
-  width: ${props => props.width || '160px'};
-  height: ${props => props.height || '39px'};
+  width: ${(props) => props.width || '160px'};
+  height: ${(props) => props.height || '39px'};
 `;

@@ -199,7 +199,7 @@ export default class CheckoutScreen extends React.Component {
   // and total spent.
   generateConfirmationMessage = (transaction) => {
     let msg = Object.values(this.state.cart).reduce(
-      (msg, lineItem) => (lineItem.quantity > 0 ? msg.concat(`${lineItem.quantity} x ${lineItem.name}\n`) : msg),
+      (_msg, lineItem) => (lineItem.quantity > 0 ? _msg.concat(`${lineItem.quantity} x ${lineItem.name}\n`) : _msg),
       'Sale Items:\n\n'
     );
     msg = msg.concat(`\nRewards Redeemed: ${transaction.rewardsApplied}\n`);

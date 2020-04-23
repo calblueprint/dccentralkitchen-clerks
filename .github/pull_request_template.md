@@ -8,7 +8,7 @@
 
 ### Online sources
 
-[//]: # "Optional - copy links to any tutorial or documentation that was useful to you when working on this PR"
+[//]: # 'Optional - copy links to any tutorial or documentation that was useful to you when working on this PR'
 
 ### Related PRs
 
@@ -16,7 +16,7 @@
 
 ## How to review
 
-[//]: # "The order in which to review files and what to expect when testing locally"
+[//]: # 'The order in which to review files and what to expect when testing locally'
 
 ## Next steps
 
@@ -24,7 +24,7 @@
 
 ## Tests Performed, Edge Cases
 
-[//]: # "Hopefully we will add a testing suite/CI soon, but until then note down the steps you took to test locally"
+[//]: # 'Hopefully we will add a testing suite/CI soon, but until then note down the steps you took to test locally'
 
 ### Screenshots
 
@@ -32,4 +32,4 @@
 
 CC: @anniero98 @wangannie
 
-[//]: # "This tags in both Annies as a default. Feel free to change, or add on anyone who you should be in on the conversation."
+[//]: # 'This tags in both Annies as a default. Feel free to change, or add on anyone who you should be in on the conversation.'

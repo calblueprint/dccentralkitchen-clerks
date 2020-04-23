@@ -6,8 +6,8 @@ import { ColumnContainer, RowContainer } from './shared';
 // Modals in CheckoutScreen.js
 
 export const ModalContentContainer = styled(ColumnContainer)`
-  width: ${props => props.width || '45%'};
-  height: ${props => props.height || '330px'};
+  width: ${(props) => props.width || '45%'};
+  height: ${(props) => props.height || '330px'};
   margin: auto;
   justify-content: space-around;
   align-items: center;
@@ -24,7 +24,7 @@ export const ModalCenteredOpacityLayer = styled(RowContainer)`
 
 export const ModalCopyContainer = styled(ColumnContainer)`
   justify-content: space-around;
-  align-items: ${props => props.alignItems || 'flex-start'};
+  align-items: ${(props) => props.alignItems || 'flex-start'};
 `;
 
 // Rewards

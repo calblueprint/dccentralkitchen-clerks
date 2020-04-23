@@ -1,21 +1,17 @@
 import { FontAwesome5 } from '@expo/vector-icons';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { AsyncStorage, Keyboard, TouchableWithoutFeedback, View } from 'react-native';
+import { AsyncStorage, View } from 'react-native';
 import * as Sentry from 'sentry-expo';
 import BackButton from '../components/BackButton';
 import { ButtonLabel, RoundedButtonContainer, Subhead, Title } from '../components/BaseComponents';
+import DismissKeyboard from '../components/DismissKeyboard';
 import Colors from '../constants/Colors';
 import { status } from '../lib/constants';
 import { lookupClerk } from '../lib/loginUtils';
 import { logAuthErrorToSentry } from '../lib/logUtils';
 import { CheckInContainer, CheckInContentContainer, TextField } from '../styled/checkin';
 import { RowContainer } from '../styled/shared';
-
-// TODO rename this
-const DismissKeyboard = ({ children }) => (
-  <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>{children}</TouchableWithoutFeedback>
-);
 
 export default class ClerkLoginScreen extends React.Component {
   constructor(props) {
@@ -32,7 +28,7 @@ export default class ClerkLoginScreen extends React.Component {
   }
 
   _reset = () => {
-    this.setState({ password: '', errorMsg: null, loginPermission: false });
+    this.setState({ password: '', errorMsg: null });
   };
 
   // Set the clerkId and storeId in AsyncStorage
@@ -49,6 +45,7 @@ export default class ClerkLoginScreen extends React.Component {
   handleSubmit = async () => {
     try {
       // Uses the `Store ID` lookup in AirTable
+      // eslint-disable-next-line react/no-access-state-in-setstate
       const lookupResult = await lookupClerk(this.props.route.params.store.id, this.state.password);
 
       let clerkRecord = null;
@@ -158,4 +155,5 @@ export default class ClerkLoginScreen extends React.Component {
 
 ClerkLoginScreen.propTypes = {
   navigation: PropTypes.object.isRequired,
+  route: PropTypes.object.isRequired,
 };
