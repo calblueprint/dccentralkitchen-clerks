@@ -14,6 +14,7 @@ export default function AppStackNavigator() {
         headerShown: false,
         cardStyle: { backgroundColor: Colors.lightest },
         drawerLabel: 'App',
+        gestureEnabled: false,
       }}>
       <AppStack.Screen name="CustomerLookup" component={CustomerLookupScreen} />
       <AppStack.Screen name="Checkout" component={CheckoutScreen} />
