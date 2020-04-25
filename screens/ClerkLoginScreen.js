@@ -1,4 +1,5 @@
 import { FontAwesome5 } from '@expo/vector-icons';
+import * as Analytics from 'expo-firebase-analytics';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { AsyncStorage, View } from 'react-native';
@@ -82,6 +83,19 @@ export default class ClerkLoginScreen extends React.Component {
         });
         console.log(errMsg);
       } else {
+        Analytics.setUserId(clerkRecord.id);
+        Analytics.setUserProperties({
+          clerk_name: clerkRecord.clerkName,
+          store: clerkRecord.storeName,
+        });
+        Analytics.logEvent('ClerkLogin', {
+          name: 'Successful Clerk login',
+          function: 'handleSubmit',
+          screen: 'ClerkLoginScreen',
+          clerk_id: clerkRecord.id,
+          clerk_name: clerkRecord.clerkName,
+          store_name: clerkRecord.storeName,
+        });
         Sentry.configureScope((scope) => {
           scope.setUser({
             id: clerkRecord.id,

@@ -1,4 +1,5 @@
 import { FontAwesome5 } from '@expo/vector-icons';
+import * as Analytics from 'expo-firebase-analytics';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { AsyncStorage, View } from 'react-native';
@@ -41,6 +42,13 @@ export default class CustomerLookupScreen extends React.Component {
 
   _asyncCustomerFound = async (customerRecord) => {
     await AsyncStorage.setItem('customerId', customerRecord.id);
+    await Analytics.logEvent('CustomerFound', {
+      name: 'Customer lookup successful',
+      function: '_asyncCustomerFound',
+      screen: 'CustomerLookupScreen',
+      customer_id: customerRecord.id,
+      customer_name: customerRecord.name,
+    });
     this.props.navigation.navigate('Checkout');
   };
 

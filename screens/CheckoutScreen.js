@@ -1,3 +1,4 @@
+import * as Analytics from 'expo-firebase-analytics';
 import PropTypes from 'prop-types';
 import React from 'react';
 import update from 'react-addons-update';
@@ -158,6 +159,12 @@ export default class CheckoutScreen extends React.Component {
       if (eligibleRewards && transaction.totalSale >= rewardDollarValue) {
         const continueWithoutRewards = await this.confirmNoRewards(eligibleRewards);
         if (!continueWithoutRewards) {
+          Analytics.logEvent('GoBackApplyRewards', {
+            name: 'Selected "Go back to apply rewards"',
+            function: 'displayConfirmation',
+            screen: 'CheckoutScreen',
+            eligible_rewards: eligibleRewards,
+          });
           return;
         }
       }
@@ -221,6 +228,13 @@ export default class CheckoutScreen extends React.Component {
     try {
       const transactionId = await addTransaction(this.state.customer, this.state.cart, transaction);
       await updateCustomerPoints(this.state.customer, transaction.pointsEarned, transaction.rewardsApplied);
+      Analytics.logEvent('ConfirmTransaction', {
+        name: 'Complete sale',
+        function: 'confirmTransaction',
+        screen: 'CheckoutScreen',
+        purpose: 'Transaction completed and confirmed.',
+        transaction: transactionId,
+      });
       this.props.navigation.navigate('Confirmation', { transactionId });
     } catch (err) {
       // TODO better handling - should prompt the user to try again, or at least say something is wrong with the service

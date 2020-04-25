@@ -1,4 +1,5 @@
 import { FontAwesome5 } from '@expo/vector-icons';
+import * as Analytics from 'expo-firebase-analytics';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Modal, TouchableOpacity, View } from 'react-native';
@@ -68,6 +69,13 @@ export default class QuantityModal extends React.Component {
     const currentQuantityInt = parseInt(this.state.currentQuantity, 10);
     const priceDifference = (currentQuantityInt - initialQuantity) * this.state.product.customerCost;
     this.props.callback(this.state.product, currentQuantityInt, priceDifference);
+    Analytics.logEvent('ConfirmQuantity', {
+      name: 'Apply product quantity',
+      function: 'handleUpdateCart',
+      screen: 'QuantityModal',
+      product: this.state.product.fullName,
+      quantity: currentQuantityInt,
+    });
     this.setModalVisible(!this.state.modalVisible);
   };
 
@@ -140,6 +148,15 @@ export default class QuantityModal extends React.Component {
             <TouchableOpacity
               onPress={() => {
                 this.setModalVisible(true);
+                Analytics.logEvent('OpenQuantityModal', {
+                  name: 'Open quantity modal',
+                  function: 'onPress',
+                  screen: 'QuantityModal',
+                  source: 'LineItemCard',
+                  action: product.quantity > 0 ? 'update' : 'add_new',
+                  product: product.fullName,
+                  product_id: product.id,
+                });
               }}>
               <LineItemCard product={product} />
             </TouchableOpacity>
@@ -148,6 +165,15 @@ export default class QuantityModal extends React.Component {
           <TouchableOpacity
             onPress={() => {
               this.setModalVisible(true);
+              Analytics.logEvent('OpenQuantityModal', {
+                name: 'Open quantity modal',
+                function: 'onPress',
+                screen: 'QuantityModal',
+                source: 'ProductDisplayCard',
+                action: product.quantity > 0 ? 'update' : 'add_new',
+                product: product.fullName,
+                product_id: product.id,
+              });
             }}>
             <ProductDisplayCard product={product} />
           </TouchableOpacity>
