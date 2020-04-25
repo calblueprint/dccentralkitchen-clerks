@@ -60,6 +60,7 @@
     "expo": "^37.0.0",
     "expo-asset": "~8.1.4",
     "expo-constants": "~9.0.0",
+    "expo-firebase-analytics": "~2.1.1",
     "expo-font": "~8.1.0",
     "expo-screen-orientation": "~1.0.0",
     "expo-web-browser": "~8.1.0",

@@ -7,6 +7,7 @@
     "platforms": ["ios", "android", "web"],
     "android": {
       "package": "org.calblueprint.HealthyCornersClerk",
+      "googleServicesFile": "./google-services.json",
       "versionCode": 5,
       "permissions": []
     },
@@ -24,9 +25,24 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "bundleIdentifier": "org.calblueprint.HealthyCornersClerk",
+      "googleServicesFile": "./GoogleService-Info.plist",
       "buildNumber": "1.1.2",
       "supportsTablet": true,
       "requireFullScreen": true
+    },
+    "web": {
+      "config": {
+        "firebase": {
+          "apiKey": "AIzaSyCiFxSYjtUVN8EZknbuIAOcDxGGdQIVMb4",
+          "authDomain": "healthy-corners-clerk.firebaseapp.com",
+          "databaseURL": "https://healthy-corners-clerk.firebaseio.com",
+          "projectId": "healthy-corners-clerk",
+          "storageBucket": "healthy-corners-clerk.appspot.com",
+          "messagingSenderId": "556962069588",
+          "appId": "1:556962069588:web:0e63f6035f4d435d6401c1",
+          "measurementId": "G-L6MBR8JPLE"
+        }
+      }
     },
     "hooks": {
       "postPublish": [
