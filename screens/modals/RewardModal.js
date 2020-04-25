@@ -1,4 +1,5 @@
 import { FontAwesome5 } from '@expo/vector-icons';
+import * as Analytics from 'expo-firebase-analytics';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Modal, TouchableOpacity, View } from 'react-native';
@@ -69,6 +70,13 @@ export default class RewardModal extends React.Component {
     if (visible) {
       this._updateState(rewardsAvailable, rewardsApplied, totalBalance);
     }
+    Analytics.logEvent('OpenRewardsModal', {
+      name: 'Open Rewards Modal',
+      function: 'setModalVisible',
+      screen: 'RewardModal',
+      rewards_available: rewardsAvailable,
+      total_balance: totalBalance,
+    });
     this.setState({ modalVisible: visible });
   };
 
@@ -79,6 +87,14 @@ export default class RewardModal extends React.Component {
 
   handleApplyRewards = () => {
     // Communicate to parent component
+    Analytics.logEvent('ConfirmApplyRewards', {
+      name: 'Apply Rewards',
+      function: 'handleApplyRewards',
+      screen: 'RewardModal',
+      rewards_available: this.state.rewardsAvailable,
+      rewards_eligible: this.state.rewardsEligible,
+      rewards_applied: this.state.rewardsApplied,
+    });
     this.props.callback(this.state.rewardsApplied, this.state.totalBalance);
     this.setModalVisible(!this.state.modalVisible);
   };
