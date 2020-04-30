@@ -20,7 +20,7 @@ Sentry.init({
 });
 //Disable Firebase Analytics in development
 if (__DEV__) {
-  Analytics.setAnalyticsCollectionEnabled(true);
+  Analytics.setAnalyticsCollectionEnabled(false);
 }
 
 export default function App(props) {
