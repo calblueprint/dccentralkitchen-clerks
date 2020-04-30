@@ -1,7 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
-import { AppLoading, ScreenOrientation } from 'expo';
+import { AppLoading } from 'expo';
 import { Asset } from 'expo-asset';
 import * as Font from 'expo-font';
+import * as ScreenOrientation from 'expo-screen-orientation';
 import React, { useState } from 'react';
 import { Platform, StatusBar, StyleSheet } from 'react-native';
 import * as Sentry from 'sentry-expo';

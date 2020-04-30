@@ -11,7 +11,8 @@ const Drawer = createDrawerNavigator();
 
 function DrawerNavigator() {
   return (
-    <Drawer.Navigator drawerContent={props => <DrawerContent {...props} />} drawerStyle={{ width: 343 }}>
+    // eslint-disable-next-line react/jsx-props-no-spreading
+    <Drawer.Navigator drawerContent={(props) => <DrawerContent {...props} />} drawerStyle={{ width: 343 }}>
       <Drawer.Screen name="App" component={AppStackNavigator} />
     </Drawer.Navigator>
   );
@@ -24,7 +25,7 @@ export default function createAppContainer() {
     <NavigationContainer>
       <AppContainerStack.Navigator
         initialRouteName="Auth"
-        screenOptions={{ headerShown: false, cardStyle: { backgroundColor: Colors.lightest } }}>
+        screenOptions={{ headerShown: false, cardStyle: { backgroundColor: Colors.lightest }, gestureEnabled: false }}>
         <AppContainerStack.Screen name="App" component={DrawerNavigator} />
         <AppContainerStack.Screen name="Auth" component={AuthStackNavigator} />
       </AppContainerStack.Navigator>

@@ -1,21 +1,17 @@
 import { FontAwesome5 } from '@expo/vector-icons';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { AsyncStorage, Keyboard, TouchableWithoutFeedback, View } from 'react-native';
+import { AsyncStorage, View } from 'react-native';
 import * as Sentry from 'sentry-expo';
 import BackButton from '../components/BackButton';
 import { ButtonLabel, RoundedButtonContainer, Subhead, Title } from '../components/BaseComponents';
+import DismissKeyboard from '../components/DismissKeyboard';
 import Colors from '../constants/Colors';
 import { status } from '../lib/constants';
 import { lookupClerk } from '../lib/loginUtils';
 import { logAuthErrorToSentry } from '../lib/logUtils';
 import { CheckInContainer, CheckInContentContainer, TextField } from '../styled/checkin';
 import { RowContainer } from '../styled/shared';
-
-// TODO rename this
-const DismissKeyboard = ({ children }) => (
-  <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>{children}</TouchableWithoutFeedback>
-);
 
 export default class ClerkLoginScreen extends React.Component {
   constructor(props) {
@@ -32,22 +28,24 @@ export default class ClerkLoginScreen extends React.Component {
   }
 
   _reset = () => {
-    this.setState({ password: '', errorMsg: null, loginPermission: false });
+    this.setState({ password: '', errorMsg: null });
   };
 
   // Set the clerkId and storeId in AsyncStorage
   // Then navigate to the customer lookup screen
-  _asyncLoginClerk = async clerkRecord => {
+  _asyncLoginClerk = async (clerkRecord) => {
+    const { navigation } = this.props;
     await AsyncStorage.setItem('clerkId', clerkRecord.id);
     await AsyncStorage.setItem('clerkName', clerkRecord.clerkName);
     await AsyncStorage.setItem('storeId', this.props.route.params.store.id);
-    this.props.navigation.navigate('App');
+    navigation.navigate('App');
   };
 
   // This function will sign the user in if the clerk is found.
   handleSubmit = async () => {
     try {
       // Uses the `Store ID` lookup in AirTable
+      // eslint-disable-next-line react/no-access-state-in-setstate
       const lookupResult = await lookupClerk(this.props.route.params.store.id, this.state.password);
 
       let clerkRecord = null;
@@ -113,7 +111,7 @@ export default class ClerkLoginScreen extends React.Component {
                 placeholder="ex. 1234"
                 keyboardType="number-pad"
                 maxLength={4}
-                onChangeText={text => this.setState({ password: text, errorShown: false })}
+                onChangeText={(text) => this.setState({ password: text, errorShown: false })}
                 value={this.state.password}
               />
               {/* Display error message or empty row to maintain consistent spacing. */}
@@ -144,4 +142,5 @@ export default class ClerkLoginScreen extends React.Component {
 
 ClerkLoginScreen.propTypes = {
   navigation: PropTypes.object.isRequired,
+  route: PropTypes.object.isRequired,
 };

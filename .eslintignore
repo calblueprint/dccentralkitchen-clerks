@@ -1,0 +1,5 @@
+App.js
+babel.config.js
+__tests__/*
+*/__tests__/*
+environment.js

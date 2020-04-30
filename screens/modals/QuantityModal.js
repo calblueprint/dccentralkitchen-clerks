@@ -40,7 +40,7 @@ export default class QuantityModal extends React.Component {
   componentWillReceiveProps(nextProps) {
     const newQuantity = nextProps.product.quantity;
     if (this.state.currentQuantity !== newQuantity) {
-      this.setState(prevState => ({
+      this.setState((prevState) => ({
         ...prevState,
         product: nextProps.product,
         currentQuantity: newQuantity === 0 ? '' : newQuantity.toString(),
@@ -54,7 +54,7 @@ export default class QuantityModal extends React.Component {
     this.setState({ currentQuantity: quantityInt === 0 ? '' : quantityInt.toString() });
   };
 
-  setModalVisible = visible => {
+  setModalVisible = (visible) => {
     // Reset state every time modal is re-opened
     if (visible) {
       this.resetCurrentQuantity();
@@ -72,7 +72,7 @@ export default class QuantityModal extends React.Component {
   };
 
   // Update quantity (string)
-  updateQuantity = quantity => {
+  updateQuantity = (quantity) => {
     // Only allow blank or integer input (no punctuation)
     if (!Number.isInteger(parseInt(quantity, 10)) && quantity !== '') {
       return;
@@ -98,7 +98,7 @@ export default class QuantityModal extends React.Component {
           }}>
           {/* Opacity layer */}
           <ModalCenteredOpacityLayer>
-            <ModalContentContainer>
+            <ModalContentContainer style={{ marginTop: 10 }}>
               <TouchableOpacity
                 style={{
                   position: 'absolute',
@@ -110,10 +110,10 @@ export default class QuantityModal extends React.Component {
                 onPress={() => this.setModalVisible(false)}>
                 <FontAwesome5 name="times" size={24} color={Colors.activeText} />
               </TouchableOpacity>
-              {/* Invisible element used to trick flexbox into spacin correctly with 'space-around' even though 'cancel' button is pinned using position: absolute */}
+              {/* Invisible element used to trick flexbox into spacing correctly with 'space-around' even though 'cancel' button is pinned using position: absolute */}
               <View>{null}</View>
               <ModalCopyContainer>
-                <Title>Quantity of {product.fullName}</Title>
+                <Title>{`Quantity of ${product.fullName}`}</Title>
                 <ColumnContainer>
                   <Body>Key in the quantity and tap UPDATE QUANTITY</Body>
                   <Body>OR press the top left X to exit.</Body>

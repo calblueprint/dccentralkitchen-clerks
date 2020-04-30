@@ -1,10 +1,13 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { AsyncStorage, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { AsyncStorage, Button, Keyboard } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Body, ButtonLabel, RoundedButtonContainer, Title } from '../components/BaseComponents';
+import DismissKeyboard from '../components/DismissKeyboard';
 import Colors from '../constants/Colors';
-import { loadStoreData } from '../lib/loginUtils';
+import RecordIds from '../constants/RecordIds';
+import { env } from '../environment';
+import { getAllStores } from '../lib/airtable/request';
 import {
   CheckInContainer,
   CheckInContentContainer,
@@ -13,18 +16,12 @@ import {
   TextField,
 } from '../styled/checkin';
 
-const DismissKeyboard = ({ children }) => (
-  <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>{children}</TouchableWithoutFeedback>
-);
-
 export default class StoreLookupScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       stores: [],
-      filteredStores: [],
-      store: {},
-      storePermission: false,
+      store: null,
       textFieldBlur: true,
       searchStr: '',
     };
@@ -32,11 +29,10 @@ export default class StoreLookupScreen extends React.Component {
 
   async componentDidMount() {
     try {
-      const stores = await loadStoreData();
+      const stores = await getAllStores();
       // Set to first store as default, since the picker also defaults to the top (first in list)
       this.setState({
         stores,
-        filteredStores: stores,
       });
     } catch (err) {
       console.error('Store Lookup Screen', err);
@@ -46,41 +42,27 @@ export default class StoreLookupScreen extends React.Component {
   // Purely to bypass the flow for development -- go straight to Checkout.
   // Configures to use Jeffry Poa & Robin Hood
   _devBypass = async () => {
-    await AsyncStorage.setItem('clerkId', 'recuK1PmynsN0Mpbu');
     await AsyncStorage.setItem('clerkName', 'Jeffry Poa');
-    await AsyncStorage.setItem('storeId', 'recq488vtYG0KUhk6');
-    await AsyncStorage.setItem('customerId', 'recimV9zs2StWB2Mj');
+    await AsyncStorage.setItem('clerkId', RecordIds.testClerkId);
+    await AsyncStorage.setItem('storeId', RecordIds.testStoreId);
+    await AsyncStorage.setItem('customerId', RecordIds.testCustomerId);
     await AsyncStorage.setItem('trainingMode', JSON.stringify(false));
-    this.props.navigation.navigate('Checkout');
+    this.props.navigation.navigate('App', { screen: 'App', params: { screen: 'Checkout' } });
   };
 
   _devConfirmBypass = async () => {
-    this.props.navigation.navigate('Confirmation', { transactionId: 'recS2pXktslghQzQ9' });
+    this.props.navigation.navigate('App', {
+      screen: 'App',
+      params: { screen: 'Confirmation', params: { transactionId: RecordIds.testTransactionId } },
+    });
   };
 
   onFocus = () => {
     this.setState({ textFieldBlur: false });
   };
 
-  storePermissionHandler = store => {
-    let storePermission = false;
-    if (store) {
-      storePermission = true;
-    }
-    this.setState({ store, storePermission });
-  };
-
-  handleChangeText = searchStr => {
-    this.setState({
-      searchStr,
-    });
-    this.updateFilteredStores(searchStr);
-  };
-
-  onSearchElementPress = store => {
+  onSearchElementPress = (store) => {
     this.setState({ searchStr: store.storeName, store, textFieldBlur: true });
-    this.storePermissionHandler(store);
-    this.updateFilteredStores(store.storeName);
     Keyboard.dismiss();
   };
 
@@ -94,15 +76,10 @@ export default class StoreLookupScreen extends React.Component {
     this.props.navigation.navigate('ClerkLogin', { store: this.state.store, storeName: this.state.store.storeName });
   };
 
-  updateFilteredStores = searchStr => {
-    this.setState({
-      filteredStores: this.state.stores.filter(store =>
-        store.storeName.toLowerCase().includes(searchStr.toLowerCase())
-      ),
-    });
-  };
-
   render() {
+    const { store, stores, searchStr } = this.state;
+    const filteredStores = stores.filter((_store) => _store.storeName.toLowerCase().includes(searchStr.toLowerCase()));
+    const storePermission = store !== null;
     return (
       <DismissKeyboard>
         <CheckInContainer behavior="position" keyboardVerticalOffset="-200">
@@ -113,7 +90,11 @@ export default class StoreLookupScreen extends React.Component {
               selectionColor={Colors.primaryGreen}
               style={{ marginTop: 32 }}
               placeholder="ex: Healthy Corner Store"
-              onChangeText={text => this.handleChangeText(text)}
+              onChangeText={(text) =>
+                this.setState({
+                  searchStr: text,
+                })
+              }
               value={this.state.searchStr}
               onFocus={() => this.onFocus()}
               autoCorrect={false}
@@ -121,9 +102,9 @@ export default class StoreLookupScreen extends React.Component {
             {!this.state.textFieldBlur && (
               <SearchBarContainer>
                 <ScrollView bounces={false} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
-                  {this.state.filteredStores.map(store => (
-                    <SearchElement key={store.id} onPress={() => this.onSearchElementPress(store)}>
-                      <Body>{store.storeName}</Body>
+                  {filteredStores.map((_store) => (
+                    <SearchElement key={_store.id} onPress={() => this.onSearchElementPress(_store)}>
+                      <Body>{_store.storeName}</Body>
                     </SearchElement>
                   ))}
                 </ScrollView>
@@ -132,17 +113,17 @@ export default class StoreLookupScreen extends React.Component {
             {this.state.textFieldBlur && (
               <RoundedButtonContainer
                 style={{ marginTop: 32 }}
-                color={this.state.storePermission ? Colors.primaryGreen : Colors.lightestGreen}
+                color={storePermission ? Colors.primaryGreen : Colors.lightestGreen}
                 width="253px"
                 height="40px"
                 onPress={() => this.handleNavigate()}
-                disabled={!this.state.storePermission}>
+                disabled={!storePermission}>
                 <ButtonLabel color={Colors.lightest}>Next</ButtonLabel>
               </RoundedButtonContainer>
             )}
           </CheckInContentContainer>
-          {/* <Button title="Checkout Bypass" onPress={() => this._devBypass()} />
-          <Button title="Confirmation Bypass" onPress={() => this._devConfirmBypass()} /> */}
+          {env === 'dev' && <Button title="Checkout Bypass" onPress={() => this._devBypass()} />}
+          {env === 'dev' && <Button title="Confirmation Bypass" onPress={() => this._devConfirmBypass()} />}
         </CheckInContainer>
       </DismissKeyboard>
     );
