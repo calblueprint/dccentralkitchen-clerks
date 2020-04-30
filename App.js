@@ -1,7 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { AppLoading } from 'expo';
 import { Asset } from 'expo-asset';
-import * as Analytics from 'expo-firebase-analytics';
 import * as Font from 'expo-font';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import React, { useState } from 'react';
@@ -18,10 +17,6 @@ Sentry.init({
   debug: true,
   environment: env,
 });
-//Disable Firebase Analytics in development
-if (__DEV__) {
-  Analytics.setAnalyticsCollectionEnabled(false);
-}
 
 export default function App(props) {
   const [isLoadingComplete, setLoadingComplete] = useState(false);
