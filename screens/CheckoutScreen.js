@@ -71,7 +71,7 @@ export default class CheckoutScreen extends React.Component {
       this.setState((prevState) => ({
         lineItems: prevState.lineItems.concat(product.id),
       }));
-    } else if (quantity === 0 && (product.id in this.state.lineItems)) {
+    } else if (quantity === 0 && (this.state.lineItems.includes(product.id))) {
       // Remove an item from lineItems.
       this.setState((prevState) => ({
         lineItems: prevState.lineItems.filter((id) => id !== product.id)
