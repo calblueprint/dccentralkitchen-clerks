@@ -67,13 +67,16 @@ export default class CheckoutScreen extends React.Component {
       3) The new balance is non-negative
       No special handling */
     // Add a new product to lineItems.
-    if (quantity !== 0 && !(product.id in this.state.lineItems)) {
-      this.setState((prevState) => ({lineItems: prevState.lineItems.push(product.id)}));
+    if (quantity !== 0 && !(this.state.lineItems.includes(product.id))) {
+      this.setState((prevState) => ({
+        lineItems: prevState.lineItems.concat(product.id),
+      }));
     } else if (quantity === 0 && (product.id in this.state.lineItems)) {
       // Remove an item from lineItems.
-      this.setState((prevState) => ({lineItems: prevState.lineItems.filter((id) => id !== product.id)}));
+      this.setState((prevState) => ({
+        lineItems: prevState.lineItems.filter((id) => id !== product.id)
+      }));
     }
-    console.log("lineitems", this.state.lineItems);
     if (priceDifference >= 0 || this.state.rewardsApplied === 0 || newBalance >= 0) {
       this.setState((prevState) => ({
         cart: update(prevState.cart, { [product.id]: { quantity: { $set: quantity } } }),
