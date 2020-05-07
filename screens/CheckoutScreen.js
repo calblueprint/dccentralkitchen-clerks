@@ -11,14 +11,7 @@ import TotalCard from '../components/TotalCard';
 import Colors from '../constants/Colors';
 import { rewardDollarValue } from '../constants/Rewards';
 import { getCustomersById } from '../lib/airtable/request';
-import {
-  addTransaction,
-  calculateEligibleRewards,
-  createFakeTransaction,
-  displayDollarValue,
-  loadProductsData,
-  updateCustomerPoints,
-} from '../lib/checkoutUtils';
+import { addTransaction, calculateEligibleRewards, createFakeTransaction, displayDollarValue, loadProductsData, updateCustomerPoints } from '../lib/checkoutUtils';
 import { checkoutNumCols, productCardPxHeight } from '../lib/constants';
 import { BottomBar, ProductsContainer, SaleContainer, TabContainer, TopBar } from '../styled/checkout';
 import QuantityModal from './modals/QuantityModal';
@@ -31,6 +24,7 @@ export default class CheckoutScreen extends React.Component {
       // Populated in componentDidMount
       customer: null,
       cart: {},
+      lineItems: [],
       rewardsAvailable: 0,
       // Other state
       totalBalance: 0,
@@ -72,6 +66,11 @@ export default class CheckoutScreen extends React.Component {
       2) No rewards have been applied, or
       3) The new balance is non-negative
       No special handling */
+    if (quantity !== 0 && !(product.id in this.state.lineItems)) {
+      this.state.lineItems.push(product.id);
+    } else if (quantity === 0 && (product.id in this.state.lineItems)) {
+      this.setState((prevState) => ({lineItems: prevState.lineItems.filter((item) => item !== product.id)}));
+    }
     if (priceDifference >= 0 || this.state.rewardsApplied === 0 || newBalance >= 0) {
       this.setState((prevState) => ({
         cart: update(prevState.cart, { [product.id]: { quantity: { $set: quantity } } }),
@@ -273,7 +272,7 @@ export default class CheckoutScreen extends React.Component {
       return null;
     }
 
-    const { cart, customer, totalBalance, trainingMode } = this.state;
+    const { cart, lineItems, customer, totalBalance, trainingMode } = this.state;
     const totalSale = totalBalance > 0 ? totalBalance : 0;
     const pointsEarned = this.getPointsEarned();
     const subtotal = totalBalance + this.state.rewardsApplied * rewardDollarValue;
@@ -331,10 +330,10 @@ export default class CheckoutScreen extends React.Component {
                       this.cartScrollView = scrollView;
                     }}
                     onContentSizeChange={() => this.cartScrollView.scrollToEnd({ animated: true })}>
-                    {Object.entries(cart).map(([id, product]) => {
+                    {lineItems.map((id) => {
                       return (
-                        product.quantity > 0 && (
-                          <QuantityModal key={id} product={product} isLineItem callback={this.updateQuantityCallback} />
+                        cart[id].quantity > 0 && (
+                          <QuantityModal key={id} product={cart[id]} isLineItem callback={this.updateQuantityCallback} />
                         )
                       );
                     })}
