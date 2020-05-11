@@ -36,6 +36,11 @@ export default class StoreLookupScreen extends React.Component {
         stores,
       });
     } catch (err) {
+      logErrorToSentry({
+        screen: 'StoreLookupScreen',
+        action: 'loadStoreData',
+        error: err,
+      });
       console.error('Store Lookup Screen', err);
     }
   }

@@ -10,7 +10,7 @@ import DismissKeyboard from '../components/DismissKeyboard';
 import Colors from '../constants/Colors';
 import { status } from '../lib/constants';
 import { lookupClerk } from '../lib/loginUtils';
-import { logAuthErrorToSentry } from '../lib/logUtils';
+import { logAuthErrorToSentry, logErrorToSentry } from '../lib/logUtils';
 import { CheckInContainer, CheckInContentContainer, TextField } from '../styled/checkin';
 import { RowContainer } from '../styled/shared';
 
@@ -107,6 +107,11 @@ export default class ClerkLoginScreen extends React.Component {
       // TODO reset state using onFocusEffect; this can cause memory leaks
       this.setState({ errorMsg: lookupResult.errorMsg, password: '', errorShown: clerkNotFound });
     } catch (err) {
+      logErrorToSentry({
+        screen: 'ClerkLoginScreen',
+        action: 'handleSubmit',
+        error: err,
+      });
       console.error('Clerk Login Screen:', err);
     }
   };
