@@ -12,7 +12,14 @@ import TotalCard from '../components/TotalCard';
 import Colors from '../constants/Colors';
 import { rewardDollarValue } from '../constants/Rewards';
 import { getCustomersById } from '../lib/airtable/request';
-import { addTransaction, calculateEligibleRewards, createFakeTransaction, displayDollarValue, loadProductsData, updateCustomerPoints } from '../lib/checkoutUtils';
+import {
+  addTransaction,
+  calculateEligibleRewards,
+  createFakeTransaction,
+  displayDollarValue,
+  loadProductsData,
+  updateCustomerPoints,
+} from '../lib/checkoutUtils';
 import { checkoutNumCols, productCardPxHeight } from '../lib/constants';
 import { logErrorToSentry } from '../lib/logUtils';
 import { BottomBar, ProductsContainer, SaleContainer, TabContainer, TopBar } from '../styled/checkout';
@@ -69,14 +76,14 @@ export default class CheckoutScreen extends React.Component {
       3) The new balance is non-negative
       No special handling */
     // Add a new product to lineItems.
-    if (quantity !== 0 && !(this.state.lineItems.includes(product.id))) {
+    if (quantity !== 0 && !this.state.lineItems.includes(product.id)) {
       this.setState((prevState) => ({
         lineItems: prevState.lineItems.concat(product.id),
       }));
-    } else if (quantity === 0 && (this.state.lineItems.includes(product.id))) {
+    } else if (quantity === 0 && this.state.lineItems.includes(product.id)) {
       // Remove an item from lineItems.
       this.setState((prevState) => ({
-        lineItems: prevState.lineItems.filter((id) => id !== product.id)
+        lineItems: prevState.lineItems.filter((id) => id !== product.id),
       }));
     }
     if (priceDifference >= 0 || this.state.rewardsApplied === 0 || newBalance >= 0) {
@@ -212,7 +219,10 @@ export default class CheckoutScreen extends React.Component {
   // and total spent.
   generateConfirmationMessage = (transaction) => {
     let msg = Object.values(this.state.cart).reduce(
-      (_msg, lineItem) => (lineItem.quantity > 0 ? _msg.concat(`${lineItem.quantity} x ${lineItem.name}\n`) : _msg),
+      (_msg, lineItem) =>
+        lineItem.quantity > 0
+          ? _msg.concat(`${lineItem.quantity} x ${lineItem.name} ${lineItem.detail || ''}\n`)
+          : _msg,
       'Sale Items:\n\n'
     );
     msg = msg.concat(`\nRewards Redeemed: ${transaction.rewardsApplied}\n`);
@@ -359,7 +369,12 @@ export default class CheckoutScreen extends React.Component {
                     {lineItems.map((id) => {
                       return (
                         cart[id].quantity > 0 && (
-                          <QuantityModal key={id} product={cart[id]} isLineItem callback={this.updateQuantityCallback} />
+                          <QuantityModal
+                            key={id}
+                            product={cart[id]}
+                            isLineItem
+                            callback={this.updateQuantityCallback}
+                          />
                         )
                       );
                     })}
