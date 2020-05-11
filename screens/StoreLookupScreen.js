@@ -8,7 +8,7 @@ import DismissKeyboard from '../components/DismissKeyboard';
 import Colors from '../constants/Colors';
 import RecordIds from '../constants/RecordIds';
 import { env } from '../environment';
-import { loadStoreData } from '../lib/loginUtils';
+import { getAllStores } from '../lib/airtable/request';
 import {
   CheckInContainer,
   CheckInContentContainer,
@@ -30,7 +30,7 @@ export default class StoreLookupScreen extends React.Component {
 
   async componentDidMount() {
     try {
-      const stores = await loadStoreData();
+      const stores = await getAllStores();
       // Set to first store as default, since the picker also defaults to the top (first in list)
       this.setState({
         stores,

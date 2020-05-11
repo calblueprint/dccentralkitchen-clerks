@@ -25,8 +25,12 @@ function ProductDisplayCard({ product }) {
         }}
         borderRadius={4}
       />
-      <Body>{product.name}</Body>
-      <Caption color={Colors.secondaryText}>{product.detail}</Caption>
+      <Body numberOfLines={1} ellipsizeMode="tail">
+        {product.name}
+      </Body>
+      <Caption numberOfLines={1} ellipsizeMode="tail" color={Colors.secondaryText}>
+        {product.detail}
+      </Caption>
     </ProductCard>
   );
 }
