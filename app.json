@@ -8,10 +8,10 @@
     "android": {
       "package": "org.calblueprint.HealthyCornersClerk",
       "googleServicesFile": "./google-services.json",
-      "versionCode": 5,
+      "versionCode": 6,
       "permissions": []
     },
-    "version": "1.1.2",
+    "version": "1.1.3",
     "orientation": "landscape",
     "icon": "./assets/images/hc_clerk_icon.png",
     "splash": {
@@ -26,7 +26,7 @@
     "ios": {
       "bundleIdentifier": "org.calblueprint.HealthyCornersClerk",
       "googleServicesFile": "./GoogleService-Info.plist",
-      "buildNumber": "1.1.2",
+      "buildNumber": "1.1.3",
       "supportsTablet": true,
       "requireFullScreen": true
     },
