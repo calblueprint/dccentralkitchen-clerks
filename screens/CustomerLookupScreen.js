@@ -42,7 +42,7 @@ export default class CustomerLookupScreen extends React.Component {
 
   _asyncCustomerFound = async (customerRecord) => {
     await AsyncStorage.setItem('customerId', customerRecord.id);
-    await Analytics.logEvent('CustomerFound', {
+    Analytics.logEvent('CustomerFound', {
       name: 'Customer lookup successful',
       function: '_asyncCustomerFound',
       component: 'CustomerLookupScreen',
