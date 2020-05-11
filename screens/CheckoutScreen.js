@@ -246,7 +246,7 @@ export default class CheckoutScreen extends React.Component {
         [{ text: 'OK' }]
       );
       logErrorToSentry({
-        screen: 'ClerkLoginScreen',
+        screen: 'CheckoutScreen',
         action: 'confirmTransaction',
         error: err,
       });

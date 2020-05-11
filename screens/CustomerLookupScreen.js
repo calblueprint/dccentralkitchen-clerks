@@ -8,6 +8,7 @@ import DismissKeyboard from '../components/DismissKeyboard';
 import DrawerButton from '../components/DrawerButton';
 import Colors from '../constants/Colors';
 import { status } from '../lib/constants';
+import { logErrorToSentry } from '../lib/logUtils';
 import { lookupCustomer } from '../lib/lookupUtils';
 import { CheckInContainer, CheckInContentContainer, TextField } from '../styled/checkin';
 import { RowContainer } from '../styled/shared';
@@ -88,6 +89,11 @@ export default class CustomerLookupScreen extends React.Component {
         this.setState({ errorMsg: lookupResult.errorMsg, phoneNumber: '', errorShown: customerNotFound });
       }
     } catch (err) {
+      logErrorToSentry({
+        screen: 'CustomerLookupScreen',
+        action: 'handleSubmit',
+        error: err,
+      });
       console.error('Customer Lookup Screen: ', err);
     }
   };
