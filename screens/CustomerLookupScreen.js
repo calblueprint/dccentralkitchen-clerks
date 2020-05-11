@@ -45,7 +45,7 @@ export default class CustomerLookupScreen extends React.Component {
     await Analytics.logEvent('CustomerFound', {
       name: 'Customer lookup successful',
       function: '_asyncCustomerFound',
-      screen: 'CustomerLookupScreen',
+      component: 'CustomerLookupScreen',
       customer_id: customerRecord.id,
       customer_name: customerRecord.name,
     });

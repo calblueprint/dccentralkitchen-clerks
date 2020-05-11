@@ -23,7 +23,7 @@ class DrawerContent extends React.Component {
     Analytics.logEvent('ClerkLogOut', {
       name: 'Log out',
       function: '_logout',
-      screen: 'DrawerContent',
+      component: 'DrawerContent',
     });
     Analytics.setUserId(null);
     this.props.navigation.navigate('Auth');

@@ -73,7 +73,7 @@ export default class StoreLookupScreen extends React.Component {
       await Analytics.logEvent('SelectTrainingMode', {
         name: 'Select Clerk Training mode',
         function: 'handleNavigate',
-        screen: 'StoreLookupScreen',
+        component: 'StoreLookupScreen',
       });
       await AsyncStorage.setItem('trainingMode', JSON.stringify(true));
     } else {

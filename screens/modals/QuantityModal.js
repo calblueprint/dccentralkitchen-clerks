@@ -72,7 +72,7 @@ export default class QuantityModal extends React.Component {
     Analytics.logEvent('ConfirmQuantity', {
       name: 'Apply product quantity',
       function: 'handleUpdateCart',
-      screen: 'QuantityModal',
+      component: 'QuantityModal',
       product: this.state.product.fullName,
       quantity: currentQuantityInt,
     });
@@ -151,7 +151,7 @@ export default class QuantityModal extends React.Component {
                 Analytics.logEvent('OpenQuantityModal', {
                   name: 'Open quantity modal',
                   function: 'onPress',
-                  screen: 'QuantityModal',
+                  component: 'QuantityModal',
                   source: 'LineItemCard',
                   action: product.quantity > 0 ? 'update' : 'add_new',
                   product: product.fullName,
@@ -168,7 +168,7 @@ export default class QuantityModal extends React.Component {
               Analytics.logEvent('OpenQuantityModal', {
                 name: 'Open quantity modal',
                 function: 'onPress',
-                screen: 'QuantityModal',
+                component: 'QuantityModal',
                 source: 'ProductDisplayCard',
                 action: product.quantity > 0 ? 'update' : 'add_new',
                 product: product.fullName,

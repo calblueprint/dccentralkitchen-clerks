@@ -73,7 +73,7 @@ export default class RewardModal extends React.Component {
     Analytics.logEvent('OpenRewardsModal', {
       name: 'Open Rewards Modal',
       function: 'setModalVisible',
-      screen: 'RewardModal',
+      component: 'RewardModal',
       rewards_available: rewardsAvailable,
       total_balance: totalBalance,
     });
@@ -90,7 +90,7 @@ export default class RewardModal extends React.Component {
     Analytics.logEvent('ConfirmApplyRewards', {
       name: 'Apply Rewards',
       function: 'handleApplyRewards',
-      screen: 'RewardModal',
+      component: 'RewardModal',
       rewards_available: this.state.rewardsAvailable,
       rewards_eligible: this.state.rewardsEligible,
       rewards_applied: this.state.rewardsApplied,
