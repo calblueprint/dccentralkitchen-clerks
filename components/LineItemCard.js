@@ -29,11 +29,20 @@ function LineItemCard({ product }) {
 
 LineItemCard.propTypes = {
   product: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    detail: PropTypes.string.isRequired,
-    points: PropTypes.number.isRequired,
-    quantity: PropTypes.number.isRequired,
-  }).isRequired,
+    name: PropTypes.string,
+    detail: PropTypes.string,
+    points: PropTypes.number,
+    quantity: PropTypes.number,
+  }),
+};
+
+LineItemCard.defaultProps = {
+  product: {
+    name: '',
+    detail: '',
+    points: 0,
+    quantity: 0,
+  },
 };
 
 export default LineItemCard;

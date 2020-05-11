@@ -37,10 +37,18 @@ function ProductDisplayCard({ product }) {
 
 ProductDisplayCard.propTypes = {
   product: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    detail: PropTypes.string.isRequired,
-    imageUrl: PropTypes.string.isRequired,
-  }).isRequired,
+    name: PropTypes.string,
+    detail: PropTypes.string,
+    imageUrl: PropTypes.string,
+  }),
+};
+
+ProductDisplayCard.defaultProps = {
+  product: {
+    name: '',
+    detail: '',
+    imageUrl: '',
+  },
 };
 
 export default ProductDisplayCard;
