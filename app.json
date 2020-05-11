@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Healthy Corners Clerk",
-    "slug": "dccentralkitchen-clerks",
+    "slug": "healthy-corners-clerk",
     "privacy": "public",
     "sdkVersion": "37.0.0",
     "platforms": ["ios", "android", "web"],
