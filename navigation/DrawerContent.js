@@ -1,3 +1,4 @@
+import * as Analytics from 'expo-firebase-analytics';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { AsyncStorage, Linking, TouchableOpacity, View } from 'react-native';
@@ -19,6 +20,12 @@ class DrawerContent extends React.Component {
 
   _logout = async () => {
     AsyncStorage.clear();
+    Analytics.logEvent('ClerkLogOut', {
+      name: 'Log out',
+      function: '_logout',
+      component: 'DrawerContent',
+    });
+    Analytics.setUserId(null);
     this.props.navigation.navigate('Auth');
   };
 

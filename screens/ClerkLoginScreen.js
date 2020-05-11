@@ -1,4 +1,5 @@
 import { FontAwesome5 } from '@expo/vector-icons';
+import * as Analytics from 'expo-firebase-analytics';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { AsyncStorage, View } from 'react-native';
@@ -9,7 +10,7 @@ import DismissKeyboard from '../components/DismissKeyboard';
 import Colors from '../constants/Colors';
 import { status } from '../lib/constants';
 import { lookupClerk } from '../lib/loginUtils';
-import { logAuthErrorToSentry } from '../lib/logUtils';
+import { logAuthErrorToSentry, logErrorToSentry } from '../lib/logUtils';
 import { CheckInContainer, CheckInContentContainer, TextField } from '../styled/checkin';
 import { RowContainer } from '../styled/shared';
 
@@ -69,6 +70,19 @@ export default class ClerkLoginScreen extends React.Component {
         });
         console.log(lookupResult.errorMsg);
       } else {
+        Analytics.setUserId(clerkRecord.id);
+        Analytics.setUserProperties({
+          clerk_name: clerkRecord.clerkName,
+          store: clerkRecord.storeName[0],
+        });
+        Analytics.logEvent('ClerkLogin', {
+          name: 'Successful Clerk login',
+          function: 'handleSubmit',
+          component: 'ClerkLoginScreen',
+          clerk_id: clerkRecord.id,
+          clerk_name: clerkRecord.clerkName,
+          store_name: clerkRecord.storeName[0],
+        });
         Sentry.configureScope((scope) => {
           scope.setUser({
             id: clerkRecord.id,
@@ -80,6 +94,11 @@ export default class ClerkLoginScreen extends React.Component {
       // TODO reset state using onFocusEffect; this can cause memory leaks
       this.setState({ errorMsg: lookupResult.errorMsg, password: '', errorShown: clerkNotFound });
     } catch (err) {
+      logErrorToSentry({
+        screen: 'ClerkLoginScreen',
+        action: 'handleSubmit',
+        error: err,
+      });
       console.error('Clerk Login Screen:', err);
     }
   };

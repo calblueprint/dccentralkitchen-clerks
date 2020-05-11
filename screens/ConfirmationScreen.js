@@ -5,6 +5,7 @@ import { Body, ButtonLabel, FilledButtonContainer, Subhead, Title } from '../com
 import DrawerButton from '../components/DrawerButton';
 import { getTransactionsById } from '../lib/airtable/request';
 import { displayDollarValue } from '../lib/checkoutUtils';
+import { logErrorToSentry } from '../lib/logUtils';
 import { ColumnContainer, RowContainer, SpaceBetweenRowContainer } from '../styled/shared';
 
 export default class ConfirmationScreen extends React.Component {
@@ -30,6 +31,11 @@ export default class ConfirmationScreen extends React.Component {
       }
       this.setState({ transaction, isLoading: false });
     } catch (err) {
+      logErrorToSentry({
+        screen: 'Confirmation Screen',
+        action: 'loadTransactions',
+        error: err,
+      });
       console.error('Confirmation screen: loading transaction ', err);
     }
   }

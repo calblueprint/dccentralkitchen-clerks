@@ -1,3 +1,4 @@
+import * as Analytics from 'expo-firebase-analytics';
 import PropTypes from 'prop-types';
 import React from 'react';
 import update from 'react-addons-update';
@@ -20,6 +21,7 @@ import {
   updateCustomerPoints,
 } from '../lib/checkoutUtils';
 import { checkoutNumCols, productCardPxHeight } from '../lib/constants';
+import { logErrorToSentry } from '../lib/logUtils';
 import { BottomBar, ProductsContainer, SaleContainer, TabContainer, TopBar } from '../styled/checkout';
 import QuantityModal from './modals/QuantityModal';
 import RewardModal from './modals/RewardModal';
@@ -158,6 +160,12 @@ export default class CheckoutScreen extends React.Component {
       if (eligibleRewards && transaction.totalSale >= rewardDollarValue) {
         const continueWithoutRewards = await this.confirmNoRewards(eligibleRewards);
         if (!continueWithoutRewards) {
+          Analytics.logEvent('GoBackApplyRewards', {
+            name: 'Selected "Go back to apply rewards"',
+            function: 'displayConfirmation',
+            component: 'CheckoutScreen',
+            eligible_rewards: eligibleRewards,
+          });
           return;
         }
       }
@@ -221,6 +229,13 @@ export default class CheckoutScreen extends React.Component {
     try {
       const transactionId = await addTransaction(this.state.customer, this.state.cart, transaction);
       await updateCustomerPoints(this.state.customer, transaction.pointsEarned, transaction.rewardsApplied);
+      Analytics.logEvent('ConfirmTransaction', {
+        name: 'Complete sale',
+        function: 'confirmTransaction',
+        component: 'CheckoutScreen',
+        purpose: 'Transaction completed and confirmed.',
+        transaction: transactionId,
+      });
       this.props.navigation.navigate('Confirmation', { transactionId });
     } catch (err) {
       // TODO better handling - should prompt the user to try again, or at least say something is wrong with the service
@@ -230,6 +245,11 @@ export default class CheckoutScreen extends React.Component {
         'We were unable to create a transaction in Airtable. Please let an administrator know ASAP so they can fix this issue.',
         [{ text: 'OK' }]
       );
+      logErrorToSentry({
+        screen: 'CheckoutScreen',
+        action: 'confirmTransaction',
+        error: err,
+      });
       console.log('Error creating transaction in Airtable', err);
     }
   };

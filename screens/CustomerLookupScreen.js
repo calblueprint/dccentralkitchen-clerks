@@ -1,4 +1,5 @@
 import { FontAwesome5 } from '@expo/vector-icons';
+import * as Analytics from 'expo-firebase-analytics';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { AsyncStorage, View } from 'react-native';
@@ -7,6 +8,7 @@ import DismissKeyboard from '../components/DismissKeyboard';
 import DrawerButton from '../components/DrawerButton';
 import Colors from '../constants/Colors';
 import { status } from '../lib/constants';
+import { logErrorToSentry } from '../lib/logUtils';
 import { lookupCustomer } from '../lib/lookupUtils';
 import { CheckInContainer, CheckInContentContainer, TextField } from '../styled/checkin';
 import { RowContainer } from '../styled/shared';
@@ -41,6 +43,13 @@ export default class CustomerLookupScreen extends React.Component {
 
   _asyncCustomerFound = async (customerRecord) => {
     await AsyncStorage.setItem('customerId', customerRecord.id);
+    Analytics.logEvent('CustomerFound', {
+      name: 'Customer lookup successful',
+      function: '_asyncCustomerFound',
+      component: 'CustomerLookupScreen',
+      customer_id: customerRecord.id,
+      customer_name: customerRecord.name,
+    });
     this.props.navigation.navigate('Checkout');
   };
 
@@ -80,6 +89,11 @@ export default class CustomerLookupScreen extends React.Component {
         this.setState({ errorMsg: lookupResult.errorMsg, phoneNumber: '', errorShown: customerNotFound });
       }
     } catch (err) {
+      logErrorToSentry({
+        screen: 'CustomerLookupScreen',
+        action: 'handleSubmit',
+        error: err,
+      });
       console.error('Customer Lookup Screen: ', err);
     }
   };

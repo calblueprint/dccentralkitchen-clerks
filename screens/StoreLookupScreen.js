@@ -1,3 +1,4 @@
+import * as Analytics from 'expo-firebase-analytics';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { AsyncStorage, Button, Keyboard } from 'react-native';
@@ -35,6 +36,11 @@ export default class StoreLookupScreen extends React.Component {
         stores,
       });
     } catch (err) {
+      logErrorToSentry({
+        screen: 'StoreLookupScreen',
+        action: 'loadStoreData',
+        error: err,
+      });
       console.error('Store Lookup Screen', err);
     }
   }
@@ -69,6 +75,11 @@ export default class StoreLookupScreen extends React.Component {
   handleNavigate = async () => {
     // Clerk training: set `trainingMode` to "true" in AsyncStorage
     if (this.state.store.storeName === 'CLERK TRAINING') {
+      Analytics.logEvent('SelectTrainingMode', {
+        name: 'Select Clerk Training mode',
+        function: 'handleNavigate',
+        component: 'StoreLookupScreen',
+      });
       await AsyncStorage.setItem('trainingMode', JSON.stringify(true));
     } else {
       await AsyncStorage.setItem('trainingMode', JSON.stringify(false));

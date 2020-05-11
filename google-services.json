@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "556962069588",
+    "firebase_url": "https://healthy-corners-clerk.firebaseio.com",
+    "project_id": "healthy-corners-clerk",
+    "storage_bucket": "healthy-corners-clerk.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:556962069588:android:39ede0a684457a0d6401c1",
+        "android_client_info": {
+          "package_name": "org.calblueprint.HealthyCornersClerk"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "556962069588-dvojual5o8o7tm4dk2ki4anr4vai37fk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCaQkohTIyN6mhWiqmLURx0vdyEzfAw9nE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "556962069588-dvojual5o8o7tm4dk2ki4anr4vai37fk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

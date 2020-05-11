@@ -6,6 +6,7 @@ import * as ScreenOrientation from 'expo-screen-orientation';
 import React, { useState } from 'react';
 import { Platform, StatusBar, StyleSheet } from 'react-native';
 import * as Sentry from 'sentry-expo';
+import { env } from './environment';
 import AppNavigator from './navigation/AppNavigator';
 import { Container } from './styled/shared';
 
@@ -14,7 +15,7 @@ Sentry.init({
   enableInExpoDevelopment: false,
   release: 'v1.1.1',
   debug: true,
-  environment: process.env.NODE_ENV,
+  environment: env,
 });
 
 export default function App(props) {
