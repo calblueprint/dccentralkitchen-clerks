@@ -86,7 +86,7 @@ export default class ClerkLoginScreen extends React.Component {
         Analytics.setUserId(clerkRecord.id);
         Analytics.setUserProperties({
           clerk_name: clerkRecord.clerkName,
-          store: clerkRecord.storeName,
+          store: clerkRecord.storeName[0],
         });
         Analytics.logEvent('ClerkLogin', {
           name: 'Successful Clerk login',
@@ -94,7 +94,7 @@ export default class ClerkLoginScreen extends React.Component {
           component: 'ClerkLoginScreen',
           clerk_id: clerkRecord.id,
           clerk_name: clerkRecord.clerkName,
-          store_name: clerkRecord.storeName,
+          store_name: clerkRecord.storeName[0],
         });
         Sentry.configureScope((scope) => {
           scope.setUser({
