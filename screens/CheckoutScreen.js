@@ -21,6 +21,7 @@ import {
   updateCustomerPoints,
 } from '../lib/checkoutUtils';
 import { checkoutNumCols, productCardPxHeight } from '../lib/constants';
+import { logErrorToSentry } from '../lib/logUtils';
 import { BottomBar, ProductsContainer, SaleContainer, TabContainer, TopBar } from '../styled/checkout';
 import QuantityModal from './modals/QuantityModal';
 import RewardModal from './modals/RewardModal';
@@ -162,7 +163,7 @@ export default class CheckoutScreen extends React.Component {
           Analytics.logEvent('GoBackApplyRewards', {
             name: 'Selected "Go back to apply rewards"',
             function: 'displayConfirmation',
-            screen: 'CheckoutScreen',
+            component: 'CheckoutScreen',
             eligible_rewards: eligibleRewards,
           });
           return;
@@ -231,7 +232,7 @@ export default class CheckoutScreen extends React.Component {
       Analytics.logEvent('ConfirmTransaction', {
         name: 'Complete sale',
         function: 'confirmTransaction',
-        screen: 'CheckoutScreen',
+        component: 'CheckoutScreen',
         purpose: 'Transaction completed and confirmed.',
         transaction: transactionId,
       });
@@ -244,6 +245,11 @@ export default class CheckoutScreen extends React.Component {
         'We were unable to create a transaction in Airtable. Please let an administrator know ASAP so they can fix this issue.',
         [{ text: 'OK' }]
       );
+      logErrorToSentry({
+        screen: 'ClerkLoginScreen',
+        action: 'confirmTransaction',
+        error: err,
+      });
       console.log('Error creating transaction in Airtable', err);
     }
   };
