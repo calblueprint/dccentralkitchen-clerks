@@ -9,6 +9,7 @@ import Colors from '../constants/Colors';
 import RecordIds from '../constants/RecordIds';
 import { env } from '../environment';
 import { getAllStores } from '../lib/airtable/request';
+import { logErrorToSentry } from '../lib/logUtils';
 import {
   CheckInContainer,
   CheckInContentContainer,
@@ -93,7 +94,7 @@ export default class StoreLookupScreen extends React.Component {
     const storePermission = store !== null;
     return (
       <DismissKeyboard>
-        <CheckInContainer behavior="position" keyboardVerticalOffset="-200">
+        <CheckInContainer>
           <CheckInContentContainer>
             <Title color={Colors.lightText}>Enter store name</Title>
             <TextField
