@@ -60,7 +60,7 @@ export const ButtonLabel = styled.Text`
   color: ${(props) => props.color || Colors.lightText};
 `;
 
-export const BigTitleLabel = styled(BigTitle)`
+export const BigTitleButtonLabel = styled(BigTitle)`
   line-height: 54px;
   text-align: center;
   color: ${(props) => props.color || Colors.lightText};

@@ -1,8 +1,8 @@
 import * as Analytics from 'expo-firebase-analytics';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { AsyncStorage, Linking, TouchableOpacity, View } from 'react-native';
-import { Title } from '../components/BaseComponents';
+import { AsyncStorage, Linking, View } from 'react-native';
+import { ButtonContainer, Title } from '../components/BaseComponents';
 import Colors from '../constants/Colors';
 
 class DrawerContent extends React.Component {
@@ -48,17 +48,17 @@ class DrawerContent extends React.Component {
           }}>
           <Title style={{ color: Colors.lightText }}>{this.state.clerkName}</Title>
         </View>
-        <TouchableOpacity
+        <ButtonContainer
           style={{ padding: 16, paddingTop: 32 }}
           onPress={() => Linking.openURL('http://tiny.cc/ClerkGuide')}>
           <Title>Clerk Guide</Title>
-        </TouchableOpacity>
-        <TouchableOpacity style={{ padding: 16 }} onPress={() => Linking.openURL('http://tiny.cc/SubmitFeedbackClerk')}>
+        </ButtonContainer>
+        <ButtonContainer style={{ padding: 16 }} onPress={() => Linking.openURL('http://tiny.cc/SubmitFeedbackClerk')}>
           <Title>Feedback</Title>
-        </TouchableOpacity>
-        <TouchableOpacity style={{ padding: 16 }} onPress={() => Linking.openURL('http://tiny.cc/ClerkFeedback')}>
+        </ButtonContainer>
+        <ButtonContainer style={{ padding: 16 }} onPress={() => Linking.openURL('http://tiny.cc/ClerkFeedback')}>
           <Title>Report Issue</Title>
-        </TouchableOpacity>
+        </ButtonContainer>
 
         <View
           style={{
@@ -67,9 +67,9 @@ class DrawerContent extends React.Component {
             justifyContent: 'flex-end',
             verticalAlign: 'bottom',
           }}>
-          <TouchableOpacity style={{ paddingLeft: 16, paddingBottom: 21 }} onPress={() => this._logout()}>
+          <ButtonContainer style={{ paddingLeft: 16, paddingBottom: 21 }} onPress={() => this._logout()}>
             <Title>Logout</Title>
-          </TouchableOpacity>
+          </ButtonContainer>
         </View>
       </View>
     );

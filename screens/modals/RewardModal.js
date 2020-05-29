@@ -2,11 +2,12 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import * as Analytics from 'expo-firebase-analytics';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Modal, TouchableOpacity, View } from 'react-native';
+import { Modal, View } from 'react-native';
 import {
   BigTitle,
   BigTitleButtonLabel,
   Body,
+  ButtonContainer,
   ButtonLabel,
   RoundedButtonContainer,
   SquareButtonContainer,
@@ -138,7 +139,7 @@ export default class RewardModal extends React.Component {
           }}>
           <ModalCenteredOpacityLayer>
             <ModalContentContainer width="50%" height="60%">
-              <TouchableOpacity
+              <ButtonContainer
                 style={{
                   position: 'absolute',
                   top: 0,
@@ -148,7 +149,7 @@ export default class RewardModal extends React.Component {
                 }}
                 onPress={() => this.setModalVisible(false)}>
                 <FontAwesome5 name="times" size={24} color={Colors.activeText} />
-              </TouchableOpacity>
+              </ButtonContainer>
               {/* Invisible element used to trick flexbox into spacin correctly with 'space-around' 
                 even though 'cancel' button is pinned using position: absolute */}
               <View style={{ padding: 8 }}>{null}</View>
