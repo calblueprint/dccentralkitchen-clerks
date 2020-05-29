@@ -1,6 +1,5 @@
 import { Platform } from 'react-native';
 import styled from 'styled-components/native';
-import { FilledButtonContainer } from '../components/BaseComponents';
 import Colors from '../constants/Colors';
 import { ColumnContainer, RowContainer } from './shared';
 
@@ -91,22 +90,4 @@ export const LineItem = styled.View`
 export const LineItemRow = styled(RowContainer)`
   justify-content: space-between;
   align-items: center;
-`;
-
-export const RewardAvailableContainer = styled(FilledButtonContainer)`
-  width: 159px;
-  height: 44px;
-  background: ${Colors.lightestGray};
-  border: 1px solid ${Colors.lightestGray};
-  border-radius: 9px;
-  margin: 8px 0px;
-`;
-
-export const RewardAppliedContainer = styled(FilledButtonContainer)`
-  width: 159px;
-  height: 44px;
-  background: ${Colors.bgLight};
-  border: 1px solid ${Colors.lighterGray};
-  border-radius: 9px;
-  margin: 8px 0px;
 `;
