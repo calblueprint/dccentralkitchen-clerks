@@ -16,7 +16,7 @@ export const Title = styled.Text`
   color: ${(props) => props.color || Colors.activeText};
 `;
 
-export const Subhead = styled.Text`
+export const Subtitle = styled.Text`
   font-family: poppins-regular;
   font-size: 16px;
   line-height: 24px;

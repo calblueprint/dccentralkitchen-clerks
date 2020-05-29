@@ -5,7 +5,7 @@ import React from 'react';
 import { AsyncStorage, View } from 'react-native';
 import * as Sentry from 'sentry-expo';
 import BackButton from '../components/BackButton';
-import { ButtonLabel, RoundedButtonContainer, Subhead, Title } from '../components/BaseComponents';
+import { ButtonLabel, RoundedButtonContainer, Subtitle, Title } from '../components/BaseComponents';
 import DismissKeyboard from '../components/DismissKeyboard';
 import Colors from '../constants/Colors';
 import { status } from '../lib/constants';
@@ -137,7 +137,7 @@ export default class ClerkLoginScreen extends React.Component {
               {this.state.errorShown ? (
                 <RowContainer style={{ alignItems: 'center', marginTop: 8, height: 28 }}>
                   <FontAwesome5 name="exclamation-circle" size={16} color={Colors.error} style={{ marginRight: 8 }} />
-                  <Subhead color={Colors.lightText}>{this.state.errorMsg}</Subhead>
+                  <Subtitle color={Colors.lightText}>{this.state.errorMsg}</Subtitle>
                 </RowContainer>
               ) : (
                 <RowContainer style={{ marginTop: 8, height: 28 }} />

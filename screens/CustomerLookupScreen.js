@@ -3,7 +3,7 @@ import * as Analytics from 'expo-firebase-analytics';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { AsyncStorage, View } from 'react-native';
-import { ButtonLabel, RoundedButtonContainer, Subhead, Title } from '../components/BaseComponents';
+import { ButtonLabel, RoundedButtonContainer, Subtitle, Title } from '../components/BaseComponents';
 import DismissKeyboard from '../components/DismissKeyboard';
 import DrawerButton from '../components/DrawerButton';
 import Colors from '../constants/Colors';
@@ -135,7 +135,7 @@ export default class CustomerLookupScreen extends React.Component {
               {this.state.errorShown ? (
                 <RowContainer style={{ alignItems: 'center', marginTop: 8, height: 28 }}>
                   <FontAwesome5 name="exclamation-circle" size={16} color={Colors.error} style={{ marginRight: 8 }} />
-                  <Subhead>{this.state.errorMsg}</Subhead>
+                  <Subtitle>{this.state.errorMsg}</Subtitle>
                 </RowContainer>
               ) : (
                 <RowContainer style={{ marginTop: 8, height: 28 }} />

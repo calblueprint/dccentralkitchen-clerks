@@ -1,5 +1,5 @@
 import styled from 'styled-components/native';
-import { Subhead } from '../components/BaseComponents';
+import { Subtitle } from '../components/BaseComponents';
 import Colors from '../constants/Colors';
 import { ColumnContainer, RowContainer } from './shared';
 
@@ -28,11 +28,11 @@ export const ModalCopyContainer = styled(ColumnContainer)`
 `;
 
 // Rewards
-export const SubheadSecondary = styled(Subhead)`
+export const SubtitleSecondary = styled(Subtitle)`
   color: ${Colors.secondaryText};
 `;
 
-export const SubheadActive = styled(Subhead)`
+export const SubtitleActive = styled(Subtitle)`
   color: ${Colors.activeText};
 `;
 

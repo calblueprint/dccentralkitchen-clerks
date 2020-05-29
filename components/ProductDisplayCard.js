@@ -9,7 +9,6 @@ import { Body, Caption } from './BaseComponents';
  * @prop
  * */
 
-// TODO @tommypoa to use styled-components
 function ProductDisplayCard({ product }) {
   return (
     <ProductCard>

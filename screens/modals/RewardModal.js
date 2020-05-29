@@ -20,8 +20,8 @@ import {
   ModalCenteredOpacityLayer,
   ModalContentContainer,
   ModalCopyContainer,
-  SubheadActive,
-  SubheadSecondary,
+  SubtitleActive,
+  SubtitleSecondary,
 } from '../../styled/modal';
 import { ColumnContainer, RowContainer, SpaceBetweenRowContainer } from '../../styled/shared';
 
@@ -184,18 +184,18 @@ export default class RewardModal extends React.Component {
               <ModalCopyContainer alignItems="center" style={{ width: '40%', margin: 16 }}>
                 {/* TODO make a component for this; pattern is in ConfirmationScreen too */}
                 <SpaceBetweenRowContainer>
-                  <SubheadSecondary style={{ alignSelf: 'flex-start' }}>Subtotal</SubheadSecondary>
-                  <SubheadSecondary style={{ alignSelf: 'flex-end' }}>
+                  <SubtitleSecondary style={{ alignSelf: 'flex-start' }}>Subtotal</SubtitleSecondary>
+                  <SubtitleSecondary style={{ alignSelf: 'flex-end' }}>
                     {displayDollarValue(totalBalance + discount)}
-                  </SubheadSecondary>
+                  </SubtitleSecondary>
                 </SpaceBetweenRowContainer>
                 <SpaceBetweenRowContainer>
-                  <SubheadSecondary>Rewards</SubheadSecondary>
-                  <SubheadSecondary>{displayDollarValue(actualDiscount, false)}</SubheadSecondary>
+                  <SubtitleSecondary>Rewards</SubtitleSecondary>
+                  <SubtitleSecondary>{displayDollarValue(actualDiscount, false)}</SubtitleSecondary>
                 </SpaceBetweenRowContainer>
                 <SpaceBetweenRowContainer>
-                  <SubheadActive>Total Sale</SubheadActive>
-                  <SubheadActive>{displayDollarValue(totalSale)}</SubheadActive>
+                  <SubtitleActive>Total Sale</SubtitleActive>
+                  <SubtitleActive>{displayDollarValue(totalSale)}</SubtitleActive>
                 </SpaceBetweenRowContainer>
               </ModalCopyContainer>
               <RoundedButtonContainer onPress={() => this.handleApplyRewards()}>
