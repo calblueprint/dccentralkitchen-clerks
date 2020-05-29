@@ -11,7 +11,7 @@ export const TopBar = styled.View`
   align-items: ${Platform.OS === 'android' ? 'flex-end' : 'center'};
   padding-bottom: ${Platform.OS === 'android' ? '16px' : '0px'};
   width: 100%;
-  background: ${(props) => (props.trainingColor ? Colors.trainingMode : Colors.base)};
+  background: ${(props) => (props.trainingColor ? Colors.trainingMode : Colors.primaryGray)};
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -21,7 +21,7 @@ export const TopBar = styled.View`
 export const BottomBar = styled.View`
   height: 57px;
   width: 100%;
-  background: ${Colors.base};
+  background: ${Colors.primaryGray};
 `;
 
 // Tabs
@@ -29,8 +29,8 @@ export const BottomBar = styled.View`
 export const TabContainer = styled.TouchableOpacity`
   height: 57px;
   width: 119px;
-  border: 1px solid ${Colors.lightest};
-  background: ${Colors.base};
+  border: 1px solid ${Colors.bgLight};
+  background: ${Colors.primaryGray};
   border-top-width: 0px;
   border-bottom-width: 0px;
   border-left-width: 0px;
@@ -58,7 +58,7 @@ export const SaleContainer = styled(ColumnContainer)`
   flex-direction: column;
   justify-content: space-between;
   flex: 2;
-  background: ${Colors.lightest};
+  background: ${Colors.bgLight};
 `;
 
 // Product Cards
@@ -66,7 +66,7 @@ export const SaleContainer = styled(ColumnContainer)`
 export const ProductCard = styled.View`
   width: 129px;
   height: 148px;
-  background: ${Colors.lightest};
+  background: ${Colors.bgLight};
   box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.2);
   box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.12);
   box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.14);
@@ -81,8 +81,8 @@ export const ProductCard = styled.View`
 
 export const LineItem = styled.View`
   width: 281px;
-  background: ${Colors.lightest};
-  border: 1px solid ${Colors.lighter};
+  background: ${Colors.bgLight};
+  border: 1px solid ${Colors.lightestGray};
   border-left-width: 0px;
   border-right-width: 0px;
   padding: 12px 24px 12px 24px;
@@ -96,8 +96,8 @@ export const LineItemRow = styled(RowContainer)`
 export const RewardAvailableContainer = styled(FilledButtonContainer)`
   width: 159px;
   height: 44px;
-  background: ${Colors.lighter};
-  border: 1px solid ${Colors.light};
+  background: ${Colors.lightestGray};
+  border: 1px solid ${Colors.lightestGray};
   border-radius: 9px;
   margin: 8px 0px;
 `;
@@ -105,8 +105,8 @@ export const RewardAvailableContainer = styled(FilledButtonContainer)`
 export const RewardAppliedContainer = styled(FilledButtonContainer)`
   width: 159px;
   height: 44px;
-  background: ${Colors.lightest};
-  border: 1px solid ${Colors.light};
+  background: ${Colors.bgLight};
+  border: 1px solid ${Colors.lighterGray};
   border-radius: 9px;
   margin: 8px 0px;
 `;

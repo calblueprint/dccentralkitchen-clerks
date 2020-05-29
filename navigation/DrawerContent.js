@@ -39,14 +39,14 @@ class DrawerContent extends React.Component {
         }}>
         <View
           style={{
-            backgroundColor: Colors.black,
+            backgroundColor: Colors.bgDark,
             height: 114,
             display: 'flex',
             flexDirection: 'row',
             alignItems: 'flex-end',
             padding: 16,
           }}>
-          <Title style={{ color: 'white' }}>{this.state.clerkName}</Title>
+          <Title style={{ color: Colors.lightText }}>{this.state.clerkName}</Title>
         </View>
         <TouchableOpacity
           style={{ padding: 16, paddingTop: 32 }}

@@ -95,7 +95,7 @@ export default class StoreLookupScreen extends React.Component {
       <DismissKeyboard>
         <CheckInContainer behavior="position" keyboardVerticalOffset="-200">
           <CheckInContentContainer>
-            <Title color={Colors.lightest}>Enter store name</Title>
+            <Title color={Colors.lightText}>Enter store name</Title>
             <TextField
               clearButtonMode="always"
               selectionColor={Colors.primaryGreen}
@@ -129,7 +129,7 @@ export default class StoreLookupScreen extends React.Component {
                 height="40px"
                 onPress={() => this.handleNavigate()}
                 disabled={!storePermission}>
-                <ButtonLabel color={Colors.lightest}>Next</ButtonLabel>
+                <ButtonLabel color={Colors.lightText}>Next</ButtonLabel>
               </RoundedButtonContainer>
             )}
           </CheckInContentContainer>

@@ -7,7 +7,7 @@ import { ButtonContainer } from './BaseComponents';
 function BackButton({ navigation, light, style }) {
   return (
     <ButtonContainer style={{ ...style }} onPress={() => navigation.goBack()}>
-      <FontAwesome5 name="arrow-left" size={24} color={light ? Colors.lightest : Colors.activeText} />
+      <FontAwesome5 name="arrow-left" size={24} color={light ? Colors.lightText : Colors.activeText} />
     </ButtonContainer>
   );
 }

@@ -117,10 +117,10 @@ export default class ClerkLoginScreen extends React.Component {
           />
           <CheckInContainer>
             <CheckInContentContainer>
-              <Title style={{ marginBottom: 32 }} color={Colors.lightest}>
+              <Title style={{ marginBottom: 32 }} color={Colors.lightText}>
                 {`Welcome to ${store.storeName}!`}
               </Title>
-              <Title color={Colors.lightest}>Enter your employee PIN</Title>
+              <Title color={Colors.lightText}>Enter your employee PIN</Title>
               <TextField
                 autoFocus
                 clearButtonMode="always"
@@ -137,7 +137,7 @@ export default class ClerkLoginScreen extends React.Component {
               {this.state.errorShown ? (
                 <RowContainer style={{ alignItems: 'center', marginTop: 8, height: 28 }}>
                   <FontAwesome5 name="exclamation-circle" size={16} color={Colors.error} style={{ marginRight: 8 }} />
-                  <Subhead color={Colors.lightest}>{this.state.errorMsg}</Subhead>
+                  <Subhead color={Colors.lightText}>{this.state.errorMsg}</Subhead>
                 </RowContainer>
               ) : (
                 <RowContainer style={{ marginTop: 8, height: 28 }} />
@@ -149,7 +149,7 @@ export default class ClerkLoginScreen extends React.Component {
                 height="40px"
                 onPress={() => this.handleSubmit()}
                 disabled={!loginPermission}>
-                <ButtonLabel color={Colors.lightest}>Next</ButtonLabel>
+                <ButtonLabel color={Colors.lightText}>Next</ButtonLabel>
               </RoundedButtonContainer>
             </CheckInContentContainer>
           </CheckInContainer>

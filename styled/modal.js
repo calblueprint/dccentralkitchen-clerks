@@ -11,7 +11,7 @@ export const ModalContentContainer = styled(ColumnContainer)`
   margin: auto;
   justify-content: space-around;
   align-items: center;
-  background-color: white;
+  background-color: ${Colors.bgLight};
 `;
 
 export const ModalCenteredOpacityLayer = styled(RowContainer)`

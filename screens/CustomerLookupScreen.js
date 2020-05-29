@@ -118,7 +118,7 @@ export default class CustomerLookupScreen extends React.Component {
             <Title style={{ marginLeft: 16 }}>{this.state.clerkName}</Title>
           </RowContainer>
 
-          <CheckInContainer color={Colors.lightest}>
+          <CheckInContainer color={Colors.bgLight}>
             <CheckInContentContainer>
               <Title>Enter customer phone number</Title>
               <TextField
@@ -135,7 +135,7 @@ export default class CustomerLookupScreen extends React.Component {
               {this.state.errorShown ? (
                 <RowContainer style={{ alignItems: 'center', marginTop: 8, height: 28 }}>
                   <FontAwesome5 name="exclamation-circle" size={16} color={Colors.error} style={{ marginRight: 8 }} />
-                  <Subhead color={Colors.activeText}>{this.state.errorMsg}</Subhead>
+                  <Subhead>{this.state.errorMsg}</Subhead>
                 </RowContainer>
               ) : (
                 <RowContainer style={{ marginTop: 8, height: 28 }} />
@@ -147,7 +147,7 @@ export default class CustomerLookupScreen extends React.Component {
                 height="40px"
                 onPress={() => this.handleSubmit()}
                 disabled={!customerPermission}>
-                <ButtonLabel color="white">Next</ButtonLabel>
+                <ButtonLabel color={Colors.lightText}>Next</ButtonLabel>
               </RoundedButtonContainer>
             </CheckInContentContainer>
           </CheckInContainer>

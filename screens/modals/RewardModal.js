@@ -209,7 +209,7 @@ export default class RewardModal extends React.Component {
           height="40px"
           color={Colors.activeText}
           onPress={() => this.setModalVisible(true)}>
-          <ButtonLabel color={Colors.lightest}>Rewards</ButtonLabel>
+          <ButtonLabel color={Colors.lightText}>Rewards</ButtonLabel>
         </RoundedButtonContainer>
       </RowContainer>
     );

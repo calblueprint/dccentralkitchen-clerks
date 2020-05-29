@@ -4,16 +4,19 @@ const Colors = {
   lighterGreen: '#48AC69',
   primaryGreen: '#008550',
   darkerGreen: '#004E14',
+  // Gray
+  primaryGray: '#BDBDBD',
+  lighterGray: '#DEDEDE',
+  lightestGray: '#EBEBEB',
   // Text
+  lightText: '#FFFFFF',
   activeText: 'rgba(0, 0, 0, 0.8)',
-  secondaryText: '#999999',
+  secondaryText: '#666666',
+  // Background
+  bgDark: '#000000',
+  bgLight: '#FFFFFF',
   // Other
   error: '#CB4D4D',
-  base: '#BDBDBD',
-  light: '#DEDEDE',
-  lighter: '#EBEBEB',
-  lightest: '#FFFFFF',
-  black: '#000000',
   trainingMode: '#FFC300',
 };
 
