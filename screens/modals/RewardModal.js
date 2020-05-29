@@ -5,7 +5,7 @@ import React from 'react';
 import { Modal, TouchableOpacity, View } from 'react-native';
 import {
   BigTitle,
-  BigTitleLabel,
+  BigTitleButtonLabel,
   Body,
   ButtonLabel,
   RoundedButtonContainer,
@@ -164,13 +164,13 @@ export default class RewardModal extends React.Component {
                       disabled={min}
                       color={min ? Colors.lightestGreen : Colors.darkerGreen}
                       onPress={() => this.updateRewardsApplied(false)}>
-                      <BigTitleLabel>-</BigTitleLabel>
+                      <BigTitleButtonLabel>-</BigTitleButtonLabel>
                     </SquareButtonContainer>
                     <SquareButtonContainer
                       activeOpacity={max ? 1 : 0.2}
                       color={max ? Colors.lightestGreen : Colors.darkerGreen}
                       onPress={() => (max ? this.showError(true) : this.updateRewardsApplied(true))}>
-                      <BigTitleLabel>+</BigTitleLabel>
+                      <BigTitleButtonLabel>+</BigTitleButtonLabel>
                     </SquareButtonContainer>
                   </RowContainer>
                 </SpaceBetweenRowContainer>

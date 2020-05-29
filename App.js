@@ -3,12 +3,11 @@ import { AppLoading } from 'expo';
 import * as Font from 'expo-font';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import React, { useState } from 'react';
-import { Platform, StatusBar, StyleSheet } from 'react-native';
+import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import * as Sentry from 'sentry-expo';
 import Colors from './constants/Colors';
 import { env } from './environment';
 import AppNavigator from './navigation/AppNavigator';
-import { Container } from './styled/shared';
 
 Sentry.init({
   dsn: 'https://9b39ef5b02394775a6e939254ed55a0e@o306199.ingest.sentry.io/4525076',
@@ -31,10 +30,10 @@ export default function App(props) {
     );
   }
   return (
-    <Container>
+    <View style={styles.container}>
       {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
       <AppNavigator />
-    </Container>
+    </View>
   );
 }
 
