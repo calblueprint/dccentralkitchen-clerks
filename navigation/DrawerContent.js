@@ -2,6 +2,7 @@ import * as Analytics from 'expo-firebase-analytics';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { AsyncStorage, Linking, View } from 'react-native';
+import * as Sentry from 'sentry-expo';
 import { ButtonContainer, Title } from '../components/BaseComponents';
 import Colors from '../constants/Colors';
 
@@ -25,6 +26,7 @@ class DrawerContent extends React.Component {
       function: '_logout',
       component: 'DrawerContent',
     });
+    Sentry.configureScope((scope) => scope.clear());
     Analytics.setUserId(null);
     this.props.navigation.navigate('Auth');
   };

@@ -66,7 +66,7 @@ export default class ClerkLoginScreen extends React.Component {
           action: 'handleSubmit',
           attemptedStoreName: lookupResult.storeName,
           attemptedPin: this.state.password,
-          error: lookupResult.status,
+          error: lookupResult.errorMsg,
         });
         console.log(lookupResult.errorMsg);
       } else {

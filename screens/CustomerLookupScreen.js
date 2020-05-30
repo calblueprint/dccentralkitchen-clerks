@@ -3,6 +3,7 @@ import * as Analytics from 'expo-firebase-analytics';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { AsyncStorage, View } from 'react-native';
+import * as Sentry from 'sentry-expo';
 import { ButtonLabel, RoundedButtonContainer, Subtitle, Title } from '../components/BaseComponents';
 import DismissKeyboard from '../components/DismissKeyboard';
 import DrawerButton from '../components/DrawerButton';
@@ -72,13 +73,26 @@ export default class CustomerLookupScreen extends React.Component {
           customerNotFound = false;
           customerRecord = lookupResult.record;
           this._asyncCustomerFound(customerRecord);
+          Sentry.configureScope((scope) => {
+            scope.setTag('currentCustomer', customerRecord.primaryKey);
+            Sentry.captureMessage('Customer found');
+          });
           break;
-        // TODO for production, we should have some sort of logging mechanism (i.e replacing console logs)
         case status.NOT_FOUND:
           console.log('No customer registered with this phone number');
+          logErrorToSentry({
+            screen: 'CustomerLookupScreen',
+            action: 'handleSubmit',
+            error: 'No customer registered with this phone number',
+          });
           break;
         case status.DUPLICATE:
           console.log('Database malformed! Two users found with this phone number');
+          logErrorToSentry({
+            screen: 'CustomerLookupScreen',
+            action: 'handleSubmit',
+            error: 'Database malformed! Two users found with this phone number',
+          });
           break;
         default:
           return;
