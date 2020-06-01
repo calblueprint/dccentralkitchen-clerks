@@ -56,7 +56,7 @@ export const ButtonLabel = styled.Text`
   line-height: 21px;
   text-align: center;
   letter-spacing: 0.01px;
-  text-transform: uppercase;
+  text-transform: ${(props) => (props.noCaps ? ' none' : 'uppercase')};
   color: ${(props) => props.color || Colors.lightText};
 `;
 
