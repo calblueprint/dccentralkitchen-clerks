@@ -1,25 +1,24 @@
-import { FontAwesome5 } from '@expo/vector-icons';
 import * as Analytics from 'expo-firebase-analytics';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { AsyncStorage, View } from 'react-native';
 import * as Sentry from 'sentry-expo';
 import BackButton from '../components/BackButton';
-import { ButtonLabel, RoundedButtonContainer, Subtitle, Title } from '../components/BaseComponents';
+import { ButtonLabel, RoundedButtonContainer, Title } from '../components/BaseComponents';
 import DismissKeyboard from '../components/DismissKeyboard';
+import ErrorMessage from '../components/ErrorMessage';
 import Colors from '../constants/Colors';
 import { status } from '../lib/constants';
 import { lookupClerk } from '../lib/loginUtils';
 import { logAuthErrorToSentry, logErrorToSentry } from '../lib/logUtils';
 import { CheckInContainer, CheckInContentContainer, TextField } from '../styled/checkin';
-import { RowContainer } from '../styled/shared';
 
 export default class ClerkLoginScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       password: '',
-      errorMsg: null,
+      errorMsg: '',
       errorShown: false,
     };
   }
@@ -29,7 +28,7 @@ export default class ClerkLoginScreen extends React.Component {
   }
 
   _reset = () => {
-    this.setState({ password: '', errorMsg: null });
+    this.setState({ password: '', errorMsg: '' });
   };
 
   // Set the clerkId and storeId in AsyncStorage
@@ -133,15 +132,7 @@ export default class ClerkLoginScreen extends React.Component {
                 onChangeText={(text) => this.setState({ password: text, errorShown: false })}
                 value={this.state.password}
               />
-              {/* Display error message or empty row to maintain consistent spacing. */}
-              {this.state.errorShown ? (
-                <RowContainer style={{ alignItems: 'center', marginTop: 8, height: 28 }}>
-                  <FontAwesome5 name="exclamation-circle" size={16} color={Colors.error} style={{ marginRight: 8 }} />
-                  <Subtitle color={Colors.lightText}>{this.state.errorMsg}</Subtitle>
-                </RowContainer>
-              ) : (
-                <RowContainer style={{ marginTop: 8, height: 28 }} />
-              )}
+              <ErrorMessage light errorMsg={this.state.errorMsg} errorShown={this.state.errorShown} />
               <RoundedButtonContainer
                 style={{ marginTop: 32 }}
                 color={loginPermission ? Colors.primaryGreen : Colors.lightestGreen}

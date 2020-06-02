@@ -65,6 +65,7 @@
     "expo-font": "~8.1.0",
     "expo-screen-orientation": "~1.0.0",
     "expo-web-browser": "~8.1.0",
+    "libphonenumber-js": "^1.7.52",
     "mem": "^4.0.0",
     "prop-types": "^15.7.2",
     "react": "16.9.0",

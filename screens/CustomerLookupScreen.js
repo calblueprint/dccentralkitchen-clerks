@@ -1,16 +1,16 @@
-import { FontAwesome5 } from '@expo/vector-icons';
 import * as Analytics from 'expo-firebase-analytics';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { AsyncStorage, View } from 'react-native';
+import { AsyncStorage, Keyboard, View } from 'react-native';
 import * as Sentry from 'sentry-expo';
-import { ButtonLabel, RoundedButtonContainer, Subtitle, Title } from '../components/BaseComponents';
+import { ButtonContainer, ButtonLabel, RoundedButtonContainer, Title } from '../components/BaseComponents';
 import DismissKeyboard from '../components/DismissKeyboard';
 import DrawerButton from '../components/DrawerButton';
+import ErrorMessage from '../components/ErrorMessage';
 import Colors from '../constants/Colors';
 import { status } from '../lib/constants';
 import { logErrorToSentry } from '../lib/logUtils';
-import { lookupCustomer } from '../lib/lookupUtils';
+import { formatPhoneNumberInput, lookupCustomer } from '../lib/lookupUtils';
 import { CheckInContainer, CheckInContentContainer, TextField } from '../styled/checkin';
 import { RowContainer } from '../styled/shared';
 
@@ -36,9 +36,9 @@ export default class CustomerLookupScreen extends React.Component {
     const clerkName = await AsyncStorage.getItem('clerkName');
     // Clerk Training: pre-fill customer (Summer Strawberry) phone number
     if (JSON.parse(await AsyncStorage.getItem('trainingMode'))) {
-      this.setState({ clerkName, phoneNumber: '1112223344', errorMsg: null });
+      this.setState({ clerkName, phoneNumber: '1112223344', errorMsg: '' });
     } else {
-      this.setState({ clerkName, phoneNumber: '', errorMsg: null });
+      this.setState({ clerkName, phoneNumber: '', errorMsg: '' });
     }
   };
 
@@ -54,17 +54,9 @@ export default class CustomerLookupScreen extends React.Component {
     this.props.navigation.navigate('Checkout');
   };
 
-  _formatPhoneNumber = (phoneNumber) => {
-    const onlyNumeric = phoneNumber.replace('[^0-9]', '');
-    const formatted = `(${onlyNumeric.slice(0, 3)}) ${onlyNumeric.slice(3, 6)}-${onlyNumeric.slice(6, 10)}`;
-    return formatted;
-  };
-
   handleSubmit = async () => {
-    const formattedPhoneNumber = this._formatPhoneNumber(this.state.phoneNumber);
-
     try {
-      const lookupResult = await lookupCustomer(formattedPhoneNumber);
+      const lookupResult = await lookupCustomer(this.state.phoneNumber);
       let customerRecord = null;
 
       let customerNotFound = true;
@@ -79,11 +71,11 @@ export default class CustomerLookupScreen extends React.Component {
           });
           break;
         case status.NOT_FOUND:
-          console.log('No customer registered with this phone number');
+          console.log('No customer found with this phone number');
           logErrorToSentry({
             screen: 'CustomerLookupScreen',
             action: 'handleSubmit',
-            error: 'No customer registered with this phone number',
+            error: 'No customer found with this phone number',
           });
           break;
         case status.DUPLICATE:
@@ -113,7 +105,7 @@ export default class CustomerLookupScreen extends React.Component {
   };
 
   render() {
-    const customerPermission = this.state.phoneNumber.length === 10;
+    const customerPermission = this.state.phoneNumber.length === 14;
     return (
       <DismissKeyboard>
         <View>
@@ -128,7 +120,7 @@ export default class CustomerLookupScreen extends React.Component {
               justifyContent: 'flex-start',
               alignItems: 'center',
             }}>
-            <DrawerButton navigation={this.props.navigation} light={false} />
+            <DrawerButton navigation={this.props.navigation} />
             <Title style={{ marginLeft: 16 }}>{this.state.clerkName}</Title>
           </RowContainer>
 
@@ -140,22 +132,23 @@ export default class CustomerLookupScreen extends React.Component {
                 selectionColor={Colors.primaryGreen}
                 style={{ marginTop: 32 }}
                 error={this.state.errorShown}
-                placeholder="ex. 1234567890"
+                placeholder="ex. (123) 456-7890"
                 keyboardType="number-pad"
-                maxLength={10}
-                onChangeText={(text) => this.setState({ phoneNumber: text, errorShown: false })}
+                maxLength={14}
+                onChangeText={(text) => this.setState({ phoneNumber: formatPhoneNumberInput(text), errorShown: false })}
                 value={this.state.phoneNumber}
               />
-              {this.state.errorShown ? (
-                <RowContainer style={{ alignItems: 'center', marginTop: 8, height: 28 }}>
-                  <FontAwesome5 name="exclamation-circle" size={16} color={Colors.error} style={{ marginRight: 8 }} />
-                  <Subtitle>{this.state.errorMsg}</Subtitle>
-                </RowContainer>
-              ) : (
-                <RowContainer style={{ marginTop: 8, height: 28 }} />
-              )}
+              <ErrorMessage
+                errorMsg={this.state.errorMsg}
+                buttonMsg="Register this phone number"
+                callback={() => {
+                  Keyboard.dismiss();
+                  this.props.navigation.navigate('RegisterCustomer', { prefillPhoneNumber: this.state.phoneNumber });
+                }}
+                errorShown={this.state.errorShown}
+              />
               <RoundedButtonContainer
-                style={{ marginTop: 32 }}
+                style={{ marginTop: 16 }}
                 color={customerPermission ? Colors.primaryGreen : Colors.lightestGreen}
                 width="253px"
                 height="40px"
@@ -163,6 +156,18 @@ export default class CustomerLookupScreen extends React.Component {
                 disabled={!customerPermission}>
                 <ButtonLabel color={Colors.lightText}>Next</ButtonLabel>
               </RoundedButtonContainer>
+              <ButtonContainer
+                style={{ marginTop: 4 }}
+                width="253px"
+                height="40px"
+                onPress={() => {
+                  Keyboard.dismiss();
+                  this.props.navigation.navigate('RegisterCustomer');
+                }}>
+                <ButtonLabel noCaps color={Colors.primaryGreen}>
+                  Register a Customer
+                </ButtonLabel>
+              </ButtonContainer>
             </CheckInContentContainer>
           </CheckInContainer>
         </View>

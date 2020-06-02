@@ -25,7 +25,7 @@ function DrawerNavigator() {
   return (
     // eslint-disable-next-line react/jsx-props-no-spreading
     <Drawer.Navigator drawerContent={(props) => <DrawerContent {...props} />} drawerStyle={{ width: 343 }}>
-      <Drawer.Screen name="App" component={AppStackNavigator} />
+      <Drawer.Screen name="App" component={AppStackNavigator} options={{ swipeEnabled: false }} />
     </Drawer.Navigator>
   );
 }
