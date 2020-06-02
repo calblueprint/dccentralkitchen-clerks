@@ -37,8 +37,9 @@ export default class RegisterCustomerScreen extends React.Component {
     };
   }
 
-  // Complete and go to Checkout
-  _asyncCustomerFound = async (customerId) => {
+  // Complete registration and go to Checkout
+  _asyncRegisterCustomer = async () => {
+    const customerId = await this.addCustomer();
     await AsyncStorage.setItem('customerId', customerId);
     Analytics.logEvent('CustomerRegistered', {
       name: 'Customer register successful',
@@ -47,11 +48,6 @@ export default class RegisterCustomerScreen extends React.Component {
       customer_id: customerId,
     });
     this.props.navigation.navigate('Checkout');
-  };
-
-  completeRegister = async () => {
-    const customerId = await this.addCustomer();
-    await this._asyncCustomerFound(customerId);
   };
 
   addCustomer = async () => {
@@ -101,14 +97,13 @@ export default class RegisterCustomerScreen extends React.Component {
         // If the phone number is not already registered, create an account
         case status.NOT_FOUND:
           customerNotFound = true;
-          console.log('No customer registered with this phone number');
-          this.completeRegister();
+          this._asyncRegisterCustomer();
           // Retrieve the new customer's record to log to Sentry
           lookupResult = await lookupCustomer(this.state.newPhoneNumber);
           customerRecord = lookupResult.record;
           Sentry.configureScope((scope) => {
             scope.setTag('currentCustomer', customerRecord.primaryKey);
-            Sentry.captureMessage('Customer found');
+            Sentry.captureMessage('New customer registered');
           });
           break;
         // If the phone number is already in use, display an error
