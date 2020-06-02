@@ -36,7 +36,7 @@ export default class CustomerLookupScreen extends React.Component {
     const clerkName = await AsyncStorage.getItem('clerkName');
     // Clerk Training: pre-fill customer (Summer Strawberry) phone number
     if (JSON.parse(await AsyncStorage.getItem('trainingMode'))) {
-      this.setState({ clerkName, phoneNumber: '1112223344', errorMsg: '' });
+      this.setState({ clerkName, phoneNumber: '(111) 222-3344', errorMsg: '' });
     } else {
       this.setState({ clerkName, phoneNumber: '', errorMsg: '' });
     }
@@ -69,6 +69,9 @@ export default class CustomerLookupScreen extends React.Component {
             scope.setTag('currentCustomer', customerRecord.primaryKey);
             Sentry.captureMessage('Customer found');
           });
+          this.setState({
+            phoneNumber: JSON.parse(await AsyncStorage.getItem('trainingMode')) ? '(111) 222-3344' : '',
+          });
           break;
         case status.NOT_FOUND:
           console.log('No customer found with this phone number');
@@ -90,9 +93,9 @@ export default class CustomerLookupScreen extends React.Component {
           return;
       }
       if (JSON.parse(await AsyncStorage.getItem('trainingMode'))) {
-        this.setState({ errorMsg: lookupResult.errorMsg, phoneNumber: '1112223344' });
+        this.setState({ errorMsg: lookupResult.errorMsg, phoneNumber: '(111) 222-3344' });
       } else {
-        this.setState({ errorMsg: lookupResult.errorMsg, phoneNumber: '', errorShown: customerNotFound });
+        this.setState({ errorMsg: lookupResult.errorMsg, errorShown: customerNotFound });
       }
     } catch (err) {
       logErrorToSentry({
