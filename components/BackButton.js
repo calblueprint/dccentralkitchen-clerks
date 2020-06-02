@@ -14,11 +14,12 @@ function BackButton({ navigation, light, style }) {
 
 BackButton.propTypes = {
   navigation: PropTypes.object.isRequired,
-  light: PropTypes.bool.isRequired,
+  light: PropTypes.bool,
   style: PropTypes.object,
 };
 
 BackButton.defaultProps = {
+  light: false,
   style: {},
 };
 

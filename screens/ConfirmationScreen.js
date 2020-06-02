@@ -77,7 +77,7 @@ export default class ConfirmationScreen extends React.Component {
             justifyContent: 'flex-start',
             alignItems: 'center',
           }}>
-          <DrawerButton navigation={this.props.navigation} light={false} />
+          <DrawerButton navigation={this.props.navigation} />
           <Title style={{ marginLeft: 16 }}>{this.state.clerkName}</Title>
         </RowContainer>
         <ColumnContainer style={{ width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
