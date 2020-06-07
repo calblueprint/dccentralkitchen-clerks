@@ -326,7 +326,11 @@ export default class CheckoutScreen extends React.Component {
     return (
       <View style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-around', flex: 1 }}>
         <TopBar trainingColor={trainingMode}>
-          <BackButton navigation={this.props.navigation} style={{ marginTop: 3, marginLeft: 24 }} />
+          <BackButton
+            navigation={this.props.navigation}
+            style={{ marginTop: 3, marginLeft: 24 }}
+            confirm={lineItems.length}
+          />
           <Title>
             {'Customer: '
               .concat(customer.name)
