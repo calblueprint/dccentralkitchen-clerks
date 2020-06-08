@@ -1,7 +1,14 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Alert, AsyncStorage, Clipboard, TouchableOpacity, View } from 'react-native';
-import { Body, ButtonLabel, FilledButtonContainer, Subhead, Title } from '../components/BaseComponents';
+import { Alert, AsyncStorage, Clipboard, View } from 'react-native';
+import {
+  Body,
+  ButtonContainer,
+  ButtonLabel,
+  FilledButtonContainer,
+  Subtitle,
+  Title,
+} from '../components/BaseComponents';
 import DrawerButton from '../components/DrawerButton';
 import { getTransactionsById } from '../lib/airtable/request';
 import { displayDollarValue } from '../lib/checkoutUtils';
@@ -78,10 +85,10 @@ export default class ConfirmationScreen extends React.Component {
             style={{ width: '33%', height: '35%', justifyContent: 'space-around', margin: 12, paddingBottom: 32 }}>
             <Title>Sale Summary</Title>
             <SpaceBetweenRowContainer>
-              <Subhead>Transaction ID</Subhead>
-              <TouchableOpacity onLongPress={() => this.writeToClipboard(truncatedId)}>
-                <Subhead style={{ textTransform: 'uppercase' }}>{truncatedId}</Subhead>
-              </TouchableOpacity>
+              <Subtitle>Transaction ID</Subtitle>
+              <ButtonContainer onLongPress={() => this.writeToClipboard(truncatedId)}>
+                <Subtitle style={{ textTransform: 'uppercase' }}>{truncatedId}</Subtitle>
+              </ButtonContainer>
             </SpaceBetweenRowContainer>
             <ColumnContainer style={{ width: '100%', justifyContent: 'space-around' }}>
               <SpaceBetweenRowContainer>

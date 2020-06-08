@@ -12,7 +12,7 @@ export default function AppStackNavigator() {
     <AppStack.Navigator
       screenOptions={{
         headerShown: false,
-        cardStyle: { backgroundColor: Colors.lightest },
+        cardStyle: { backgroundColor: Colors.bgLight },
         drawerLabel: 'App',
         gestureEnabled: false,
       }}>

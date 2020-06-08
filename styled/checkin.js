@@ -24,8 +24,8 @@ export const CheckInContentContainer = styled.View`
 export const TextField = styled.TextInput`
   width: 253px;
   height: 51px;
-  background-color: #fff;
-  border-color: ${(props) => (props.error ? Colors.error : Colors.base)};
+  background-color: ${Colors.bgLight};
+  border-color: ${(props) => (props.error ? Colors.error : Colors.primaryGray)};
   border-width: 2px;
   padding-left: 14px;
   font-family: poppins-regular;
@@ -34,8 +34,8 @@ export const TextField = styled.TextInput`
 export const SearchElement = styled.TouchableOpacity`
   width: 253px;
   height: 51px;
-  background-color: #fff;
-  border-color: ${Colors.base};
+  background-color: ${Colors.bgLight};
+  border-color: ${Colors.primaryGray};
   border-width: 1px;
   padding-left: 16px;
   justify-content: center;

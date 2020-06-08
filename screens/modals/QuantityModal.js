@@ -2,8 +2,8 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import * as Analytics from 'expo-firebase-analytics';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Modal, TouchableOpacity, View } from 'react-native';
-import { Body, ButtonLabel, RoundedButtonContainer, Title } from '../../components/BaseComponents';
+import { Modal, View } from 'react-native';
+import { Body, ButtonContainer, ButtonLabel, RoundedButtonContainer, Title } from '../../components/BaseComponents';
 import LineItemCard from '../../components/LineItemCard';
 import ProductDisplayCard from '../../components/ProductDisplayCard';
 import Colors from '../../constants/Colors';
@@ -107,7 +107,7 @@ export default class QuantityModal extends React.Component {
           {/* Opacity layer */}
           <ModalCenteredOpacityLayer>
             <ModalContentContainer style={{ marginTop: 10 }}>
-              <TouchableOpacity
+              <ButtonContainer
                 style={{
                   position: 'absolute',
                   top: 0,
@@ -117,7 +117,7 @@ export default class QuantityModal extends React.Component {
                 }}
                 onPress={() => this.setModalVisible(false)}>
                 <FontAwesome5 name="times" size={24} color={Colors.activeText} />
-              </TouchableOpacity>
+              </ButtonContainer>
               {/* Invisible element used to trick flexbox into spacing correctly with 'space-around' even though 'cancel' button is pinned using position: absolute */}
               <View>{null}</View>
               <ModalCopyContainer>
@@ -145,7 +145,7 @@ export default class QuantityModal extends React.Component {
 
         {isLineItem ? (
           product.quantity > 0 && (
-            <TouchableOpacity
+            <ButtonContainer
               onPress={() => {
                 this.setModalVisible(true);
                 Analytics.logEvent('OpenQuantityModal', {
@@ -159,10 +159,10 @@ export default class QuantityModal extends React.Component {
                 });
               }}>
               <LineItemCard product={product} />
-            </TouchableOpacity>
+            </ButtonContainer>
           )
         ) : (
-          <TouchableOpacity
+          <ButtonContainer
             onPress={() => {
               this.setModalVisible(true);
               Analytics.logEvent('OpenQuantityModal', {
@@ -176,7 +176,7 @@ export default class QuantityModal extends React.Component {
               });
             }}>
             <ProductDisplayCard product={product} />
-          </TouchableOpacity>
+          </ButtonContainer>
         )}
       </View>
     );

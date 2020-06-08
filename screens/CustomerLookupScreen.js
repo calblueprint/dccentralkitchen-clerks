@@ -3,7 +3,8 @@ import * as Analytics from 'expo-firebase-analytics';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { AsyncStorage, View } from 'react-native';
-import { ButtonLabel, RoundedButtonContainer, Subhead, Title } from '../components/BaseComponents';
+import * as Sentry from 'sentry-expo';
+import { ButtonLabel, RoundedButtonContainer, Subtitle, Title } from '../components/BaseComponents';
 import DismissKeyboard from '../components/DismissKeyboard';
 import DrawerButton from '../components/DrawerButton';
 import Colors from '../constants/Colors';
@@ -72,13 +73,26 @@ export default class CustomerLookupScreen extends React.Component {
           customerNotFound = false;
           customerRecord = lookupResult.record;
           this._asyncCustomerFound(customerRecord);
+          Sentry.configureScope((scope) => {
+            scope.setTag('currentCustomer', customerRecord.primaryKey);
+            Sentry.captureMessage('Customer found');
+          });
           break;
-        // TODO for production, we should have some sort of logging mechanism (i.e replacing console logs)
         case status.NOT_FOUND:
           console.log('No customer registered with this phone number');
+          logErrorToSentry({
+            screen: 'CustomerLookupScreen',
+            action: 'handleSubmit',
+            error: 'No customer registered with this phone number',
+          });
           break;
         case status.DUPLICATE:
           console.log('Database malformed! Two users found with this phone number');
+          logErrorToSentry({
+            screen: 'CustomerLookupScreen',
+            action: 'handleSubmit',
+            error: 'Database malformed! Two users found with this phone number',
+          });
           break;
         default:
           return;
@@ -118,7 +132,7 @@ export default class CustomerLookupScreen extends React.Component {
             <Title style={{ marginLeft: 16 }}>{this.state.clerkName}</Title>
           </RowContainer>
 
-          <CheckInContainer color={Colors.lightest}>
+          <CheckInContainer color={Colors.bgLight}>
             <CheckInContentContainer>
               <Title>Enter customer phone number</Title>
               <TextField
@@ -135,7 +149,7 @@ export default class CustomerLookupScreen extends React.Component {
               {this.state.errorShown ? (
                 <RowContainer style={{ alignItems: 'center', marginTop: 8, height: 28 }}>
                   <FontAwesome5 name="exclamation-circle" size={16} color={Colors.error} style={{ marginRight: 8 }} />
-                  <Subhead color={Colors.activeText}>{this.state.errorMsg}</Subhead>
+                  <Subtitle>{this.state.errorMsg}</Subtitle>
                 </RowContainer>
               ) : (
                 <RowContainer style={{ marginTop: 8, height: 28 }} />
@@ -147,7 +161,7 @@ export default class CustomerLookupScreen extends React.Component {
                 height="40px"
                 onPress={() => this.handleSubmit()}
                 disabled={!customerPermission}>
-                <ButtonLabel color="white">Next</ButtonLabel>
+                <ButtonLabel color={Colors.lightText}>Next</ButtonLabel>
               </RoundedButtonContainer>
             </CheckInContentContainer>
           </CheckInContainer>

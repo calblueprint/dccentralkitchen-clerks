@@ -7,7 +7,7 @@ import { ButtonContainer } from './BaseComponents';
 function DrawerButton({ navigation, light, style }) {
   return (
     <ButtonContainer style={{ ...style }} onPress={() => navigation.toggleDrawer()}>
-      <FontAwesome5 name="bars" size={24} color={light ? Colors.lightest : Colors.activeText} />
+      <FontAwesome5 name="bars" size={24} color={light ? Colors.lightText : Colors.activeText} />
     </ButtonContainer>
   );
 }

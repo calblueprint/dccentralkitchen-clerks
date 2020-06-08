@@ -9,6 +9,7 @@ import Colors from '../constants/Colors';
 import RecordIds from '../constants/RecordIds';
 import { env } from '../environment';
 import { getAllStores } from '../lib/airtable/request';
+import { logErrorToSentry } from '../lib/logUtils';
 import {
   CheckInContainer,
   CheckInContentContainer,
@@ -93,9 +94,9 @@ export default class StoreLookupScreen extends React.Component {
     const storePermission = store !== null;
     return (
       <DismissKeyboard>
-        <CheckInContainer behavior="position" keyboardVerticalOffset="-200">
+        <CheckInContainer>
           <CheckInContentContainer>
-            <Title color={Colors.lightest}>Enter store name</Title>
+            <Title color={Colors.lightText}>Enter store name</Title>
             <TextField
               clearButtonMode="always"
               selectionColor={Colors.primaryGreen}
@@ -129,7 +130,7 @@ export default class StoreLookupScreen extends React.Component {
                 height="40px"
                 onPress={() => this.handleNavigate()}
                 disabled={!storePermission}>
-                <ButtonLabel color={Colors.lightest}>Next</ButtonLabel>
+                <ButtonLabel color={Colors.lightText}>Next</ButtonLabel>
               </RoundedButtonContainer>
             )}
           </CheckInContentContainer>

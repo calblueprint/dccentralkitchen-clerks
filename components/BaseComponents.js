@@ -6,35 +6,35 @@ export const BigTitle = styled.Text`
   font-family: poppins-medium;
   font-size: 32px;
   line-height: 48px;
-  color: ${(props) => props.color || Colors.black};
+  color: ${(props) => props.color || Colors.activeText};
 `;
 
 export const Title = styled.Text`
   font-family: poppins-medium;
   font-size: 20px;
   line-height: 30px;
-  color: ${(props) => props.color || Colors.black};
+  color: ${(props) => props.color || Colors.activeText};
 `;
 
-export const Subhead = styled.Text`
+export const Subtitle = styled.Text`
   font-family: poppins-regular;
   font-size: 16px;
   line-height: 24px;
-  color: ${(props) => props.color || Colors.black};
+  color: ${(props) => props.color || Colors.activeText};
 `;
 
 export const Body = styled.Text`
   font-family: poppins-regular;
   font-size: 14px;
   line-height: 20px;
-  color: ${(props) => props.color || Colors.black};
+  color: ${(props) => props.color || Colors.activeText};
 `;
 
 export const Caption = styled.Text`
   font-family: poppins-medium;
   font-size: 12px;
   line-height: 16px;
-  color: ${(props) => props.color || Colors.black};
+  color: ${(props) => props.color || Colors.activeText};
 `;
 
 export const Overline = styled.Text`
@@ -42,7 +42,7 @@ export const Overline = styled.Text`
   font-size: 14px;
   line-height: 20px;
   text-transform: uppercase;
-  color: ${(props) => props.color || Colors.black};
+  color: ${(props) => props.color || Colors.activeText};
 `;
 
 // Buttons
@@ -56,14 +56,14 @@ export const ButtonLabel = styled.Text`
   line-height: 21px;
   text-align: center;
   letter-spacing: 0.01px;
-  text-transform: uppercase;
-  color: ${(props) => props.color || Colors.lightest};
+  text-transform: ${(props) => (props.noCaps ? ' none' : 'uppercase')};
+  color: ${(props) => props.color || Colors.lightText};
 `;
 
-export const BigTitleLabel = styled(BigTitle)`
+export const BigTitleButtonLabel = styled(BigTitle)`
   line-height: 54px;
   text-align: center;
-  color: ${(props) => props.color || Colors.lightest};
+  color: ${(props) => props.color || Colors.lightText};
 `;
 
 export const FilledButtonContainer = styled(ButtonContainer)`

@@ -2,11 +2,12 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import * as Analytics from 'expo-firebase-analytics';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Modal, TouchableOpacity, View } from 'react-native';
+import { Modal, View } from 'react-native';
 import {
   BigTitle,
-  BigTitleLabel,
+  BigTitleButtonLabel,
   Body,
+  ButtonContainer,
   ButtonLabel,
   RoundedButtonContainer,
   SquareButtonContainer,
@@ -19,8 +20,8 @@ import {
   ModalCenteredOpacityLayer,
   ModalContentContainer,
   ModalCopyContainer,
-  SubheadActive,
-  SubheadSecondary,
+  SubtitleActive,
+  SubtitleSecondary,
 } from '../../styled/modal';
 import { ColumnContainer, RowContainer, SpaceBetweenRowContainer } from '../../styled/shared';
 
@@ -138,7 +139,7 @@ export default class RewardModal extends React.Component {
           }}>
           <ModalCenteredOpacityLayer>
             <ModalContentContainer width="50%" height="60%">
-              <TouchableOpacity
+              <ButtonContainer
                 style={{
                   position: 'absolute',
                   top: 0,
@@ -148,7 +149,7 @@ export default class RewardModal extends React.Component {
                 }}
                 onPress={() => this.setModalVisible(false)}>
                 <FontAwesome5 name="times" size={24} color={Colors.activeText} />
-              </TouchableOpacity>
+              </ButtonContainer>
               {/* Invisible element used to trick flexbox into spacin correctly with 'space-around' 
                 even though 'cancel' button is pinned using position: absolute */}
               <View style={{ padding: 8 }}>{null}</View>
@@ -164,13 +165,13 @@ export default class RewardModal extends React.Component {
                       disabled={min}
                       color={min ? Colors.lightestGreen : Colors.darkerGreen}
                       onPress={() => this.updateRewardsApplied(false)}>
-                      <BigTitleLabel>-</BigTitleLabel>
+                      <BigTitleButtonLabel>-</BigTitleButtonLabel>
                     </SquareButtonContainer>
                     <SquareButtonContainer
                       activeOpacity={max ? 1 : 0.2}
                       color={max ? Colors.lightestGreen : Colors.darkerGreen}
                       onPress={() => (max ? this.showError(true) : this.updateRewardsApplied(true))}>
-                      <BigTitleLabel>+</BigTitleLabel>
+                      <BigTitleButtonLabel>+</BigTitleButtonLabel>
                     </SquareButtonContainer>
                   </RowContainer>
                 </SpaceBetweenRowContainer>
@@ -183,18 +184,18 @@ export default class RewardModal extends React.Component {
               <ModalCopyContainer alignItems="center" style={{ width: '40%', margin: 16 }}>
                 {/* TODO make a component for this; pattern is in ConfirmationScreen too */}
                 <SpaceBetweenRowContainer>
-                  <SubheadSecondary style={{ alignSelf: 'flex-start' }}>Subtotal</SubheadSecondary>
-                  <SubheadSecondary style={{ alignSelf: 'flex-end' }}>
+                  <SubtitleSecondary style={{ alignSelf: 'flex-start' }}>Subtotal</SubtitleSecondary>
+                  <SubtitleSecondary style={{ alignSelf: 'flex-end' }}>
                     {displayDollarValue(totalBalance + discount)}
-                  </SubheadSecondary>
+                  </SubtitleSecondary>
                 </SpaceBetweenRowContainer>
                 <SpaceBetweenRowContainer>
-                  <SubheadSecondary>Rewards</SubheadSecondary>
-                  <SubheadSecondary>{displayDollarValue(actualDiscount, false)}</SubheadSecondary>
+                  <SubtitleSecondary>Rewards</SubtitleSecondary>
+                  <SubtitleSecondary>{displayDollarValue(actualDiscount, false)}</SubtitleSecondary>
                 </SpaceBetweenRowContainer>
                 <SpaceBetweenRowContainer>
-                  <SubheadActive>Total Sale</SubheadActive>
-                  <SubheadActive>{displayDollarValue(totalSale)}</SubheadActive>
+                  <SubtitleActive>Total Sale</SubtitleActive>
+                  <SubtitleActive>{displayDollarValue(totalSale)}</SubtitleActive>
                 </SpaceBetweenRowContainer>
               </ModalCopyContainer>
               <RoundedButtonContainer onPress={() => this.handleApplyRewards()}>
@@ -209,7 +210,7 @@ export default class RewardModal extends React.Component {
           height="40px"
           color={Colors.activeText}
           onPress={() => this.setModalVisible(true)}>
-          <ButtonLabel color={Colors.lightest}>Rewards</ButtonLabel>
+          <ButtonLabel color={Colors.lightText}>Rewards</ButtonLabel>
         </RoundedButtonContainer>
       </RowContainer>
     );

@@ -5,8 +5,9 @@ import update from 'react-addons-update';
 import { Alert, AsyncStorage, View } from 'react-native';
 import AlertAsync from 'react-native-alert-async';
 import { ScrollView } from 'react-native-gesture-handler';
+import * as Sentry from 'sentry-expo';
 import BackButton from '../components/BackButton';
-import { ButtonLabel, FilledButtonContainer, Subhead, Title } from '../components/BaseComponents';
+import { ButtonLabel, FilledButtonContainer, Subtitle, Title } from '../components/BaseComponents';
 import SubtotalCard from '../components/SubtotalCard';
 import TotalCard from '../components/TotalCard';
 import Colors from '../constants/Colors';
@@ -251,6 +252,12 @@ export default class CheckoutScreen extends React.Component {
         purpose: 'Transaction completed and confirmed.',
         transaction: transactionId,
       });
+      Sentry.withScope((scope) => {
+        scope.setExtra('transaction', transaction);
+        scope.setExtra('transactionId', transactionId);
+        Sentry.captureMessage('Transaction complete');
+      });
+
       this.props.navigation.navigate('Confirmation', { transactionId });
     } catch (err) {
       // TODO better handling - should prompt the user to try again, or at least say something is wrong with the service
@@ -358,7 +365,7 @@ export default class CheckoutScreen extends React.Component {
                 flex: 1,
               }}>
               <View style={{ height: '60%' }}>
-                <Subhead>Current Sale</Subhead>
+                <Subtitle>Current Sale</Subtitle>
                 {/* Cart container */}
                 <View style={{ height: '100%', paddingBottom: '5%' }}>
                   <ScrollView
