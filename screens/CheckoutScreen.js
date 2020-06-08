@@ -329,7 +329,7 @@ export default class CheckoutScreen extends React.Component {
           <BackButton
             navigation={this.props.navigation}
             style={{ marginTop: 3, marginLeft: 24 }}
-            confirm={lineItems.length}
+            confirm={lineItems.length > 0}
           />
           <Title>
             {'Customer: '

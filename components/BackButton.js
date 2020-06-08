@@ -10,7 +10,7 @@ function BackButton({ navigation, light, style, confirm }) {
     <ButtonContainer
       style={{ ...style }}
       onPress={() => {
-        if (confirm > 0) {
+        if (confirm) {
           Alert.alert(
             'Are you sure you want to cancel this sale?',
             'If you cancel, this transaction will not be saved.',
