@@ -326,14 +326,18 @@ export default class CheckoutScreen extends React.Component {
     return (
       <View style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-around', flex: 1 }}>
         <TopBar trainingColor={trainingMode}>
-          <BackButton navigation={this.props.navigation} light={false} style={{ marginTop: 3, marginLeft: 24 }} />
+          <BackButton
+            navigation={this.props.navigation}
+            style={{ marginTop: 3, marginLeft: 24 }}
+            confirm={lineItems.length > 0}
+          />
           <Title>
             {'Customer: '
               .concat(customer.name)
               .concat(trainingMode ? '   |   Training Mode (sales will not be saved)' : '')}
           </Title>
           {/* Duplicate, invisible element to have left-aligned BackButton */}
-          <BackButton navigation={this.props.navigation} light={false} style={{ opacity: 0.0, disabled: true }} />
+          <BackButton navigation={this.props.navigation} style={{ opacity: 0.0, disabled: true }} />
         </TopBar>
         <View style={{ display: 'flex', flexDirection: 'row', flex: 1 }}>
           {/* Display products */}

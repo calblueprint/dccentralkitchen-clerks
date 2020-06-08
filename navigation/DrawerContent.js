@@ -52,7 +52,10 @@ class DrawerContent extends React.Component {
         </View>
         <ButtonContainer
           style={{ padding: 16, paddingTop: 32 }}
-          onPress={() => Linking.openURL('http://tiny.cc/ClerkGuide')}>
+          onPress={() => this.props.navigation.navigate('RegisterCustomer')}>
+          <Title>Register a Customer</Title>
+        </ButtonContainer>
+        <ButtonContainer style={{ padding: 16 }} onPress={() => Linking.openURL('http://tiny.cc/ClerkGuide')}>
           <Title>Clerk Guide</Title>
         </ButtonContainer>
         <ButtonContainer style={{ padding: 16 }} onPress={() => Linking.openURL('http://tiny.cc/SubmitFeedbackClerk')}>
@@ -70,7 +73,7 @@ class DrawerContent extends React.Component {
             verticalAlign: 'bottom',
           }}>
           <ButtonContainer style={{ paddingLeft: 16, paddingBottom: 21 }} onPress={() => this._logout()}>
-            <Title>Logout</Title>
+            <Title>Log Out</Title>
           </ButtonContainer>
         </View>
       </View>

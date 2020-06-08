@@ -49,13 +49,10 @@ export const Overline = styled.Text`
 export const ButtonContainer = styled.TouchableOpacity``;
 
 export const ButtonLabel = styled.Text`
-  top: 25%;
-  bottom: 25%;
   font-family: poppins-semibold;
   font-size: 14px;
-  line-height: 21px;
+  line-height: 20px;
   text-align: center;
-  letter-spacing: 0.01px;
   text-transform: ${(props) => (props.noCaps ? ' none' : 'uppercase')};
   color: ${(props) => props.color || Colors.lightText};
 `;
@@ -70,6 +67,10 @@ export const FilledButtonContainer = styled(ButtonContainer)`
   width: ${(props) => props.width || '309px'};
   height: ${(props) => props.height || '57px'}
   background: ${(props) => props.color || Colors.primaryGreen};
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-top: 2px;
 `;
 
 export const RoundedButtonContainer = styled(FilledButtonContainer)`
