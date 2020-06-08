@@ -22,7 +22,7 @@
     "updates": {
       "fallbackToCacheTimeout": 3000
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": ["assets/images/*"],
     "ios": {
       "bundleIdentifier": "org.calblueprint.HealthyCornersClerk",
       "googleServicesFile": "./GoogleService-Info.plist",
