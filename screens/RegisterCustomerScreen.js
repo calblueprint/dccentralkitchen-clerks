@@ -60,21 +60,6 @@ export default class RegisterCustomerScreen extends React.Component {
         phoneNumber,
         points: signUpBonus,
       });
-
-      // If adding the customer succeeds, register the user for analytics and logging
-      Analytics.setUserId(customerId);
-      Analytics.setUserProperties({
-        name,
-        phoneNumber,
-      });
-      Sentry.configureScope((scope) => {
-        scope.setUser({
-          id: customerId,
-          username: name,
-          phoneNumber,
-        });
-        Sentry.captureMessage('Sign Up Successful');
-      });
       return customerId;
     } catch (err) {
       console.error('[RegisterCustomerScreen] (addCustomer) Airtable:', err);
