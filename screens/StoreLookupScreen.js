@@ -77,9 +77,7 @@ export default class StoreLookupScreen extends React.Component {
     // Clerk training: set `trainingMode` to "true" in AsyncStorage
     if (this.state.store.storeName === 'CLERK TRAINING') {
       Analytics.logEvent('SelectTrainingMode', {
-        name: 'Select Clerk Training mode',
-        function: 'handleNavigate',
-        component: 'StoreLookupScreen',
+        purpose: 'Select Clerk Training mode',
       });
       await AsyncStorage.setItem('trainingMode', JSON.stringify(true));
     } else {

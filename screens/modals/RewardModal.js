@@ -72,9 +72,7 @@ export default class RewardModal extends React.Component {
       this._updateState(rewardsAvailable, rewardsApplied, totalBalance);
     }
     Analytics.logEvent('OpenRewardsModal', {
-      name: 'Open Rewards Modal',
-      function: 'setModalVisible',
-      component: 'RewardModal',
+      purpose: 'Open Rewards Modal',
       rewards_available: rewardsAvailable,
       total_balance: totalBalance,
     });
@@ -89,9 +87,6 @@ export default class RewardModal extends React.Component {
   handleApplyRewards = () => {
     // Communicate to parent component
     Analytics.logEvent('ConfirmApplyRewards', {
-      name: 'Apply Rewards',
-      function: 'handleApplyRewards',
-      component: 'RewardModal',
       rewards_available: this.state.rewardsAvailable,
       rewards_eligible: this.state.rewardsEligible,
       rewards_applied: this.state.rewardsApplied,

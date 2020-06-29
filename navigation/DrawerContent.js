@@ -22,9 +22,7 @@ class DrawerContent extends React.Component {
   _logout = async () => {
     AsyncStorage.clear();
     Analytics.logEvent('ClerkLogOut', {
-      name: 'Log out',
-      function: '_logout',
-      component: 'DrawerContent',
+      clerk_name: this.state.clerkName,
     });
     Sentry.configureScope((scope) => scope.clear());
     Analytics.setUserId(null);

@@ -42,9 +42,6 @@ export default class RegisterCustomerScreen extends React.Component {
     const customerId = await this.addCustomer();
     await AsyncStorage.setItem('customerId', customerId);
     Analytics.logEvent('CustomerRegistered', {
-      name: 'Customer register successful',
-      function: '_asyncCustomerFound',
-      component: 'RegisterCustomerScreen',
       customer_id: customerId,
     });
     this.props.navigation.navigate('Checkout');

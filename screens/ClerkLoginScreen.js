@@ -75,9 +75,6 @@ export default class ClerkLoginScreen extends React.Component {
           store: clerkRecord.storeName[0],
         });
         Analytics.logEvent('ClerkLogin', {
-          name: 'Successful Clerk login',
-          function: 'handleSubmit',
-          component: 'ClerkLoginScreen',
           clerk_id: clerkRecord.id,
           clerk_name: clerkRecord.clerkName,
           store_name: clerkRecord.storeName[0],

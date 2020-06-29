@@ -174,9 +174,7 @@ export default class CheckoutScreen extends React.Component {
         const continueWithoutRewards = await this.confirmNoRewards(eligibleRewards);
         if (!continueWithoutRewards) {
           Analytics.logEvent('GoBackApplyRewards', {
-            name: 'Selected "Go back to apply rewards"',
-            function: 'displayConfirmation',
-            component: 'CheckoutScreen',
+            purpose: 'Selected "Go back to apply rewards"',
             eligible_rewards: eligibleRewards,
           });
           return;
@@ -246,9 +244,6 @@ export default class CheckoutScreen extends React.Component {
       const transactionId = await addTransaction(this.state.customer, this.state.cart, transaction);
       await updateCustomerPoints(this.state.customer, transaction.pointsEarned, transaction.rewardsApplied);
       Analytics.logEvent('ConfirmTransaction', {
-        name: 'Complete sale',
-        function: 'confirmTransaction',
-        component: 'CheckoutScreen',
         purpose: 'Transaction completed and confirmed.',
         transaction: transactionId,
       });
