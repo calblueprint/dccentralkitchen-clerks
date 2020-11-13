@@ -1,8 +1,9 @@
+import AsyncStorage from '@react-native-community/async-storage';
 import * as Analytics from 'expo-firebase-analytics';
 import PropTypes from 'prop-types';
 import React from 'react';
 import update from 'react-addons-update';
-import { Alert, AsyncStorage, View } from 'react-native';
+import { Alert, View } from 'react-native';
 import AlertAsync from 'react-native-alert-async';
 import { ScrollView } from 'react-native-gesture-handler';
 import * as Sentry from 'sentry-expo';

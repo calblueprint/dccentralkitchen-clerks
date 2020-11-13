@@ -1,6 +1,7 @@
+import AsyncStorage from '@react-native-community/async-storage';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Alert, AsyncStorage, Clipboard, View } from 'react-native';
+import { Alert, Clipboard, View } from 'react-native';
 import {
   Body,
   ButtonContainer,

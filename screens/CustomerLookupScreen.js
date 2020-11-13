@@ -1,7 +1,8 @@
+import AsyncStorage from '@react-native-community/async-storage';
 import * as Analytics from 'expo-firebase-analytics';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { AsyncStorage, Keyboard, View } from 'react-native';
+import { Keyboard, View } from 'react-native';
 import * as Sentry from 'sentry-expo';
 import { ButtonContainer, ButtonLabel, RoundedButtonContainer, Title } from '../components/BaseComponents';
 import DismissKeyboard from '../components/DismissKeyboard';
