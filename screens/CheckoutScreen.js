@@ -13,7 +13,7 @@ import SubtotalCard from '../components/SubtotalCard';
 import TotalCard from '../components/TotalCard';
 import Colors from '../constants/Colors';
 import { rewardDollarValue } from '../constants/Rewards';
-import { getCustomersById } from '../lib/airtable/request';
+import { getCustomerById } from '../lib/airtable/request';
 import {
   addTransaction,
   calculateEligibleRewards,
@@ -47,7 +47,7 @@ export default class CheckoutScreen extends React.Component {
 
   async componentDidMount() {
     const customerId = await AsyncStorage.getItem('customerId');
-    const customer = await getCustomersById(customerId);
+    const customer = await getCustomerById(customerId);
     const products = await loadProductsData();
     const training = JSON.parse(await AsyncStorage.getItem('trainingMode'));
     // Initialize cart a'la Python dictionary, to make updating quantity cleaner
