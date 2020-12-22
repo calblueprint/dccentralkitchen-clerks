@@ -1,7 +1,8 @@
+import AsyncStorage from '@react-native-community/async-storage';
 import * as Analytics from 'expo-firebase-analytics';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { AsyncStorage, View } from 'react-native';
+import { View } from 'react-native';
 import * as Sentry from 'sentry-expo';
 import {
   Body,
@@ -16,7 +17,7 @@ import DismissKeyboard from '../components/DismissKeyboard';
 import ErrorMessage from '../components/ErrorMessage';
 import Colors from '../constants/Colors';
 import { signUpBonus } from '../constants/Rewards';
-import { createCustomers } from '../lib/airtable/request';
+import { createCustomer } from '../lib/airtable/request';
 import { status } from '../lib/constants';
 import { logErrorToSentry } from '../lib/logUtils';
 import { formatPhoneNumberInput, lookupCustomer } from '../lib/lookupUtils';
@@ -55,7 +56,7 @@ export default class RegisterCustomerScreen extends React.Component {
     const name = newCustomerName;
     const phoneNumber = newPhoneNumber;
     try {
-      const customerId = await createCustomers({
+      const customerId = await createCustomer({
         name,
         phoneNumber,
         points: signUpBonus,

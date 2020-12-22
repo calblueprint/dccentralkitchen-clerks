@@ -1,6 +1,8 @@
+import AsyncStorage from '@react-native-community/async-storage';
+import Clipboard from '@react-native-community/clipboard';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Alert, AsyncStorage, Clipboard, View } from 'react-native';
+import { Alert, View } from 'react-native';
 import {
   Body,
   ButtonContainer,
@@ -10,7 +12,7 @@ import {
   Title,
 } from '../components/BaseComponents';
 import DrawerButton from '../components/DrawerButton';
-import { getTransactionsById } from '../lib/airtable/request';
+import { getTransactionById } from '../lib/airtable/request';
 import { displayDollarValue } from '../lib/checkoutUtils';
 import { logErrorToSentry } from '../lib/logUtils';
 import { ColumnContainer, RowContainer, SpaceBetweenRowContainer } from '../styled/shared';
@@ -34,7 +36,7 @@ export default class ConfirmationScreen extends React.Component {
         transaction = this.props.route.params;
       } else {
         const { transactionId } = this.props.route.params;
-        transaction = await getTransactionsById(transactionId);
+        transaction = await getTransactionById(transactionId);
       }
       this.setState({ transaction, isLoading: false });
     } catch (err) {

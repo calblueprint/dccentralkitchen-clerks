@@ -1,8 +1,9 @@
+import AsyncStorage from '@react-native-community/async-storage';
 import * as Analytics from 'expo-firebase-analytics';
 import PropTypes from 'prop-types';
 import React from 'react';
 import update from 'react-addons-update';
-import { Alert, AsyncStorage, View } from 'react-native';
+import { Alert, View } from 'react-native';
 import AlertAsync from 'react-native-alert-async';
 import { ScrollView } from 'react-native-gesture-handler';
 import * as Sentry from 'sentry-expo';
@@ -12,7 +13,7 @@ import SubtotalCard from '../components/SubtotalCard';
 import TotalCard from '../components/TotalCard';
 import Colors from '../constants/Colors';
 import { rewardDollarValue } from '../constants/Rewards';
-import { getCustomersById } from '../lib/airtable/request';
+import { getCustomerById } from '../lib/airtable/request';
 import {
   addTransaction,
   calculateEligibleRewards,
@@ -46,7 +47,7 @@ export default class CheckoutScreen extends React.Component {
 
   async componentDidMount() {
     const customerId = await AsyncStorage.getItem('customerId');
-    const customer = await getCustomersById(customerId);
+    const customer = await getCustomerById(customerId);
     const products = await loadProductsData();
     const training = JSON.parse(await AsyncStorage.getItem('trainingMode'));
     // Initialize cart a'la Python dictionary, to make updating quantity cleaner
