@@ -3,42 +3,42 @@ import Colors from '../constants/Colors';
 
 // Text Components
 export const BigTitle = styled.Text`
-  font-family: poppins-medium;
+  font-family: opensans-semibold;
   font-size: 32px;
   line-height: 48px;
   color: ${(props) => props.color || Colors.activeText};
 `;
 
 export const Title = styled.Text`
-  font-family: poppins-medium;
+  font-family: opensans-semibold;
   font-size: 20px;
   line-height: 30px;
   color: ${(props) => props.color || Colors.activeText};
 `;
 
 export const Subtitle = styled.Text`
-  font-family: poppins-regular;
+  font-family: opensans-regular;
   font-size: 16px;
   line-height: 24px;
   color: ${(props) => props.color || Colors.activeText};
 `;
 
 export const Body = styled.Text`
-  font-family: poppins-regular;
+  font-family: opensans-regular;
   font-size: 14px;
   line-height: 20px;
   color: ${(props) => props.color || Colors.activeText};
 `;
 
 export const Caption = styled.Text`
-  font-family: poppins-medium;
+  font-family: opensans-semibold;
   font-size: 12px;
   line-height: 16px;
   color: ${(props) => props.color || Colors.activeText};
 `;
 
 export const Overline = styled.Text`
-  font-family: poppins-regular;
+  font-family: opensans-regular;
   font-size: 14px;
   line-height: 20px;
   text-transform: uppercase;
@@ -49,7 +49,7 @@ export const Overline = styled.Text`
 export const ButtonContainer = styled.TouchableOpacity``;
 
 export const ButtonLabel = styled.Text`
-  font-family: poppins-semibold;
+  font-family: opensans-semibold;
   font-size: 14px;
   line-height: 20px;
   text-align: center;

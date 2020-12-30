@@ -28,7 +28,7 @@ export const TextField = styled.TextInput`
   border-color: ${(props) => (props.error ? Colors.error : Colors.primaryGray)};
   border-width: 2px;
   padding-left: 14px;
-  font-family: poppins-regular;
+  font-family: opensans-regular;
 `;
 
 export const SearchElement = styled.TouchableOpacity`
