@@ -1,5 +1,5 @@
 import { FontAwesome5 } from '@expo/vector-icons';
-import { AppLoading } from 'expo';
+import AppLoading from 'expo-app-loading';
 import * as Font from 'expo-font';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import React, { useState } from 'react';

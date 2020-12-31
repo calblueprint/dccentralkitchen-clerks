@@ -37,7 +37,7 @@ function DrawerNavigator() {
 
 const AppContainerStack = createStackNavigator();
 
-export default function createAppContainer() {
+export default function AppContainer() {
   const routeNameRef = React.useRef();
   const navigationRef = React.useRef();
 
