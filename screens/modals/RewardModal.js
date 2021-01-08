@@ -11,7 +11,7 @@ import {
   ButtonLabel,
   RoundedButtonContainer,
   SquareButtonContainer,
-  Title,
+  Title
 } from '../../components/BaseComponents';
 import Colors from '../../constants/Colors';
 import { rewardDollarValue } from '../../constants/Rewards';
@@ -21,7 +21,7 @@ import {
   ModalContentContainer,
   ModalCopyContainer,
   SubtitleActive,
-  SubtitleSecondary,
+  SubtitleSecondary
 } from '../../styled/modal';
 import { ColumnContainer, RowContainer, SpaceBetweenRowContainer } from '../../styled/shared';
 
@@ -138,7 +138,7 @@ export default class RewardModal extends React.Component {
             this.setModalVisible(false);
           }}>
           <ModalCenteredOpacityLayer>
-            <ModalContentContainer width="50%" height="60%">
+            <ModalContentContainer style={{marginTop: 10}}>
               <ButtonContainer
                 style={{
                   position: 'absolute',
