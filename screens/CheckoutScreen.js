@@ -3,7 +3,7 @@ import * as Analytics from 'expo-firebase-analytics';
 import PropTypes from 'prop-types';
 import React from 'react';
 import update from 'react-addons-update';
-import { Alert, View } from 'react-native';
+import { Alert, Dimensions, View } from 'react-native';
 import AlertAsync from 'react-native-alert-async';
 import { ScrollView } from 'react-native-gesture-handler';
 import * as Sentry from 'sentry-expo';
@@ -22,7 +22,7 @@ import {
   loadProductsData,
   updateCustomerPoints,
 } from '../lib/checkoutUtils';
-import { checkoutNumCols, productCardPxHeight } from '../lib/constants';
+import { productCardPxHeight, productCardPxWidth } from '../lib/constants';
 import { logErrorToSentry } from '../lib/logUtils';
 import { BottomBar, ProductsContainer, SaleContainer, TabContainer, TopBar } from '../styled/checkout';
 import QuantityModal from './modals/QuantityModal';
@@ -31,6 +31,7 @@ import RewardModal from './modals/RewardModal';
 export default class CheckoutScreen extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {
       // Populated in componentDidMount
       customer: null,
@@ -297,12 +298,17 @@ export default class CheckoutScreen extends React.Component {
   // Takes in strings tab label (i.e. "A-K") and starting letter (i.e. "A") and returns a
   // tab for the bottom alphabetical scroll bar.
   alphabeticalScrollTab = (startLetter, endLetter) => {
+    const productContainerWidth = (Dimensions.get('screen').width * 4) / 6;
+
+    const numItemsPerRow = Math.round(productContainerWidth / productCardPxWidth);
+    console.log(productContainerWidth, productCardPxWidth, numItemsPerRow, 'AAAAAA');
+
     return (
       <TabContainer
         onPress={() =>
           this.productScrollView.scrollTo({
             y:
-              Math.floor(this.getIndexOfFirstProductAtLetter(startLetter, endLetter) / checkoutNumCols) *
+              Math.floor(this.getIndexOfFirstProductAtLetter(startLetter, endLetter) / numItemsPerRow) *
               productCardPxHeight,
           })
         }>
