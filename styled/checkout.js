@@ -80,7 +80,7 @@ export const ProductCard = styled.View`
 // Transaction Line Items
 
 export const LineItem = styled.View`
-  width: 281px;
+  width: 100%;
   background: ${Colors.bgLight};
   border: 1px solid ${Colors.lightestGray};
   border-left-width: 0px;

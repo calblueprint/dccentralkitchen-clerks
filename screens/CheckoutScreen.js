@@ -378,7 +378,7 @@ export default class CheckoutScreen extends React.Component {
               <View style={{ height: '60%' }}>
                 <Subtitle>Current Sale</Subtitle>
                 {/* Cart container */}
-                <View style={{ height: '100%', paddingBottom: '5%' }}>
+                <View style={{ paddingBottom: '5%' }}>
                   <ScrollView
                     ref={(scrollView) => {
                       this.cartScrollView = scrollView;
@@ -399,7 +399,7 @@ export default class CheckoutScreen extends React.Component {
                   </ScrollView>
                 </View>
               </View>
-              <View>
+              <View style={{ flex: 1, paddingTop: '5%' }}>
                 <RewardModal
                   totalBalance={totalBalance}
                   customer={customer}
@@ -407,8 +407,10 @@ export default class CheckoutScreen extends React.Component {
                   rewardsApplied={this.state.rewardsApplied}
                   callback={this.applyRewardsCallback}
                 />
-                <SubtotalCard subtotalPrice={subtotal} rewardsAmount={actualDiscount} />
-                <TotalCard totalSale={totalSale} totalPoints={pointsEarned} />
+                <ScrollView>
+                  <SubtotalCard subtotalPrice={subtotal} rewardsAmount={actualDiscount} />
+                  <TotalCard totalSale={totalSale} totalPoints={pointsEarned} />
+                </ScrollView>
               </View>
             </View>
             <FilledButtonContainer
