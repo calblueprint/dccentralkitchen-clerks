@@ -84,7 +84,14 @@ export default class ConfirmationScreen extends React.Component {
         </RowContainer>
         <ColumnContainer style={{ width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
           <ColumnContainer
-            style={{ width: '33%', height: '35%', justifyContent: 'space-around', margin: 12, paddingBottom: 32 }}>
+            style={{
+              width: '33%',
+              minHeight: '35%',
+              maxHeight: '50%',
+              justifyContent: 'space-around',
+              margin: 12,
+              paddingBottom: 32,
+            }}>
             <Title>Sale Summary</Title>
             <SpaceBetweenRowContainer>
               <Subtitle>Transaction ID</Subtitle>

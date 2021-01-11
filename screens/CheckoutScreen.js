@@ -403,6 +403,7 @@ export default class CheckoutScreen extends React.Component {
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'flex-end',
+                  paddingTop: '5%',
                 }}>
                 <RewardModal
                   totalBalance={totalBalance}
