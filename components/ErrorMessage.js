@@ -8,13 +8,13 @@ import { Body, ButtonContainer, ButtonLabel } from './BaseComponents';
 function ErrorMessage({ light, errorMsg, buttonMsg, callback, errorShown }) {
   return (
     <ColumnContainer>
-      <RowContainer style={{ alignItems: 'center', marginTop: 8 }}>
-        {errorShown && (
+      {errorShown && (
+        <RowContainer style={{ alignItems: 'center', marginTop: 8 }}>
           <FontAwesome5 name="exclamation-circle" size={14} color={Colors.error} style={{ marginRight: 8 }} />
-        )}
-        <Body color={light ? Colors.lightText : Colors.activeText}>{errorShown ? errorMsg : ' '}</Body>
-      </RowContainer>
-      {buttonMsg !== '' && (
+          <Body color={light ? Colors.lightText : Colors.activeText}>{errorMsg}</Body>
+        </RowContainer>
+      )}
+      {buttonMsg && (
         <ButtonContainer onPress={errorShown ? callback : null}>
           <ButtonLabel noCaps color={Colors.primaryGreen}>
             {errorShown ? buttonMsg : ' '}
