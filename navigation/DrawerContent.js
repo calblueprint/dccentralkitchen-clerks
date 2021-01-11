@@ -44,7 +44,8 @@ class DrawerContent extends React.Component {
         <View
           style={{
             backgroundColor: Colors.bgDark,
-            height: 114,
+            minHeight: 100,
+            maxHeight: 114,
             display: 'flex',
             flexDirection: 'row',
             alignItems: 'flex-end',
