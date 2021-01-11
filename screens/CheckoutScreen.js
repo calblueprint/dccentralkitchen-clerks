@@ -301,7 +301,6 @@ export default class CheckoutScreen extends React.Component {
     const productContainerWidth = (Dimensions.get('screen').width * 4) / 6;
 
     const numItemsPerRow = Math.round(productContainerWidth / productCardPxWidth);
-    console.log(productContainerWidth, productCardPxWidth, numItemsPerRow, 'AAAAAA');
 
     return (
       <TabContainer
@@ -375,7 +374,7 @@ export default class CheckoutScreen extends React.Component {
                 justifyContent: 'space-between',
                 flex: 1,
               }}>
-              <View style={{ height: '60%' }}>
+              <View style={{ flex: 2 }}>
                 <Subtitle>Current Sale</Subtitle>
                 {/* Cart container */}
                 <View style={{ paddingBottom: '5%' }}>
@@ -399,7 +398,12 @@ export default class CheckoutScreen extends React.Component {
                   </ScrollView>
                 </View>
               </View>
-              <View style={{ flex: 1, paddingTop: '5%' }}>
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'flex-end',
+                }}>
                 <RewardModal
                   totalBalance={totalBalance}
                   customer={customer}
@@ -407,13 +411,14 @@ export default class CheckoutScreen extends React.Component {
                   rewardsApplied={this.state.rewardsApplied}
                   callback={this.applyRewardsCallback}
                 />
-                <ScrollView>
+                <View>
                   <SubtotalCard subtotalPrice={subtotal} rewardsAmount={actualDiscount} />
                   <TotalCard totalSale={totalSale} totalPoints={pointsEarned} />
-                </ScrollView>
+                </View>
               </View>
             </View>
             <FilledButtonContainer
+              width="100%"
               style={{ paddingTop: 3 }}
               disabled={cartEmpty}
               color={cartEmpty ? Colors.lightestGreen : Colors.primaryGreen}
