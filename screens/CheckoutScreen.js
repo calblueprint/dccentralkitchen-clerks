@@ -1,17 +1,18 @@
 import AsyncStorage from '@react-native-community/async-storage';
+import { StackActions } from '@react-navigation/native';
 import * as Analytics from 'expo-firebase-analytics';
 import PropTypes from 'prop-types';
 import React from 'react';
 import update from 'react-addons-update';
 import { Alert, Dimensions, View } from 'react-native';
 import AlertAsync from 'react-native-alert-async';
-import { ScrollView } from 'react-native-gesture-handler';
 import * as Sentry from 'sentry-expo';
 import BackButton from '../components/BackButton';
-import { ButtonLabel, FilledButtonContainer, Subtitle, Title } from '../components/BaseComponents';
-import SubtotalCard from '../components/SubtotalCard';
-import TotalCard from '../components/TotalCard';
+import BadgeIcon from '../components/BadgeIcon';
+import { ButtonContainer, ButtonLabel, FilledButtonContainer, Title } from '../components/BaseComponents';
+import CurrentSale from '../components/CurrentSale';
 import Colors from '../constants/Colors';
+import { isTablet } from '../constants/Layout';
 import { rewardDollarValue } from '../constants/Rewards';
 import { getCustomerById } from '../lib/airtable/request';
 import {
@@ -24,9 +25,9 @@ import {
 } from '../lib/checkoutUtils';
 import { productCardPxHeight, productCardPxWidth } from '../lib/constants';
 import { logErrorToSentry } from '../lib/logUtils';
-import { BottomBar, ProductsContainer, SaleContainer, TabContainer, TopBar } from '../styled/checkout';
+import { BottomBar, ProductsContainer, TabContainer, TopBar } from '../styled/checkout';
+import { ColumnContainer } from '../styled/shared';
 import QuantityModal from './modals/QuantityModal';
-import RewardModal from './modals/RewardModal';
 
 export default class CheckoutScreen extends React.Component {
   constructor(props) {
@@ -43,6 +44,7 @@ export default class CheckoutScreen extends React.Component {
       rewardsApplied: 0,
       products: [],
       isLoading: true,
+      showCurrentSale: isTablet,
     };
   }
 
@@ -113,53 +115,8 @@ export default class CheckoutScreen extends React.Component {
     }
   };
 
-  cartEmpty = () => {
-    // Should not be able to check out if there isn't anything in the transaction.
-    return Object.values(this.state.cart).reduce((empty, lineItem) => lineItem.quantity === 0 && empty, true);
-  };
-
-  // Calculates total points earned from transaction
-  // Accounts for lineItem individual point values and not allowing points to be earned with rewards daollrs
-  getPointsEarned = () => {
-    let pointsEarned = Object.values(this.state.cart).reduce(
-      (points, lineItem) => points + lineItem.points * lineItem.quantity,
-      0
-    );
-    // Customer cannot earn points with rewards dollars; assumes a reward's point multiplier per dollar is 100 pts
-    pointsEarned -= this.state.rewardsApplied * rewardDollarValue * 100;
-
-    // TODO this might be a design edge case now that rewards applied can bring the technical balance to a negative
-    if (pointsEarned < 0) {
-      if (this.state.totalBalance > 0) {
-        console.log(
-          'Total points less than 0! This is likely a bug, unless the value of various items is < 100 pts per item, since the real balance is positive. '
-        );
-      }
-      // Otherwise, expected - value of rewards applied > value of items in cart
-      pointsEarned = 0;
-    }
-    return pointsEarned;
-  };
-
-  // Handles submit when clerk selects "CHECKOUT".
-  handleSubmit = () => {
-    const { rewardsApplied, totalBalance } = this.state;
-
-    // Calculate actual discount and sale; handle negative balances
-    const discount = rewardsApplied * rewardDollarValue;
-    const subtotal = totalBalance + discount;
-    const totalSale = totalBalance > 0 ? totalBalance : 0;
-    const actualDiscount = totalBalance < 0 ? discount + totalBalance : discount;
-    const pointsEarned = this.getPointsEarned();
-
-    // Passed through displayConfirmation to generateConfirmationMessage and confirmTransaction
-    const transaction = {
-      discount: actualDiscount,
-      subtotal,
-      totalSale,
-      pointsEarned,
-      rewardsApplied, // for convenience
-    };
+  // Handles submit when clerk selects "Complete Sale".
+  completeSaleCallback = (transaction) => {
     this.displayConfirmation(transaction);
   };
 
@@ -229,7 +186,7 @@ export default class CheckoutScreen extends React.Component {
       'Sale Items:\n\n'
     );
     msg = msg.concat(`\nRewards Redeemed: ${transaction.rewardsApplied}\n`);
-    // Adding total price and total points earned to message. Must be called after getPointsEarned() in handleSubmit() for updated amount.
+    // Adding total price and total points earned to message.
     msg = msg.concat(this.generateConfirmationLine('Subtotal', transaction.subtotal));
     msg = msg.concat(this.generateConfirmationLine('Discount', transaction.discount));
     msg = msg.concat(this.generateConfirmationLine('Total Sale', transaction.totalSale));
@@ -259,6 +216,7 @@ export default class CheckoutScreen extends React.Component {
         scope.setExtra('transactionId', transactionId);
         Sentry.captureMessage('Transaction complete');
       });
+      this.props.navigation.dispatch(StackActions.replace('Confirmation', { transactionId }));
 
       this.props.navigation.navigate('Confirmation', { transactionId });
     } catch (err) {
@@ -276,6 +234,10 @@ export default class CheckoutScreen extends React.Component {
       });
       console.log('Error creating transaction in Airtable', err);
     }
+  };
+
+  toggleShowCurrentSale = () => {
+    this.setState((prevState) => ({ showCurrentSale: !prevState.showCurrentSale }));
   };
 
   // Returns index of the first product with a name starting with the given letter in products list.
@@ -322,112 +284,77 @@ export default class CheckoutScreen extends React.Component {
     }
 
     const { cart, lineItems, customer, totalBalance, trainingMode } = this.state;
-    const totalSale = totalBalance > 0 ? totalBalance : 0;
-    const pointsEarned = this.getPointsEarned();
-    const subtotal = totalBalance + this.state.rewardsApplied * rewardDollarValue;
-    const discount = this.state.rewardsApplied * rewardDollarValue;
-    const actualDiscount = totalBalance < 0 ? discount + totalBalance : discount;
-    const cartEmpty = this.cartEmpty();
 
     return (
-      <View style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-around', flex: 1 }}>
-        <TopBar trainingColor={trainingMode}>
-          <BackButton
-            navigation={this.props.navigation}
-            style={{ marginTop: 3, marginLeft: 24 }}
-            confirm={lineItems.length > 0}
-          />
-          <Title>
-            {'Customer: '
-              .concat(customer.name)
-              .concat(trainingMode ? '   |   Training Mode (sales will not be saved)' : '')}
-          </Title>
-          {/* Duplicate, invisible element to have left-aligned BackButton */}
-          <BackButton navigation={this.props.navigation} style={{ opacity: 0.0, disabled: true }} />
-        </TopBar>
-        <View style={{ display: 'flex', flexDirection: 'row', flex: 1 }}>
-          {/* Display products */}
-          <View style={{ display: 'flex', flex: 5, flexDirection: 'column' }}>
-            <ProductsContainer
-              ref={(scrollView) => {
-                this.productScrollView = scrollView;
-              }}>
-              {Object.entries(cart).map(([id, product]) => (
-                <QuantityModal key={id} product={product} isLineItem={false} callback={this.updateQuantityCallback} />
-              ))}
-            </ProductsContainer>
-            <BottomBar style={{ display: 'flex', flexDirection: 'row' }}>
-              {this.alphabeticalScrollTab('A', 'K')}
-              {this.alphabeticalScrollTab('L', 'S')}
-              {this.alphabeticalScrollTab('T', 'Z')}
-            </BottomBar>
-          </View>
-          {/* Right column */}
-          <SaleContainer>
-            <View
-              style={{
-                paddingTop: 13,
-                paddingLeft: 14,
-                paddingRight: 14,
-                paddingBottom: 0,
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                flex: 1,
-              }}>
-              <View style={{ flex: 2 }}>
-                <Subtitle>Current Sale</Subtitle>
-                {/* Cart container */}
-                <View style={{ paddingBottom: '5%' }}>
-                  <ScrollView
-                    ref={(scrollView) => {
-                      this.cartScrollView = scrollView;
-                    }}
-                    onContentSizeChange={() => this.cartScrollView.scrollToEnd({ animated: true })}>
-                    {lineItems.map((id) => {
-                      return (
-                        cart[id].quantity > 0 && (
-                          <QuantityModal
-                            key={id}
-                            product={cart[id]}
-                            isLineItem
-                            callback={this.updateQuantityCallback}
-                          />
-                        )
-                      );
-                    })}
-                  </ScrollView>
-                </View>
-              </View>
-              <View
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'flex-end',
-                  paddingTop: '5%',
-                }}>
-                <RewardModal
-                  totalBalance={totalBalance}
-                  customer={customer}
-                  rewardsAvailable={this.state.rewardsAvailable}
-                  rewardsApplied={this.state.rewardsApplied}
-                  callback={this.applyRewardsCallback}
+      <View style={{ flexDirection: 'row', flex: 1 }}>
+        {(!isTablet && this.state.showCurrentSale) || (
+          <View style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-around', flex: 2 }}>
+            <ColumnContainer style={{ width: '100%' }}>
+              <TopBar trainingColor={trainingMode}>
+                <BackButton
+                  navigation={this.props.navigation}
+                  style={{ marginLeft: 24 }}
+                  confirm={lineItems.length > 0}
                 />
-                <View>
-                  <SubtotalCard subtotalPrice={subtotal} rewardsAmount={actualDiscount} />
-                  <TotalCard totalSale={totalSale} totalPoints={pointsEarned} />
-                </View>
+                <Title>
+                  {'Customer: '
+                    .concat(customer.name)
+                    .concat(trainingMode ? '   |   Training Mode (sales will not be saved)' : '')}
+                </Title>
+
+                <ButtonContainer style={{ marginRight: 24 }} onPress={() => this.toggleShowCurrentSale()}>
+                  <BadgeIcon badgeContent={this.state.lineItems.length.toString()} icon="shopping-basket" />
+                </ButtonContainer>
+              </TopBar>
+              {this.state.showCurrentSale || (
+                <FilledButtonContainer
+                  height="50px"
+                  style={{ paddingTop: 3, margin: 8 }}
+                  color={lineItems.length === 0 ? Colors.lightestGreen : Colors.primaryGreen}
+                  onPress={() => this.toggleShowCurrentSale()}>
+                  <ButtonLabel>Apply Rewards & Checkout</ButtonLabel>
+                </FilledButtonContainer>
+              )}
+            </ColumnContainer>
+            <View style={{ display: 'flex', flexDirection: 'row', flex: 1 }}>
+              {/* Display products */}
+              <View style={{ display: 'flex', flex: 5, flexDirection: 'column' }}>
+                <ProductsContainer
+                  ref={(scrollView) => {
+                    this.productScrollView = scrollView;
+                  }}>
+                  {Object.entries(cart).map(([id, product]) => (
+                    <QuantityModal
+                      key={id}
+                      product={product}
+                      isLineItem={false}
+                      callback={this.updateQuantityCallback}
+                    />
+                  ))}
+                </ProductsContainer>
+                <BottomBar style={{ display: 'flex', flexDirection: 'row' }}>
+                  {this.alphabeticalScrollTab('A', 'K')}
+                  {this.alphabeticalScrollTab('L', 'S')}
+                  {this.alphabeticalScrollTab('T', 'Z')}
+                </BottomBar>
               </View>
             </View>
-            <FilledButtonContainer
-              width="100%"
-              style={{ paddingTop: 3 }}
-              disabled={cartEmpty}
-              color={cartEmpty ? Colors.lightestGreen : Colors.primaryGreen}
-              onPress={() => this.handleSubmit()}>
-              <ButtonLabel>Complete Sale</ButtonLabel>
-            </FilledButtonContainer>
-          </SaleContainer>
-        </View>
+          </View>
+        )}
+        {this.state.showCurrentSale && (
+          <CurrentSale
+            lineItems={lineItems}
+            cart={cart}
+            totalBalance={totalBalance}
+            rewardsAvailable={this.state.rewardsAvailable}
+            rewardsApplied={this.state.rewardsApplied}
+            customer={customer}
+            applyRewardsCallback={this.applyRewardsCallback}
+            completeSaleCallback={this.completeSaleCallback}
+            updateQuantityCallback={this.updateQuantityCallback}
+            toggleShowCallback={this.toggleShowCurrentSale}
+          />
+        )}
       </View>
     );
   }

@@ -1,17 +1,28 @@
 import styled from 'styled-components/native';
 import { Subtitle } from '../components/BaseComponents';
 import Colors from '../constants/Colors';
-import { ColumnContainer, RowContainer } from './shared';
+import { isTablet } from '../constants/Layout';
+import { ColumnContainer, RowContainer, SpaceBetweenRowContainer } from './shared';
 
 // Modals in CheckoutScreen.js
+export const ModalHeaderBar = styled(SpaceBetweenRowContainer)`
+  align-items: center;
+  border: 1px solid ${Colors.lighterGray};
+  border-top-width: 0px;
+  border-right-width: 0px;
+  border-left-width: 0px;
+  height: 50px;
+`;
+
+export const ModalContainer = styled(ColumnContainer)`
+  width: ${!isTablet ? '90%' : '50%'};
+  margin: auto;
+  margin-top: 50px;
+  background-color: ${Colors.bgLight};
+`;
 
 export const ModalContentContainer = styled(ColumnContainer)`
-  width: ${(props) => props.width || '45%'};
-  height: ${(props) => props.height || '330px'};
-  margin: auto;
-  justify-content: space-around;
-  align-items: center;
-  background-color: ${Colors.bgLight};
+  padding: 24px;
 `;
 
 export const ModalCenteredOpacityLayer = styled(RowContainer)`
@@ -20,11 +31,6 @@ export const ModalCenteredOpacityLayer = styled(RowContainer)`
   background-color: rgba(0, 0, 0, 0.3);
   justify-content: center;
   align-items: center;
-`;
-
-export const ModalCopyContainer = styled(ColumnContainer)`
-  justify-content: space-around;
-  align-items: ${(props) => props.alignItems || 'flex-start'};
 `;
 
 // Rewards

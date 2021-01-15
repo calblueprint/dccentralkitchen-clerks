@@ -111,7 +111,7 @@ export default class ClerkLoginScreen extends React.Component {
         <View>
           {/* zIndex 1 used to bring BackButton forward without being caught by the KeyboardAvoiding content container */}
           <BackButton
-            style={{ zIndex: 1, position: 'absolute', top: 0, left: 0, marginTop: 33, marginLeft: 29 }}
+            style={{ zIndex: 1, position: 'absolute', top: 0, left: 0, marginTop: 40, marginLeft: 32 }}
             navigation={this.props.navigation}
             light
           />

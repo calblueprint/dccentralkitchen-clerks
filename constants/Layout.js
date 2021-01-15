@@ -1,12 +1,8 @@
 import { Dimensions } from 'react-native';
 
-const { width } = Dimensions.get('window');
-const { height } = Dimensions.get('window');
-
-export default {
-  window: {
-    width,
-    height,
-  },
-  isSmallDevice: width < 375,
+export const Window = {
+  width: Dimensions.get('window').width,
+  height: Dimensions.get('window').height,
 };
+
+export const isTablet = Math.max(Window.width, Window.height) > 1000;

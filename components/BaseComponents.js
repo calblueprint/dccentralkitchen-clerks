@@ -64,8 +64,9 @@ export const BigTitleButtonLabel = styled(BigTitle)`
 `;
 
 export const FilledButtonContainer = styled(ButtonContainer)`
-  width: ${(props) => props.width || '309px'};
-  height: ${(props) => props.height || '57px'}
+  width: ${(props) => props.width || 'auto'};
+  height: ${(props) => props.height || '40px'};
+  padding-horizontal: 24px;
   background: ${(props) => props.color || Colors.primaryGreen};
   display: flex;
   flex-direction: column;
@@ -75,12 +76,10 @@ export const FilledButtonContainer = styled(ButtonContainer)`
 
 export const RoundedButtonContainer = styled(FilledButtonContainer)`
   border-radius: 20px;
-  margin: 12px;
-  width: ${(props) => props.width || '160px'};
-  height: ${(props) => props.height || '39px'};
+  width: ${(props) => props.width || 'auto'};
+  height: ${(props) => props.height || '40px'};
 `;
 
 export const SquareButtonContainer = styled(FilledButtonContainer)`
-  width: ${(props) => props.side || '54px'};
   height: ${(props) => props.side || '54px'};
 `;
