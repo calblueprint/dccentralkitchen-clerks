@@ -51,7 +51,7 @@ export const QuantityInput = styled.TextInput.attrs({
   border-color: ${Colors.activeText};
   width: 200px;
   color: ${Colors.activeText};
-  font-family: 'poppins-regular';
+  font-family: 'opensans-regular';
   font-size: 16px;
   text-align: left;
   padding: 10px 16px;

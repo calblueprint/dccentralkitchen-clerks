@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage';
-import Clipboard from '@react-native-community/clipboard';
+import Clipboard from 'expo-clipboard';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Alert, View } from 'react-native';

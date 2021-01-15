@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import * as Analytics from 'expo-firebase-analytics';
-import * as Linking from 'expo-linking';
+import * as WebBrowser from 'expo-web-browser';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { View } from 'react-native';
@@ -58,13 +58,19 @@ class DrawerContent extends React.Component {
           onPress={() => this.props.navigation.navigate('RegisterCustomer')}>
           <Title>Register a Customer</Title>
         </ButtonContainer>
-        <ButtonContainer style={{ padding: 16 }} onPress={() => Linking.openURL('http://tiny.cc/ClerkGuide')}>
+        <ButtonContainer
+          style={{ padding: 16 }}
+          onPress={() => WebBrowser.openBrowserAsync('http://tiny.cc/ClerkGuide')}>
           <Title>Clerk Guide</Title>
         </ButtonContainer>
-        <ButtonContainer style={{ padding: 16 }} onPress={() => Linking.openURL('http://tiny.cc/SubmitFeedbackClerk')}>
+        <ButtonContainer
+          style={{ padding: 16 }}
+          onPress={() => WebBrowser.openBrowserAsync('http://tiny.cc/SubmitFeedbackClerk')}>
           <Title>Feedback</Title>
         </ButtonContainer>
-        <ButtonContainer style={{ padding: 16 }} onPress={() => Linking.openURL('http://tiny.cc/ClerkFeedback')}>
+        <ButtonContainer
+          style={{ padding: 16 }}
+          onPress={() => WebBrowser.openBrowserAsync('http://tiny.cc/ClerkFeedback')}>
           <Title>Report Issue</Title>
         </ButtonContainer>
 
