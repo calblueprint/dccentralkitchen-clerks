@@ -74,8 +74,8 @@ export default class ConfirmationScreen extends React.Component {
             position: 'absolute',
             top: 0,
             left: 0,
-            marginTop: 33,
-            marginLeft: 29,
+            marginTop: 40,
+            marginLeft: 32,
             justifyContent: 'flex-start',
             alignItems: 'center',
           }}>
@@ -84,7 +84,14 @@ export default class ConfirmationScreen extends React.Component {
         </RowContainer>
         <ColumnContainer style={{ width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
           <ColumnContainer
-            style={{ width: '33%', height: '35%', justifyContent: 'space-around', margin: 12, paddingBottom: 32 }}>
+            style={{
+              width: '70%',
+              minHeight: '35%',
+              maxHeight: '50%',
+              justifyContent: 'space-around',
+              margin: 12,
+              paddingBottom: 32,
+            }}>
             <Title>Sale Summary</Title>
             <SpaceBetweenRowContainer>
               <Subtitle>Transaction ID</Subtitle>
@@ -121,7 +128,7 @@ export default class ConfirmationScreen extends React.Component {
           </ColumnContainer>
           <FilledButtonContainer
             onPress={() => this.handleSubmit()}
-            width="33%"
+            width="70%"
             height="40px"
             style={{ borderRadius: 20 }}>
             <ButtonLabel>Next Customer</ButtonLabel>

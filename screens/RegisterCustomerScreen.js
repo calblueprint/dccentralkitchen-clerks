@@ -192,7 +192,7 @@ export default class RegisterCustomerScreen extends React.Component {
                 <ButtonLabel color={Colors.lightText}>Register Customer</ButtonLabel>
               </RoundedButtonContainer>
               <ButtonContainer
-                style={{ marginTop: 4 }}
+                style={{ marginTop: 16 }}
                 width="253px"
                 height="40px"
                 onPress={() => this.props.navigation.goBack()}>

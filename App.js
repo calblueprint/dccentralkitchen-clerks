@@ -6,6 +6,7 @@ import React, { useState } from 'react';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import * as Sentry from 'sentry-expo';
 import Colors from './constants/Colors';
+import { isTablet } from './constants/Layout';
 import { env } from './environment';
 import AppNavigator from './navigation/AppNavigator';
 
@@ -20,7 +21,9 @@ export default function App(props) {
   const [isLoadingComplete, setLoadingComplete] = useState(false);
 
   if (!isLoadingComplete && !props.skipLoadingScreen) {
-    ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
+    if (!isTablet) {
+      ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
+    }
     return (
       <AppLoading
         startAsync={loadResourcesAsync}

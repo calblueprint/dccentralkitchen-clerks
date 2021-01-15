@@ -6,7 +6,8 @@ import { ColumnContainer, RowContainer } from './shared';
 // Customer Name Top Bar
 // Adjusts spacing for Android devices with status bars.
 export const TopBar = styled.View`
-  height: ${Platform.OS === 'android' ? '80px' : '60px'};
+  padding-top: 24px;
+  height: 80px;
   align-items: ${Platform.OS === 'android' ? 'flex-end' : 'center'};
   padding-bottom: ${Platform.OS === 'android' ? '16px' : '0px'};
   width: 100%;
@@ -18,7 +19,7 @@ export const TopBar = styled.View`
 // Alphabetical Tab Bottom Bar
 
 export const BottomBar = styled.View`
-  height: 57px;
+  height: 60px;
   width: 100%;
   background: ${Colors.primaryGray};
 `;
@@ -26,7 +27,7 @@ export const BottomBar = styled.View`
 // Tabs
 
 export const TabContainer = styled.TouchableOpacity`
-  height: 57px;
+  height: 60px;
   width: 119px;
   border: 1px solid ${Colors.bgLight};
   background: ${Colors.primaryGray};
@@ -56,7 +57,7 @@ export const SaleContainer = styled(ColumnContainer)`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  flex: 2;
+  flex: 1;
   background: ${Colors.bgLight};
 `;
 
@@ -80,7 +81,7 @@ export const ProductCard = styled.View`
 // Transaction Line Items
 
 export const LineItem = styled.View`
-  width: 281px;
+  width: 100%;
   background: ${Colors.bgLight};
   border: 1px solid ${Colors.lightestGray};
   border-left-width: 0px;

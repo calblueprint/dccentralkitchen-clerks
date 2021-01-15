@@ -119,8 +119,8 @@ export default class CustomerLookupScreen extends React.Component {
               position: 'absolute',
               top: 0,
               left: 0,
-              marginTop: 33,
-              marginLeft: 29,
+              marginTop: 40,
+              marginLeft: 32,
               justifyContent: 'flex-start',
               alignItems: 'center',
             }}>
@@ -155,15 +155,13 @@ export default class CustomerLookupScreen extends React.Component {
                 style={{ marginTop: 16 }}
                 color={customerPermission ? Colors.primaryGreen : Colors.lightestGreen}
                 width="253px"
-                height="40px"
                 onPress={() => this.handleSubmit()}
                 disabled={!customerPermission}>
                 <ButtonLabel color={Colors.lightText}>Next</ButtonLabel>
               </RoundedButtonContainer>
               <ButtonContainer
-                style={{ marginTop: 4 }}
+                style={{ marginTop: 16 }}
                 width="253px"
-                height="40px"
                 onPress={() => {
                   Keyboard.dismiss();
                   this.props.navigation.navigate('RegisterCustomer');

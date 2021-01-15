@@ -2,13 +2,14 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import * as Analytics from 'expo-firebase-analytics';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Modal, View } from 'react-native';
+import { Modal } from 'react-native';
 import {
   BigTitle,
   BigTitleButtonLabel,
   Body,
   ButtonContainer,
   ButtonLabel,
+  FilledButtonContainer,
   RoundedButtonContainer,
   SquareButtonContainer,
   Title,
@@ -18,8 +19,9 @@ import { rewardDollarValue } from '../../constants/Rewards';
 import { calculateEligibleRewards, displayDollarValue } from '../../lib/checkoutUtils';
 import {
   ModalCenteredOpacityLayer,
+  ModalContainer,
   ModalContentContainer,
-  ModalCopyContainer,
+  ModalHeaderBar,
   SubtitleActive,
   SubtitleSecondary,
 } from '../../styled/modal';
@@ -48,6 +50,7 @@ export default class RewardModal extends React.Component {
 
   // Forces a re-render when new props are passed
   // TODO: this is deprecated - may need to find an alternative to getDerivedStateFromProps
+  // eslint-disable-next-line react/no-deprecated
   componentWillReceiveProps(nextProps) {
     const { rewardsAvailable, rewardsApplied, totalBalance } = nextProps;
     if (this.state.totalBalance !== totalBalance) {
@@ -131,57 +134,45 @@ export default class RewardModal extends React.Component {
       <RowContainer style={{ width: '100%', justifyContent: 'center', alignItems: 'center' }}>
         <Modal
           animationType="none"
-          supportedOrientations={['landscape']}
+          supportedOrientations={['landscape', 'portrait']}
           transparent
           visible={modalVisible}
           onRequestClose={() => {
             this.setModalVisible(false);
           }}>
           <ModalCenteredOpacityLayer>
-            <ModalContentContainer width="50%" height="60%">
-              <ButtonContainer
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  padding: 20,
-                  paddingBottom: 0,
-                }}
-                onPress={() => this.setModalVisible(false)}>
-                <FontAwesome5 name="times" size={24} color={Colors.activeText} />
-              </ButtonContainer>
-              {/* Invisible element used to trick flexbox into spacin correctly with 'space-around' 
-                even though 'cancel' button is pinned using position: absolute */}
-              <View style={{ padding: 8 }}>{null}</View>
-              <ModalCopyContainer style={{ marginLeft: '15%', alignSelf: 'flex-start' }}>
+            <ModalContainer>
+              <ModalHeaderBar>
+                <ButtonContainer style={{ marginLeft: 12 }} onPress={() => this.setModalVisible(false)}>
+                  <FontAwesome5 name="times" size={24} color={Colors.activeText} />
+                </ButtonContainer>
+                <FilledButtonContainer height="100%" onPress={() => this.handleApplyRewards()}>
+                  <ButtonLabel>Done</ButtonLabel>
+                </FilledButtonContainer>
+              </ModalHeaderBar>
+              <ModalContentContainer>
                 <Title>Apply rewards</Title>
                 <Body color={Colors.secondaryText}>{`${customer.name} has ${rewardsAvailable} reward(s)`}</Body>
-              </ModalCopyContainer>
-              <ColumnContainer style={{ width: '40%', margin: 16 }}>
-                <SpaceBetweenRowContainer>
-                  <BigTitle>{rewardsApplied}</BigTitle>
-                  <RowContainer style={{ justifyContent: 'center' }}>
-                    <SquareButtonContainer
-                      disabled={min}
-                      color={min ? Colors.lightestGreen : Colors.darkerGreen}
-                      onPress={() => this.updateRewardsApplied(false)}>
-                      <BigTitleButtonLabel>-</BigTitleButtonLabel>
-                    </SquareButtonContainer>
-                    <SquareButtonContainer
-                      activeOpacity={max ? 1 : 0.2}
-                      color={max ? Colors.lightestGreen : Colors.darkerGreen}
-                      onPress={() => (max ? this.showError(true) : this.updateRewardsApplied(true))}>
-                      <BigTitleButtonLabel>+</BigTitleButtonLabel>
-                    </SquareButtonContainer>
-                  </RowContainer>
-                </SpaceBetweenRowContainer>
-                {errorShown && (
-                  <Body color={Colors.error} style={{ position: 'absolute', bottom: -32 }}>
-                    Maximum rewards applied
-                  </Body>
-                )}
-              </ColumnContainer>
-              <ModalCopyContainer alignItems="center" style={{ width: '40%', margin: 16 }}>
+                <ColumnContainer style={{ marginVertical: 24 }}>
+                  <SpaceBetweenRowContainer>
+                    <BigTitle>{rewardsApplied}</BigTitle>
+                    <RowContainer style={{ justifyContent: 'center' }}>
+                      <SquareButtonContainer
+                        disabled={min}
+                        color={min ? Colors.lightestGreen : Colors.darkerGreen}
+                        onPress={() => this.updateRewardsApplied(false)}>
+                        <BigTitleButtonLabel>-</BigTitleButtonLabel>
+                      </SquareButtonContainer>
+                      <SquareButtonContainer
+                        activeOpacity={max ? 1 : 0.2}
+                        color={max ? Colors.lightestGreen : Colors.darkerGreen}
+                        onPress={() => (max ? this.showError(true) : this.updateRewardsApplied(true))}>
+                        <BigTitleButtonLabel>+</BigTitleButtonLabel>
+                      </SquareButtonContainer>
+                    </RowContainer>
+                  </SpaceBetweenRowContainer>
+                  <Body color={Colors.error}>{errorShown ? 'Maximum rewards applied' : ' '}</Body>
+                </ColumnContainer>
                 {/* TODO make a component for this; pattern is in ConfirmationScreen too */}
                 <SpaceBetweenRowContainer>
                   <SubtitleSecondary style={{ alignSelf: 'flex-start' }}>Subtotal</SubtitleSecondary>
@@ -197,17 +188,13 @@ export default class RewardModal extends React.Component {
                   <SubtitleActive>Total Sale</SubtitleActive>
                   <SubtitleActive>{displayDollarValue(totalSale)}</SubtitleActive>
                 </SpaceBetweenRowContainer>
-              </ModalCopyContainer>
-              <RoundedButtonContainer onPress={() => this.handleApplyRewards()}>
-                <ButtonLabel>Done</ButtonLabel>
-              </RoundedButtonContainer>
-            </ModalContentContainer>
+              </ModalContentContainer>
+            </ModalContainer>
           </ModalCenteredOpacityLayer>
         </Modal>
 
         <RoundedButtonContainer
-          width="179px"
-          height="40px"
+          style={{ margin: 12 }}
           color={Colors.activeText}
           onPress={() => this.setModalVisible(true)}>
           <ButtonLabel color={Colors.lightText}>Rewards</ButtonLabel>

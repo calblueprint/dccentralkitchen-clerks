@@ -3,14 +3,15 @@ import * as Analytics from 'expo-firebase-analytics';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Modal, View } from 'react-native';
-import { Body, ButtonContainer, ButtonLabel, RoundedButtonContainer, Title } from '../../components/BaseComponents';
+import { Body, ButtonContainer, ButtonLabel, FilledButtonContainer, Title } from '../../components/BaseComponents';
 import LineItemCard from '../../components/LineItemCard';
 import ProductDisplayCard from '../../components/ProductDisplayCard';
 import Colors from '../../constants/Colors';
 import {
   ModalCenteredOpacityLayer,
+  ModalContainer,
   ModalContentContainer,
-  ModalCopyContainer,
+  ModalHeaderBar,
   QuantityInput,
 } from '../../styled/modal';
 import { ColumnContainer } from '../../styled/shared';
@@ -38,6 +39,7 @@ export default class QuantityModal extends React.Component {
 
   // Forces a re-render when new props are passed
   // TODO: this is deprecated - may need to find an alternative to getDerivedStateFromProps
+  // eslint-disable-next-line react/no-deprecated
   componentWillReceiveProps(nextProps) {
     const newQuantity = nextProps.product.quantity;
     if (this.state.currentQuantity !== newQuantity) {
@@ -98,7 +100,7 @@ export default class QuantityModal extends React.Component {
       <View>
         <Modal
           animationType="none"
-          supportedOrientations={['landscape']}
+          supportedOrientations={['landscape', 'portrait']}
           transparent
           visible={this.state.modalVisible}
           onRequestClose={() => {
@@ -106,40 +108,35 @@ export default class QuantityModal extends React.Component {
           }}>
           {/* Opacity layer */}
           <ModalCenteredOpacityLayer>
-            <ModalContentContainer style={{ marginTop: 10 }}>
-              <ButtonContainer
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  padding: 20,
-                  paddingBottom: 0,
-                }}
-                onPress={() => this.setModalVisible(false)}>
-                <FontAwesome5 name="times" size={24} color={Colors.activeText} />
-              </ButtonContainer>
-              {/* Invisible element used to trick flexbox into spacing correctly with 'space-around' even though 'cancel' button is pinned using position: absolute */}
-              <View>{null}</View>
-              <ModalCopyContainer>
+            <ModalContainer>
+              <ModalHeaderBar>
+                <ButtonContainer style={{ marginLeft: 12 }} onPress={() => this.setModalVisible(false)}>
+                  <FontAwesome5 name="times" size={24} color={Colors.activeText} />
+                </ButtonContainer>
+
+                <FilledButtonContainer
+                  height="100%"
+                  color={currentQuantity === '' ? Colors.lightestGreen : Colors.primaryGreen}
+                  disabled={currentQuantity === ''}
+                  onPress={() => this.handleUpdateCart()}>
+                  <ButtonLabel>Update Quantity</ButtonLabel>
+                </FilledButtonContainer>
+              </ModalHeaderBar>
+              <ModalContentContainer>
                 <Title>{`Quantity of ${product.fullName}`}</Title>
                 <ColumnContainer>
                   <Body>Key in the quantity and tap UPDATE QUANTITY</Body>
                   <Body>OR press the top left X to exit.</Body>
                 </ColumnContainer>
-              </ModalCopyContainer>
-              <QuantityInput
-                autoFocus
-                placeholder="Quantity"
-                onChangeText={this.updateQuantity}
-                value={currentQuantity}
-              />
-              <RoundedButtonContainer
-                color={currentQuantity === '' ? Colors.lightestGreen : Colors.primaryGreen}
-                disabled={currentQuantity === ''}
-                onPress={() => this.handleUpdateCart()}>
-                <ButtonLabel>Update Quantity</ButtonLabel>
-              </RoundedButtonContainer>
-            </ModalContentContainer>
+                <QuantityInput
+                  style={{ marginTop: 24 }}
+                  autoFocus
+                  placeholder="Quantity"
+                  onChangeText={this.updateQuantity}
+                  value={currentQuantity}
+                />
+              </ModalContentContainer>
+            </ModalContainer>
           </ModalCenteredOpacityLayer>
         </Modal>
 
