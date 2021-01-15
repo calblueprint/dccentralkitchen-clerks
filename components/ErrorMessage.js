@@ -14,7 +14,7 @@ function ErrorMessage({ light, errorMsg, buttonMsg, callback, errorShown }) {
           <Body color={light ? Colors.lightText : Colors.activeText}>{errorMsg}</Body>
         </RowContainer>
       )}
-      {buttonMsg && (
+      {buttonMsg !== '' && (
         <ButtonContainer onPress={errorShown ? callback : null}>
           <ButtonLabel noCaps color={Colors.primaryGreen}>
             {errorShown ? buttonMsg : ' '}
